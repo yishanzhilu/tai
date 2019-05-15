@@ -1,0 +1,9 @@
+{
+  "name": "tai",
+  "version": "1.0.0",
+  "description": "yishan web ui",
+  "main": "index.js",
+  "repository": "git@github.com:yishanjs/tai.git",
+  "author": "qy <xiangyujames@outlook.com>",
+  "license": "MIT"
+}
