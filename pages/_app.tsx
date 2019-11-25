@@ -1,55 +1,75 @@
 /**
  * Copyright (c) 2019 Yishan Authors
  *
- * All right reserved
+ * All rights reserved
  */
 
-import App, { Container, DefaultAppIProps, NextAppContext } from 'next/app';
+import React from 'react';
+import App from 'next/app';
 import Head from 'next/head';
-import * as React from 'react';
-import { ThemeProvider } from 'emotion-theming';
+import NProgress from 'nprogress';
+import Router from 'next/router';
 
-const theme = {
-  colors: {
-    primary: '#1890ff',
-    link: '#1890ff',
-    success: '#52c41a',
-    warning: '#faad14',
-    error: '#f5222d',
-    heading: 'rgba(0, 0, 0, 0.85)',
-    text: 'rgba(0, 0, 0, 0.65)',
-    textSecondary: 'rgba(0, 0, 0, .45)',
-    disabled: 'rgba(0, 0, 0, .25)',
-    borderBase: '#d9d9d9',
-  },
-};
+import { FocusStyleManager } from '@yishanzhilu/blueprint-core';
+import 'normalize.css/normalize.css';
+import '@yishanzhilu/blueprint-core/lib/css/blueprint.css';
+// import AuthingSSO from '@authing/sso';
+import Validator from 'validatorjs';
 
-export default class MyApp extends App {
-  public static async getInitialProps({
-    Component,
-    ctx,
-  }: NextAppContext): Promise<DefaultAppIProps> {
-    let pageProps = {};
+import { setUpConsole } from '@/src/utils/funcs';
 
-    if (Component.getInitialProps) {
-      pageProps = await Component.getInitialProps(ctx);
-    }
+Validator.useLang('zh');
 
-    return { pageProps };
-  }
+FocusStyleManager.onlyShowFocusOnTabs();
 
-  public render(): React.ReactElement {
+setUpConsole();
+NProgress.configure({ showSpinner: false });
+Router.events.on('routeChangeStart', url => {
+  console.info(`Loading: ${url}`);
+  NProgress.start();
+});
+Router.events.on('routeChangeComplete', () => NProgress.done());
+Router.events.on('routeChangeError', () => NProgress.done());
+
+export default class TaiAPP extends App {
+  public render() {
     const { Component, pageProps } = this.props;
-
     return (
-      <ThemeProvider theme={theme}>
-        <Container>
-          <Head>
-            <title>移山 - 为你所爱</title>
-          </Head>
-          <Component {...pageProps} />
-        </Container>
-      </ThemeProvider>
+      <>
+        <Head>
+          <title>移山 · 为你所爱</title>
+          <meta charSet="UTF-8" />
+          <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0"
+          />
+          <meta httpEquiv="X-UA-Compatible" content="ie=edge" />
+          <meta
+            name="viewport"
+            content="initial-scale=1.0, width=device-width"
+          />
+          <link rel="icon" type="image/x-icon" href="/static/favicon.ico" />
+          <link
+            rel="apple-touch-icon"
+            sizes="180x180"
+            href="/static/apple-touch-icon.png"
+          />
+          <link
+            rel="icon"
+            type="image/png"
+            sizes="32x32"
+            href="/static/favicon-32x32.png"
+          />
+          <link
+            rel="icon"
+            type="image/png"
+            sizes="16x16"
+            href="/static/favicon-16x16.png"
+          />
+          <link rel="stylesheet" type="text/css" href="/nprogress.css" />
+        </Head>
+        <Component {...pageProps} />
+      </>
     );
   }
 }

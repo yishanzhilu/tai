@@ -1,10 +1,12 @@
 /**
  * Copyright (c) 2019 Yishan Authors
  *
- * All right reserved
+ * All rights reserved
  */
 
-import { configure } from 'enzyme'
-import Adapter from 'enzyme-adapter-react-16'
 
-configure({ adapter: new Adapter() })
+/* eslint-disable @typescript-eslint/no-var-requires */
+const Enzyme = require('enzyme')
+const Adapter = require('enzyme-adapter-react-16')
+
+Enzyme.configure({ adapter: new Adapter() })
