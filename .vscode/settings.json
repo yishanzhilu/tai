@@ -8,7 +8,11 @@
   ],
   "licenser.license": "Custom",
   "licenser.customTermsAndConditions": "All right reserved",
-  "licenser.customHeader": "Copyright (c) @YEAR@ Yishan Authors\n\nAll right reserved",
+  "licenser.customHeader": "Copyright (c) @YEAR@ Yishan AuthorsAll rights reserved",
   "licenser.useSingleLineStyle": false,
-  "licenser.disableAutoHeaderInsertion": false
+  "licenser.disableAutoHeaderInsertion": false,
+  "cSpell.words": [
+    "Yishan",
+    "blueprintjs"
+  ]
 }

@@ -1,12 +1,12 @@
 /**
  * Copyright (c) 2019 Yishan Authors
  *
- * All right reserved
+ * All rights reserved
  */
 
-/* eslint-disable @typescript-eslint/no-var-requires */
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const path = require('path');
 
 module.exports = {
-  '@': path.resolve('./'),
+  '@': path.resolve(__dirname, './'),
 };

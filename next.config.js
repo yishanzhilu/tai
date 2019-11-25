@@ -1,21 +1,29 @@
 /**
  * Copyright (c) 2019 Yishan Authors
  *
- * All right reserved
+ * All rights reserved
  */
 
-/* eslint-disable @typescript-eslint/no-var-requires */
-const withTypescript = require('@zeit/next-typescript');
-const aliases = require('./alias-config');
 
-module.exports = withTypescript({
+/* eslint-disable @typescript-eslint/no-var-requires, no-param-reassign  */
+const withCSS = require('@zeit/next-css');
+
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+  enabled: process.env.ANALYZE === 'true',
+});
+
+const aliasConfig = require('./alias-config');
+const prdConfig = require('./next.config.prd');
+
+module.exports = withCSS(withBundleAnalyzer({
+  ...prdConfig,
+  enabled: process.env.ANALYZE === 'true',
   webpack(config) {
     const { alias } = config.resolve;
-    // eslint-disable-next-line no-param-reassign
     config.resolve.alias = {
       ...alias,
-      ...aliases,
+      ...aliasConfig,
     };
     return config;
   },
-});
+}));
