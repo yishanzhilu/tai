@@ -43,7 +43,7 @@ const ProfileMenu: React.FC = () => {
         text="退出"
         onClick={() => {
           localStorage.removeItem('userInfo');
-          cookie.remove('token');
+          cookie.remove('everestToken');
 
           router.replace('/');
         }}

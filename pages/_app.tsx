@@ -13,6 +13,7 @@ import Router from 'next/router';
 import { FocusStyleManager } from '@yishanzhilu/blueprint-core';
 import 'normalize.css/normalize.css';
 import '@yishanzhilu/blueprint-core/lib/css/blueprint.css';
+import '@yishanzhilu/blueprint-datetime/lib/css/blueprint-datetime.css';
 // import AuthingSSO from '@authing/sso';
 import Validator from 'validatorjs';
 

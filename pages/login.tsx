@@ -4,7 +4,7 @@
  * All rights reserved
  */
 
-import React, { useEffect, useDebugValue, useReducer } from 'react';
+import React, { useEffect, useReducer } from 'react';
 import {
   FormGroup,
   InputGroup,
@@ -18,6 +18,7 @@ import cookie from 'js-cookie';
 import { useLocalStore, useObserver } from 'mobx-react-lite';
 import Validator from 'validatorjs';
 import { axios } from '@/src/api';
+import { redirect } from '@/src/utils/funcs';
 
 interface ISendMottoButtonState {
   seconds: number;
@@ -55,8 +56,6 @@ function SendMottoButton({ email: { error, value: email } }) {
     seconds: countdownTotal,
     buttonStatus: 'ready',
   });
-  console.debug('SendMottoButton', state, error);
-  useDebugValue('useDebugValue');
   useEffect(() => {
     let interval: NodeJS.Timeout;
     if (state.buttonStatus === 'sending') {
@@ -82,9 +81,7 @@ function SendMottoButton({ email: { error, value: email } }) {
       }
     }
     return () => {
-      if (state.seconds < 0) {
-        clearTimeout(interval);
-      }
+      clearTimeout(interval);
     };
   }, [state]);
 
@@ -96,7 +93,7 @@ function SendMottoButton({ email: { error, value: email } }) {
         if (state.buttonStatus === 'ready' && !error)
           dispatch({ type: 'sendEmail' });
       }}
-      disabled={state.buttonStatus !== 'ready' || error}
+      disabled={state.buttonStatus !== 'ready' || error || !email}
       loading={state.buttonStatus === 'sending'}
     >
       {state.buttonStatus === 'countdown'
@@ -172,12 +169,10 @@ const Login = (): React.ReactElement => {
       error: null,
     },
     handleChange(e: React.ChangeEvent<HTMLInputElement>) {
-      console.log(e.target.name);
       const field = e.target.id;
       login.fields[field].value = e.target.value;
     },
     handleBlur(e: React.FocusEvent<HTMLInputElement>) {
-      console.log(e.target.name);
       const field = e.target.id;
       const { email, motto } = login.fields;
       const validation = new Validator(
@@ -200,6 +195,7 @@ const Login = (): React.ReactElement => {
         });
         localStorage.setItem('motto', JSON.stringify(res.data));
         cookie.set('everestToken', res.data.token, { expires: 30 });
+        redirect('/workspace');
       } catch (error) {
         console.error(error);
       }

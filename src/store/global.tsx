@@ -35,6 +35,7 @@ const defaultState: IGlobalState = {
   work: {
     goals: [],
     missions: [],
+    hours: 0,
   },
 };
 
@@ -78,7 +79,7 @@ const StoreProvider: React.FC<{ initialState: IGlobalState }> = ({
   );
 };
 
-async function getInitialState(token: string) {
+async function getInitialState(token: string): Promise<IGlobalState> {
   const res = await Promise.all([
     axios.get('/users/me', {
       headers: {
@@ -94,6 +95,7 @@ async function getInitialState(token: string) {
   return {
     user: res[0].data,
     work: res[1].data,
+    theme: 'light',
   };
 }
 
@@ -119,7 +121,7 @@ export const withGlobalState = PageComponent => {
         // 没有 token，去login
         redirect('/login', context);
       }
-      let initialState = {};
+      let initialState = defaultState;
       if (IS_SERVER || !windowStore) {
         initialState = await getInitialState(token);
       }
@@ -142,7 +144,7 @@ export const withGlobalState = PageComponent => {
       console.error(`getUserInfo | error: ${error}`);
       // token 错误，删除通过 redirect 的 removeCookie 删除 token
       // redirect('/login', context, true);
-      return {};
+      return { initialState: defaultState };
     }
   };
 

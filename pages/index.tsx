@@ -8,7 +8,11 @@ import * as React from 'react';
 import Link from 'next/dist/client/link';
 import { AnchorButton } from '@yishanzhilu/blueprint-core';
 
+import nextCookie from 'next-cookies';
+import { NextPage } from 'next';
+
 import { LandingLayout } from '@/src/layout';
+import { redirect } from '@/src/utils/funcs';
 
 function Banner() {
   return (
@@ -68,7 +72,7 @@ function Banner() {
   );
 }
 
-const Index = (): React.ReactElement => {
+const Index: NextPage = () => {
   return (
     <LandingLayout>
       <main>
@@ -76,6 +80,15 @@ const Index = (): React.ReactElement => {
       </main>
     </LandingLayout>
   );
+};
+
+Index.getInitialProps = async context => {
+  const { everestToken: token } = nextCookie(context);
+  if (token) {
+    // 没有 token，去login
+    redirect('/workspace/dashboard', context);
+  }
+  return {};
 };
 
 export default Index;

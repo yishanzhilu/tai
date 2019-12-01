@@ -5,20 +5,27 @@
  */
 
 import * as React from 'react';
+import classNames from 'classnames';
 
-export default function Flex({ children }) {
+export default function Flex({
+  children,
+  className = '',
+  dir = 'row',
+  alignItems = 'center',
+  childMargin = 5,
+}) {
   return (
-    <div className="container">
+    <div className={classNames('container', className)}>
       {children}
       <style jsx>
         {`
           .container {
             display: flex;
-            flex-direction: row;
-            align-items: center;
+            flex-direction: ${dir};
+            align-items: ${alignItems};
           }
           .container > :global(*) {
-            margin-right: 5px;
+            margin-right: ${childMargin}px;
           }
           .container > :global(*):last-child {
             margin-right: 0;

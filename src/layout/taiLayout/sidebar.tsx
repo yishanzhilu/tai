@@ -121,8 +121,8 @@ function SidebarGoal({
             <NavLabel
               level={1}
               key={m.id}
-              asHref={`/workspace/missions/${m.id}`}
-              href="/workspace/missions/[id]"
+              asHref={`/workspace/mission/${m.id}`}
+              href="/workspace/mission/[id]"
               title={m.title}
               emoji="📜"
               currentPath={currentPath}
@@ -144,8 +144,8 @@ function SidebarWorks({ currentPath = '' }) {
           <SidebarGoal
             key={`goal-${g.id}`}
             missions={g.missions}
-            asHref={`/workspace/goals/${g.id}`}
-            href="/workspace/goals/[id]"
+            asHref={`/workspace/goal/${g.id}`}
+            href="/workspace/goal/[id]"
             title={g.title}
             emoji="🎯"
             currentPath={currentPath}
@@ -156,8 +156,8 @@ function SidebarWorks({ currentPath = '' }) {
         store.work.missions.map(m => (
           <NavLabel
             key={`mission-${m.id}`}
-            asHref={`/workspace/missions/${m.id}`}
-            href="/workspace/missions/[id]"
+            asHref={`/workspace/mission/${m.id}`}
+            href="/workspace/mission/[id]"
             title={m.title}
             emoji="📜"
             currentPath={currentPath}
@@ -200,9 +200,7 @@ function UserProfileStat({ title = '', hours = 0 }) {
   );
 }
 
-function UserProfile({ user = { username: '', email: '' } }) {
-  console.log('UserProfile', user);
-
+function UserProfile({ hours } = { hours: 0 }) {
   return (
     <div className="user-profile">
       {/* <div className="username">
@@ -216,7 +214,7 @@ function UserProfile({ user = { username: '', email: '' } }) {
       <div className="total-hours">
         <div className="bar-title">
           <div>
-            <strong>500</strong>
+            <strong>{hours}</strong>
             <span>小时</span>
           </div>
           <Tooltip
@@ -242,7 +240,6 @@ function UserProfile({ user = { username: '', email: '' } }) {
       {/* <Divider /> */}
 
       <div className="hours">
-        {/* <UserProfileStat title="总历程" hours={100} /> */}
         <UserProfileStat title="今日历程" hours={24} />
         <UserProfileStat title="本周历程" hours={24} />
         <UserProfileStat title="本月历程" hours={24} />
@@ -297,13 +294,13 @@ export const Sidebar: React.FC = () => {
   const store = useGlobalStore();
   return (
     <div className={classnames(Classes.TREE, Classes.ELEVATION_0)} id="sidebar">
-      <UserProfile user={store.user} />
+      <UserProfile hours={store.work.hours} />
       <Divider />
       <nav>
         <ul className={Classes.TREE_NODE_LIST}>
           <SidebarHeader>导航</SidebarHeader>
           <NavLabel
-            href="/workspace"
+            href="/workspace/dashboard"
             title="看板"
             emoji="📋"
             currentPath={asPath}

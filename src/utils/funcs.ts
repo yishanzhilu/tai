@@ -24,7 +24,6 @@ export function setUpConsole() {
     console.warn = noop;
     console.error = noop;
   }
-
 }
 
 export function sleep(delay: number) {
@@ -62,4 +61,29 @@ export function redirect(
     }
     Router.replace(url);
   }
+}
+
+export function eventHandlerWarning(message: string) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return (...args: any[]) => {
+    console.warn(`回调[${message}]不能为空`, ...args);
+  };
+}
+
+interface IHourMinute {
+  hour: number;
+  minute: number;
+}
+
+export function HourMinutes2Hour(hourMinute: IHourMinute): number {
+  return hourMinute.hour + Math.round((hourMinute.minute / 60) * 1000) / 1000;
+}
+
+export function Hour2HourMinutes(hourFloat: number): IHourMinute {
+  const hour = Math.trunc(hourFloat);
+  const minute = Math.trunc((hourFloat - hour) * 60);
+  return {
+    hour,
+    minute,
+  };
 }

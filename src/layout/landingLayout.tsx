@@ -51,7 +51,7 @@ export function LandingLayout({
         <NavbarGroup align={Alignment.RIGHT}>
           <Link href={button.href}>
             <AnchorButton
-              intent="danger"
+              intent="primary"
               className={Classes.MINIMAL}
               text={button.text}
             />
