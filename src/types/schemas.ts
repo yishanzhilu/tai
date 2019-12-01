@@ -14,6 +14,7 @@ export interface IUserProfile {
 export interface IWorkProfile {
   goals: IGoal[];
   missions: IMission[];
+  hours: number;
 }
 
 export interface IGoal {
@@ -48,8 +49,11 @@ export interface IRecord {
 }
 
 export interface ITodo {
+  id: number;
   content: string;
   status: 'doing' | 'done';
   goalID?: number;
+  goalTitle?: string;
   missionID?: number;
+  missionTitle?: string;
 }

@@ -35,7 +35,9 @@ export const TaiLayout = observer(({ children }: IProps) => {
           <aside>
             <Sidebar />
           </aside>
-          <article>{children}</article>
+          <article>
+            <div className="article-inner">{children}</div>
+          </article>
         </div>
       </div>
 
@@ -68,11 +70,15 @@ export const TaiLayout = observer(({ children }: IProps) => {
           flex-direction: column;
           z-index: 1;
           width: calc(100vw - 283px);
-          max-width: 1000px;
-          height: 100vh;
+          height: calc(100vh - 50px);
           max-height: 100%;
           padding-left: 100px;
+          padding-right: 100px;
           padding-top: 10px;
+          overflow-y: auto;
+        }
+        .article-inner{
+          max-width: 1000px;
         }
       `}</style>
     </div>

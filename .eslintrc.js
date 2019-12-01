@@ -49,6 +49,7 @@ module.exports = {
     'react/prop-types': ['off'],
     '@typescript-eslint/interface-name-prefix': ['error', 'always'],
     'no-console': ['off'],
+    'no-param-reassign': ['off'],
   },
   overrides: [
     {
