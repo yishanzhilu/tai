@@ -16,6 +16,7 @@
     "blueprintjs"
   ],
   "cSpell.ignoreWords": [
-    "callout"
+    "callout",
+    "nprogress"
   ]
 }
