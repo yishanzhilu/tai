@@ -37,7 +37,9 @@ export class ErrorBoundary extends React.Component<IProps, IState> {
     const { hasError, error } = this.state;
     const { fallback, children } = this.props;
     if (hasError) {
-      const fallbackWithError = React.cloneElement(fallback, { error });
+      const fallbackWithError = React.cloneElement(fallback, {
+        title: error.message,
+      });
       return fallbackWithError;
     }
     return children;

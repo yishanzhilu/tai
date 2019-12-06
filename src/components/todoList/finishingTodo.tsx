@@ -9,18 +9,15 @@ import React from 'react';
 import {
   FormGroup,
   TextArea,
-  Keys,
   Button,
-  NumericInput,
   H5,
 } from '@yishanzhilu/blueprint-core';
 import useForm from 'react-hook-form';
 
 import { TimePicker } from '@yishanzhilu/blueprint-datetime';
-import { RHFInput } from 'react-hook-form-input';
 import { eventHandlerWarning, HourMinutes2Hour } from '@/src/utils/funcs';
 
-import Flex from '../flex';
+import { Flex } from '../flex';
 import { ITodo, IRecord } from '@/src/types/schemas';
 
 interface IProps {
@@ -78,13 +75,16 @@ export const FinishingTodo = ({
         <FormGroup
           label="历程*"
           intent="primary"
-          helperText={errors.content && '必填'}
+          helperText={errors.content && errors.content.message}
         >
           <TextArea
             fill
             growVertically
             defaultValue={`完成了 ${todo.content}`}
-            inputRef={register({ required: true, maxLength: 255 })}
+            inputRef={register({
+              required: { value: true, message: '必填' },
+              maxLength: { value: 255, message: '不能大于255个字符' },
+            })}
             name="content"
           />
         </FormGroup>

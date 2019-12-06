@@ -18,7 +18,7 @@ import {
 } from '@yishanzhilu/blueprint-core';
 
 import { useGlobalStore } from '@/src/store/global';
-import Flex from '@/src/components/flex';
+import { Flex } from '@/src/components/flex';
 
 function SidebarHeader({ children }) {
   return (
@@ -203,14 +203,6 @@ function UserProfileStat({ title = '', hours = 0 }) {
 function UserProfile({ hours } = { hours: 0 }) {
   return (
     <div className="user-profile">
-      {/* <div className="username">
-        <img
-          src="https://avatars3.githubusercontent.com/u/25254?s=64&v=4"
-          alt="avatar"
-        />
-        <span>{user.username || user.email || 'tj'}</span>
-      </div>
-      <Divider /> */}
       <div className="total-hours">
         <div className="bar-title">
           <div>
@@ -237,7 +229,6 @@ function UserProfile({ hours } = { hours: 0 }) {
           intent="primary"
         />
       </div>
-      {/* <Divider /> */}
 
       <div className="hours">
         <UserProfileStat title="今日历程" hours={24} />
@@ -291,6 +282,8 @@ function UserProfile({ hours } = { hours: 0 }) {
 export const Sidebar: React.FC = () => {
   const router = useRouter();
   const { asPath } = router;
+  console.debug('Sidebar | router', router);
+
   const store = useGlobalStore();
   return (
     <div className={classnames(Classes.TREE, Classes.ELEVATION_0)} id="sidebar">

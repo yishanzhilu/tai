@@ -92,7 +92,8 @@ export async function useServerRequest<Data>(
   context: NextPageContext
 ): Promise<Data> {
   if (IS_BROWSER) {
-    return {} as Data;
+    const res = await axios.get<Data>(url);
+    return res.data;
   }
   const { everestToken: token } = nextCookie(context);
   const res = await axios.get<Data>(url, {

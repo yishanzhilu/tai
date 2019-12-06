@@ -10,11 +10,17 @@ export interface IUserProfile {
   userID: number;
 }
 
-
 export interface IWorkProfile {
   goals: IGoal[];
   missions: IMission[];
   hours: number;
+}
+
+export interface IGoalMission {
+  goalID?: number;
+  goalTitle?: string;
+  missionID?: number;
+  missionTitle?: string;
 }
 
 export interface IGoal {
@@ -26,7 +32,6 @@ export interface IGoal {
   missions?: IMission[];
   records?: IRecord[];
   todo?: ITodo[];
-
 }
 
 export interface IMission {
@@ -48,12 +53,8 @@ export interface IRecord {
   missionID?: number;
 }
 
-export interface ITodo {
+export interface ITodo extends IGoalMission {
   id: number;
   content: string;
   status: 'doing' | 'done';
-  goalID?: number;
-  goalTitle?: string;
-  missionID?: number;
-  missionTitle?: string;
 }

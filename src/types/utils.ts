@@ -5,8 +5,8 @@
  */
 
 export interface IProps {
-  children: React.ReactNode;
+  children?: React.ReactNode;
+  className?: string;
 }
-
 
 export type ITheme = 'light' | 'dark';
