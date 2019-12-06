@@ -51,7 +51,7 @@ export const DefaultTodo = ({
       >
         {todo.content}
       </span>
-      <TodoGoalMission todo={todo} isLink />
+      <TodoGoalMission goalMission={todo} isLinkTag />
       <style jsx>
         {`
           .todo-text {

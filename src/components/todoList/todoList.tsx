@@ -9,9 +9,8 @@ import { Card } from '@yishanzhilu/blueprint-core';
 import { Todo, IUITodo } from './todo';
 import { NewTodo } from './newTodo';
 import { ITodo, IRecord } from '@/src/types/schemas';
-import { axios } from '@/src/api';
 
-type ITodosActions =
+export type ITodosActions =
   | { type: 'PropsUpdate'; todos: ITodo[] }
   | { type: 'EditTodo'; id: number }
   | { type: 'EditTodoSave'; todo: ITodo; id: number }
@@ -19,7 +18,9 @@ type ITodosActions =
   | { type: 'FinishTodoSave'; record: IRecord; id: number }
   | { type: 'Cancel' }
   | { type: 'NewTodo' }
-  | { type: 'NewTodoSubmit'; value: string };
+  | { type: 'Freeze' }
+  | { type: 'Unfreeze' }
+  | { type: 'NewTodoSubmit'; todo: ITodo };
 
 const todoReducer = (
   todoState: IUITodo,
@@ -37,15 +38,17 @@ const todoReducer = (
         uiState: todoState.id === todosAction.id ? 'finishing' : 'default',
       };
     case 'EditTodoSave':
-      return todoState.id === todosAction.id
-        ? {
-            ...todosAction.todo,
-            uiState: 'default',
-          }
-        : {
-            ...todoState,
-            uiState: 'default',
-          };
+      if (todoState.id === todosAction.id) {
+        console.log(todosAction.todo);
+        return {
+          ...todosAction.todo,
+          uiState: 'default',
+        };
+      }
+      return {
+        ...todoState,
+        uiState: 'default',
+      };
     default:
       return {
         ...todoState,
@@ -58,148 +61,100 @@ interface ITodosState {
   todos: IUITodo[];
   addNew: boolean;
   localNewTodoID: number;
+  isFreeze: boolean;
 }
 // todo 本质上状态为 doing 的 work
 const todosReducer = (
   todosState: ITodosState,
   todosAction: ITodosActions
 ): ITodosState => {
+  if (todosState.isFreeze) {
+    if (todosAction.type === 'Unfreeze') {
+      return {
+        ...todosState,
+        isFreeze: false,
+      };
+    }
+    return todosState;
+  }
   switch (todosAction.type) {
+    case 'Freeze':
+      return {
+        ...todosState,
+        isFreeze: true,
+      };
     case 'PropsUpdate':
       return {
         todos: todosAction.todos,
         addNew: todosState.addNew,
         localNewTodoID: todosState.localNewTodoID,
+        isFreeze: false,
       };
     case 'NewTodo':
       return {
         todos: todosState.todos.map(t => todoReducer(t, todosAction)),
         addNew: true,
         localNewTodoID: todosState.localNewTodoID,
+        isFreeze: false,
       };
     case 'FinishTodoSave':
       return {
         todos: todosState.todos.filter(t => t.id !== todosAction.id),
         addNew: false,
         localNewTodoID: todosState.localNewTodoID,
+        isFreeze: false,
       };
     case 'NewTodoSubmit':
       return {
         todos: [
           ...todosState.todos,
           {
-            id: todosState.localNewTodoID,
-            content: todosAction.value,
-            status: 'doing',
-            uiState: 'default',
+            ...todosAction.todo,
           },
         ],
         addNew: true,
         localNewTodoID: todosState.localNewTodoID - 1,
+        isFreeze: false,
       };
     default:
       return {
         todos: todosState.todos.map(t => todoReducer(t, todosAction)),
         addNew: false,
         localNewTodoID: todosState.localNewTodoID,
+        isFreeze: false,
       };
   }
 };
 
 interface IProps {
   todos: IUITodo[];
-  onUpdateDataTodos: (todos: ITodo[]) => void;
 }
 
-export const TodoList = ({
-  todos,
-  onUpdateDataTodos,
-}: IProps): React.ReactElement => {
-  console.debug('TodoList', todos);
+export const TodoList = ({ todos = [] }: IProps): React.ReactElement => {
+
   const [todosState, dispatchTodosAction] = React.useReducer(todosReducer, {
     todos: [...todos],
     addNew: false,
     localNewTodoID: -1,
+    isFreeze: false,
   });
 
-  React.useEffect(() => {
-    console.log('useEffect todos');
-
-    dispatchTodosAction({ type: 'PropsUpdate', todos });
-  }, [todos]);
-  console.debug('TodoList | after useReducer', todosState);
-
   return (
-    <div>
+    <div className="todo-list">
       <h2>事项</h2>
-      <Card>
+      <Card className="card">
         <ul className="bp3-list-unstyled">
           {todosState.todos &&
             todosState.todos.map(t => (
               <li key={t.id}>
-                <Todo
-                  todo={t}
-                  onClickCancel={() => {
-                    dispatchTodosAction({
-                      type: 'Cancel',
-                    });
-                  }}
-                  onClickFinish={() => {
-                    dispatchTodosAction({
-                      type: 'FinishTodo',
-                      id: t.id,
-                    });
-                  }}
-                  onEditClickSave={todo => {
-                    console.debug('onEditClickSave', todo);
-                    dispatchTodosAction({
-                      type: 'EditTodoSave',
-                      id: t.id,
-                      todo,
-                    });
-                  }}
-                  onFinishClickSave={record => {
-                    dispatchTodosAction({
-                      type: 'FinishTodoSave',
-                      id: t.id,
-                      record,
-                    });
-                  }}
-                  onClickContent={() =>
-                    dispatchTodosAction({
-                      type: 'EditTodo',
-                      id: t.id,
-                    })
-                  }
-                />
+                <Todo todo={t} dispatchTodosAction={dispatchTodosAction} />
               </li>
             ))}
 
           <li>
             <NewTodo
               isEditing={todosState.addNew}
-              onAddNew={() => {
-                dispatchTodosAction({
-                  type: 'NewTodo',
-                });
-              }}
-              onCancel={() => {
-                dispatchTodosAction({
-                  type: 'Cancel',
-                });
-              }}
-              onSubmit={async (value: string) => {
-                dispatchTodosAction({
-                  type: 'NewTodoSubmit',
-                  value,
-                });
-                await axios.post('/workspace/todo', {
-                  content: value,
-                  status: 'doing',
-                });
-                onUpdateDataTodos(todosState.todos);
-                console.debug('dispatchTodosAction NewTodoSubmit done');
-              }}
+              dispatchTodosAction={dispatchTodosAction}
             />
           </li>
         </ul>
@@ -209,6 +164,9 @@ export const TodoList = ({
           margin: 5px 0;
           padding: 10px 0;
           border-bottom: 1px solid #f0f0f0;
+        }
+        .todo-list :global(.card){
+          padding: 20px 40px;
         }
       `}</style>
     </div>

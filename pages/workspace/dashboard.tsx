@@ -6,14 +6,12 @@
 
 import * as React from 'react';
 import { NextPage } from 'next';
-import Error from 'next/error'
-import faker from 'faker';
 
 import { withGlobalState } from '@/src/store/global';
 import { TodoList } from '@/src/components/todoList';
-import {  useServerRequest, axios } from '@/src/api';
+import { useServerRequest } from '@/src/api';
 import { ITodo } from '@/src/types/schemas';
-import { ErrorBoundary } from '@/src/components/errors/error-handling';
+import { redirect } from '@/src/utils/funcs';
 
 interface IDashboardInitialData {
   todos: ITodo[];
@@ -26,34 +24,27 @@ interface IDashboardProps {
 const Dashboard: NextPage<IDashboardProps> = ({
   initialData,
 }): React.ReactElement => {
+  console.debug('Dashboard | render', initialData);
 
-  const onUpdateDataTodos = (todos: ITodo[]) => {
-    console.debug('Dashboard | onUpdateDataTodos', todos);
-  };
-
-  return (
-    <ErrorBoundary fallback={<Error statusCode={500} />}>
-      <TodoList
-        todos={initialData.todos || []}
-        onUpdateDataTodos={onUpdateDataTodos}
-      />
-      <style jsx>{`
-        li {
-          margin: 5px 0;
-        }
-      `}</style>
-    </ErrorBoundary>
-  );
+  return <TodoList todos={initialData ? initialData.todos : []} />;
 };
 
 Dashboard.getInitialProps = async context => {
-  const initialData = await useServerRequest<IDashboardInitialData>(
-    '/workspace/todos',
-    context
-  );
-  console.debug('Dashboard | initialData', initialData);
+  let initialData: IDashboardInitialData = { todos: [] };
+  try {
+    initialData = await useServerRequest<IDashboardInitialData>(
+      '/workspace/todos',
+      context
+    );
+    console.debug('Dashboard | initialData', initialData);
 
-  return { initialData };
+    return { initialData };
+  } catch (error) {
+    redirect('/error');
+    console.error('Dashboard | initialData', error);
+
+    return { initialData };
+  }
 };
 
 export default withGlobalState(Dashboard);

@@ -26,7 +26,7 @@ FocusStyleManager.onlyShowFocusOnTabs();
 setUpConsole();
 NProgress.configure({ showSpinner: false });
 Router.events.on('routeChangeStart', url => {
-  console.info(`Loading: ${url}`);
+  console.debug(`routeChangeStart | url: ${url}`);
   NProgress.start();
 });
 Router.events.on('routeChangeComplete', () => NProgress.done());

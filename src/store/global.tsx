@@ -6,14 +6,16 @@
 
 import * as React from 'react';
 import { NextPage } from 'next';
+import NextError from 'next/error';
 import { useStaticRendering, useLocalStore } from 'mobx-react-lite';
 import nextCookie from 'next-cookies';
 
-import { IUserProfile, IWorkProfile } from '../types/schemas';
-import { TaiLayout } from '../layout';
-import { IS_SERVER } from '../utils';
-import { redirect } from '../utils/funcs';
-import { axios } from '../api';
+import { IUserProfile, IWorkProfile } from '@/src/types/schemas';
+import { TaiLayout } from '@/src/layout';
+import { IS_SERVER } from '@/src/utils';
+import { redirect } from '@/src/utils/funcs';
+import { axios } from '@/src/api';
+import { ErrorBoundary } from '@/src/components/errors/error-handling';
 
 useStaticRendering(IS_SERVER);
 
@@ -107,9 +109,11 @@ export const withGlobalState = PageComponent => {
   }) => {
     return (
       <StoreProvider initialState={initialState}>
-        <TaiLayout>
-          <PageComponent {...props} />
-        </TaiLayout>
+        <ErrorBoundary fallback={<NextError statusCode={500} />}>
+          <TaiLayout>
+            <PageComponent {...props} />
+          </TaiLayout>
+        </ErrorBoundary>
       </StoreProvider>
     );
   };
@@ -141,9 +145,9 @@ export const withGlobalState = PageComponent => {
         initialState,
       };
     } catch (error) {
-      console.error(`getUserInfo | error: ${error}`);
+      console.error(`withGlobalState.getInitialProps | error: ${error}`);
       // token 错误，删除通过 redirect 的 removeCookie 删除 token
-      // redirect('/login', context, true);
+      redirect('/login', context, true);
       return { initialState: defaultState };
     }
   };

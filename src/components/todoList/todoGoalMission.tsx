@@ -7,44 +7,76 @@
 import * as React from 'react';
 
 import Link from 'next/link';
+import { Tag } from '@yishanzhilu/blueprint-core';
 
-import { ITodo } from '@/src/types/schemas';
+import { IGoalMission } from '@/src/types/schemas';
 
 export const TodoGoalMission = ({
-  todo,
-  isLink = false,
+  goalMission,
+  emptyText = '独立事项',
+  isLinkTag = false,
+  isTag = true,
 }: {
-  todo: ITodo;
-  isLink?: boolean;
+  goalMission: IGoalMission;
+  isLinkTag?: boolean;
+  isTag?: boolean;
+  emptyText?: string;
 }) => {
-  let goalElement;
-  let missionElement;
-  if (todo.goalID) {
-    goalElement = isLink ? (
-      <Link href={`/workspace/goal/${todo.goalID}`}>
-        <a>{todo.goalTitle}</a>
+  let goalElement: React.ReactNode;
+  let missionElement: React.ReactNode;
+  if (goalMission.goalID) {
+    goalElement = isLinkTag ? (
+      <Link href={`/workspace/goal/${goalMission.goalID}`}>
+        <a>
+          <Tag icon={<span>🎯</span>} interactive>
+            {goalMission.goalTitle}
+          </Tag>
+        </a>
       </Link>
     ) : (
-      todo.goalTitle
+      goalMission.goalTitle
     );
   }
-  if (todo.missionID) {
-    missionElement = isLink ? (
-      <Link href={`/workspace/goal/${todo.missionID}`}>
-        <a>{todo.missionTitle}</a>
+  if (goalMission.missionID) {
+    missionElement = isLinkTag ? (
+      <Link href={`/workspace/goal/${goalMission.missionID}`}>
+        <a>
+          <Tag icon={<span>📜</span>} interactive>
+            {goalMission.missionTitle}
+          </Tag>
+        </a>
       </Link>
     ) : (
-      todo.missionTitle
+      goalMission.missionTitle
     );
   }
-  if (goalElement || goalElement) {
-    return (
-      <div>
+  if (goalElement || missionElement) {
+    const content = (
+      <>
         {goalElement}
-        {todo.goalID && todo.missionID ? ' / ' : ''}
+        {goalMission.goalID && goalMission.missionID ? ' / ' : ''}
         {missionElement}
-      </div>
+      </>
     );
+    if (isLinkTag) {
+      return (
+        <div className="goal-mission-link">
+          {content}
+          <style jsx>{`
+            .goal-mission-link :global(a:hover) {
+              text-decoration: none;
+            }
+          `}</style>
+        </div>
+      );
+    }
+    if (isTag) {
+      return <Tag>{content}</Tag>;
+    }
+    return <div>{content}</div>;
   }
-  return <div>独立事项</div>;
+  if (isTag) {
+    return <Tag>{emptyText}</Tag>;
+  }
+  return <div>{emptyText}</div>;
 };

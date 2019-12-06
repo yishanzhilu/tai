@@ -6,8 +6,9 @@
 
 import * as React from 'react';
 import classNames from 'classnames';
+import { IProps } from '@/src/types/utils';
 
-export default function Flex({
+export function Flex({
   children,
   className = '',
   dir = 'row',
@@ -29,6 +30,22 @@ export default function Flex({
           }
           .container > :global(*):last-child {
             margin-right: 0;
+          }
+        `}
+      </style>
+    </div>
+  );
+}
+
+
+
+export function FlexPlaceHolder({ className }: IProps) {
+  return (
+    <div className={classNames('flex-place-holder', className)}>
+      <style jsx>
+        {`
+          .flex-place-holder {
+            flex-grow: 1;
           }
         `}
       </style>

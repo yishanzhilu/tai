@@ -5,11 +5,11 @@
  */
 import React from 'react';
 
-import { eventHandlerWarning } from '@/src/utils/funcs';
-import { ITodo, IRecord } from '@/src/types/schemas';
+import { ITodo } from '@/src/types/schemas';
 import { EditingTodo } from './editingTodo';
 import { FinishingTodo } from './finishingTodo';
 import { DefaultTodo } from './defaultTodo';
+import { ITodosActions } from './todoList';
 
 export interface IUITodo extends ITodo {
   uiState?: undefined | 'default' | 'editing' | 'finishing';
@@ -17,26 +17,39 @@ export interface IUITodo extends ITodo {
 
 export interface ITodoProps {
   todo: IUITodo;
-  onClickContent?: () => void;
-  onEditClickSave?: (todo: ITodo) => void;
-  onFinishClickSave?: (record: IRecord) => void;
-  onClickCancel?: () => void;
-  onClickFinish?: () => void;
+  dispatchTodosAction: React.Dispatch<ITodosActions>;
 }
-export const Todo = ({
-  todo,
-  onClickContent = eventHandlerWarning('Todo-onClickContent'),
-  onEditClickSave = eventHandlerWarning('Todo-onEditClickSave'),
-  onFinishClickSave = eventHandlerWarning('Todo-onFinishClickSave'),
-  onClickCancel = eventHandlerWarning('Todo-onClickCancel'),
-  onClickFinish = eventHandlerWarning('Todo-onClickFinish'),
-}: ITodoProps) => {
+export const Todo = ({ todo, dispatchTodosAction }: ITodoProps) => {
+  const onClickCancel = () => {
+    dispatchTodosAction({
+      type: 'Cancel',
+    });
+  };
+  const onClickFinish = () => {
+    dispatchTodosAction({
+      type: 'FinishTodo',
+      id: todo.id,
+    });
+  };
+  const onFinishClickSave = record => {
+    dispatchTodosAction({
+      type: 'FinishTodoSave',
+      id: todo.id,
+      record,
+    });
+  };
+  const onClickContent = () =>
+    dispatchTodosAction({
+      type: 'EditTodo',
+      id: todo.id,
+    });
+
   if (todo.uiState === 'editing') {
     return (
       <EditingTodo
         todo={todo}
-        onClickSave={onEditClickSave}
         onClickCancel={onClickCancel}
+        dispatchTodosAction={dispatchTodosAction}
       />
     );
   }
