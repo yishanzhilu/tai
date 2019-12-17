@@ -189,11 +189,17 @@ const Login = (): React.ReactElement => {
         return;
       }
       try {
-        const res = await axios.post<{ token: string }>('/users/verify-motto', {
-          email: login.fields.email.value,
-          motto: login.fields.motto.value,
-        });
-        localStorage.setItem('motto', JSON.stringify(res.data));
+        const res = await axios.post<{ token: string; refreshToken: string }>(
+          '/users/verify-motto',
+          {
+            email: login.fields.email.value,
+            motto: login.fields.motto.value,
+          }
+        );
+        localStorage.setItem(
+          'everestRefreshToken',
+          JSON.stringify(res.data.refreshToken)
+        );
         cookie.set('everestToken', res.data.token, { expires: 30 });
         redirect('/workspace');
       } catch (error) {

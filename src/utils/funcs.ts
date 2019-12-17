@@ -87,3 +87,37 @@ export function Hour2HourMinutes(hourFloat: number): IHourMinute {
     minute,
   };
 }
+
+// JavaScript函数
+const minute = 1000 * 60;
+const hour = minute * 60;
+const day = hour * 24;
+const month = day * 30;
+export function getDateDiffFromNow(dateTimeStamp: string) {
+  const now = new Date().getTime();
+  const old = new Date(dateTimeStamp);
+  const diffValue = now - old.getTime();
+  if (diffValue < 0) {
+    return dateTimeStamp;
+  }
+  const monthC = diffValue / month;
+  const weekC = diffValue / (7 * day);
+  const dayC = diffValue / day;
+  const hourC = diffValue / hour;
+  const minC = diffValue / minute;
+  let result: string;
+  if (monthC >= 12) {
+    result = old.toLocaleDateString();
+  } else if (monthC >= 1) {
+    result = `${Math.floor(monthC).toString()}个月前`;
+  } else if (weekC >= 1) {
+    result = `${Math.floor(weekC).toString()}周前`;
+  } else if (dayC >= 1) {
+    result = `${Math.floor(dayC).toString()}天前`;
+  } else if (hourC >= 1) {
+    result = `${Math.floor(hourC).toString()}小时前`;
+  } else if (minC >= 1) {
+    result = `${Math.floor(minC).toString()}分钟前`;
+  } else result = '刚刚';
+  return result;
+}

@@ -28,6 +28,16 @@ module.exports = {
     'prettier/@typescript-eslint',
   ],
   rules: {
+    'import/extensions': [
+      'error',
+      'ignorePackages',
+      {
+        js: 'never',
+        jsx: 'never',
+        ts: 'never',
+        tsx: 'never',
+      },
+    ],
     'max-len': [
       'error',
       {
@@ -48,6 +58,10 @@ module.exports = {
     'import/prefer-default-export': ['off'],
     'react/prop-types': ['off'],
     '@typescript-eslint/interface-name-prefix': ['error', 'always'],
+    '@typescript-eslint/no-unused-vars': [
+      'warn',
+      { argsIgnorePattern: '^_', args: 'after-used', varsIgnorePattern: '^_' },
+    ],
     'no-console': ['off'],
     'no-param-reassign': ['off'],
   },

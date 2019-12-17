@@ -16,11 +16,11 @@ import {
   Classes,
 } from '@yishanzhilu/blueprint-core';
 
-import { ITodo, IGoalMission } from '@/src/types/schemas';
+import { ITodo, IGoalMission } from '@/src/model/schemas';
 
-import { useGlobalStore } from '@/src/store/global';
-import { TodoGoalMission } from './todoGoalMission';
+import { GoalMission } from './goalMission';
 import { eventHandlerWarning } from '@/src/utils/funcs';
+import { useGlobalContext } from '@/src/contexts/global';
 
 const GoalMissionSelectMenuItems = ({
   onSelectGoalMission = eventHandlerWarning(
@@ -29,7 +29,7 @@ const GoalMissionSelectMenuItems = ({
 }: {
   onSelectGoalMission?: (todo: Partial<ITodo>) => void;
 }) => {
-  const store = useGlobalStore();
+  const [store] = useGlobalContext();
   return (
     <>
       <MenuDivider title="目标" />
@@ -54,6 +54,8 @@ const GoalMissionSelectMenuItems = ({
                     onSelectGoalMission({
                       missionID: m.id,
                       missionTitle: m.title,
+                      goalID: g.id,
+                      goalTitle: g.title,
                     })
                   }
                 />
@@ -77,14 +79,14 @@ const GoalMissionSelectMenuItems = ({
   );
 };
 
-export const GoalMissionUpdateMenu = ({
+export const GoalMissionMenu = ({
   goalMission,
-  onSelectGoalMission,
+  onSelectGoalMission = eventHandlerWarning('onSelectGoalMission'),
   disabled,
 }: {
   goalMission: IGoalMission;
-  disabled: boolean;
-  onSelectGoalMission: (goalMission: IGoalMission) => void;
+  disabled?: boolean;
+  onSelectGoalMission?: (goalMission: IGoalMission) => void;
 }) => {
   return (
     <ButtonGroup>
@@ -98,55 +100,21 @@ export const GoalMissionUpdateMenu = ({
             />
           </Menu>
         }
-        position={Position.BOTTOM_RIGHT}
+        position={Position.BOTTOM_LEFT}
       >
-        <Button icon="swap-vertical" disabled={disabled}>
-          <TodoGoalMission isTag={false} goalMission={goalMission} />
+        <Button small icon="swap-vertical" disabled={disabled}>
+          <GoalMission isTag={false} goalMission={goalMission} />
         </Button>
       </Popover>
       {goalMission.goalID || goalMission.missionID ? (
         <Button
+          small
           disabled={disabled}
           onClick={() =>
             onSelectGoalMission({
               goalID: 0,
             })
           }
-          icon="cross"
-        />
-      ) : null}
-    </ButtonGroup>
-  );
-};
-
-export const GoalMissionNewMenu = ({
-  goalMission,
-  onSelectGoalMission,
-}: {
-  goalMission: IGoalMission;
-  onSelectGoalMission: (goalMission: IGoalMission) => void;
-}) => {
-  return (
-    <ButtonGroup>
-      <Popover
-        minimal
-        autoFocus={false}
-        content={
-          <Menu>
-            <GoalMissionSelectMenuItems
-              onSelectGoalMission={onSelectGoalMission}
-            />
-          </Menu>
-        }
-        position={Position.BOTTOM_RIGHT}
-      >
-        <Button icon="swap-vertical">
-          <TodoGoalMission isTag={false} goalMission={goalMission} />
-        </Button>
-      </Popover>
-      {goalMission.goalID || goalMission.missionID ? (
-        <Button
-          onClick={() => onSelectGoalMission({ goalID: 0 })}
           icon="cross"
         />
       ) : null}

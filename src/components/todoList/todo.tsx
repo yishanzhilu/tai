@@ -5,14 +5,13 @@
  */
 import React from 'react';
 
-import { ITodo } from '@/src/types/schemas';
+import { ITodo } from '@/src/model/schemas';
 import { EditingTodo } from './editingTodo';
-import { FinishingTodo } from './finishingTodo';
 import { DefaultTodo } from './defaultTodo';
 import { ITodosActions } from './todoList';
 
 export interface IUITodo extends ITodo {
-  uiState?: undefined | 'default' | 'editing' | 'finishing';
+  uiState?: undefined | 'default' | 'editing';
 }
 
 export interface ITodoProps {
@@ -25,48 +24,15 @@ export const Todo = ({ todo, dispatchTodosAction }: ITodoProps) => {
       type: 'Cancel',
     });
   };
-  const onClickFinish = () => {
-    dispatchTodosAction({
-      type: 'FinishTodo',
-      id: todo.id,
-    });
-  };
-  const onFinishClickSave = record => {
-    dispatchTodosAction({
-      type: 'FinishTodoSave',
-      id: todo.id,
-      record,
-    });
-  };
-  const onClickContent = () =>
-    dispatchTodosAction({
-      type: 'EditTodo',
-      id: todo.id,
-    });
 
   if (todo.uiState === 'editing') {
     return (
       <EditingTodo
         todo={todo}
-        onClickCancel={onClickCancel}
         dispatchTodosAction={dispatchTodosAction}
-      />
-    );
-  }
-  if (todo.uiState === 'finishing') {
-    return (
-      <FinishingTodo
-        todo={todo}
-        onClickSave={onFinishClickSave}
         onClickCancel={onClickCancel}
       />
     );
   }
-  return (
-    <DefaultTodo
-      onClickFinish={onClickFinish}
-      onClickContent={onClickContent}
-      todo={todo}
-    />
-  );
+  return <DefaultTodo todo={todo} dispatchTodosAction={dispatchTodosAction} />;
 };

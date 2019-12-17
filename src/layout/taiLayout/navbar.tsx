@@ -22,6 +22,7 @@ import {
 } from '@yishanzhilu/blueprint-core';
 import cookie from 'js-cookie';
 import { useRouter } from 'next/router';
+import { useGlobalContext } from '@/src/contexts/global';
 
 const CreateMenu: React.FC = () => {
   return (
@@ -36,16 +37,17 @@ const CreateMenu: React.FC = () => {
 
 const ProfileMenu: React.FC = () => {
   const router = useRouter();
+  const [, dispatch] = useGlobalContext();
   return (
     <Menu>
       <MenuItem
         icon="log-out"
         text="退出"
         onClick={() => {
-          localStorage.removeItem('userInfo');
+          localStorage.removeItem('everestRefreshToken');
           cookie.remove('everestToken');
-
           router.replace('/');
+          dispatch({ type: 'LogOut' });
         }}
       />
     </Menu>

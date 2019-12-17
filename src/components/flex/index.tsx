@@ -6,15 +6,32 @@
 
 import * as React from 'react';
 import classNames from 'classnames';
-import { IProps } from '@/src/types/utils';
+import { IProps } from '@/src/model/utils';
+
+interface IFlexProps {
+  children: React.ReactNode;
+  className?: string;
+  dir?: 'row';
+  alignItems?: 'flex-start' | 'flex-end' | 'center' | 'baseline' | 'stretch';
+  wrap?: boolean;
+  justifyContent?:
+    | 'flex-start'
+    | 'flex-end'
+    | 'center'
+    | 'space-between'
+    | 'space-around';
+  childMargin?: number;
+}
 
 export function Flex({
   children,
   className = '',
   dir = 'row',
+  wrap = false,
   alignItems = 'center',
+  justifyContent = 'flex-start',
   childMargin = 5,
-}) {
+}: IFlexProps) {
   return (
     <div className={classNames('container', className)}>
       {children}
@@ -24,6 +41,8 @@ export function Flex({
             display: flex;
             flex-direction: ${dir};
             align-items: ${alignItems};
+            justify-content: ${justifyContent};
+            flex-wrap: ${wrap ? 'wrap' : 'nowrap'};
           }
           .container > :global(*) {
             margin-right: ${childMargin}px;
@@ -36,8 +55,6 @@ export function Flex({
     </div>
   );
 }
-
-
 
 export function FlexPlaceHolder({ className }: IProps) {
   return (

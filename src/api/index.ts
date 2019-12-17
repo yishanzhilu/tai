@@ -20,7 +20,7 @@ export const axios = Axios.create({
 
 axios.interceptors.request.use(
   (config): AxiosRequestConfig => {
-    if (!IS_SERVER) {
+    if (IS_BROWSER) {
       const token = jsCookie.get('everestToken');
       if (token) {
         config.headers.Authorization = token;
@@ -34,29 +34,21 @@ axios.interceptors.response.use(
   (response): AxiosResponse => {
     return response;
   },
-  (error): Promise<never> => {
+  (error: AxiosError): Promise<never> => {
+    if (IS_SERVER) {
+      if (error.response) {
+        console.error(error.response.data);
+        console.error(error.response.status);
+        console.error(error.response.headers);
+      } else if (error.request) {
+        console.error(error.request);
+      } else {
+        console.error('Error', error.message);
+      }
+    }
     return Promise.reject(error);
   }
 );
-
-export async function getInitialState(token: string) {
-  const res = await Promise.all([
-    axios.get('/users/me', {
-      headers: {
-        Authorization: token,
-      },
-    }),
-    axios.get('/workspace/overview', {
-      headers: {
-        Authorization: token,
-      },
-    }),
-  ]);
-  return {
-    user: res[0].data,
-    works: res[1].data,
-  };
-}
 
 export function useRequest<Data, Error>(
   key: string,
@@ -89,17 +81,16 @@ export function useRequest<Data, Error>(
 
 export async function useServerRequest<Data>(
   url: string,
+  config: AxiosRequestConfig,
   context: NextPageContext
 ): Promise<Data> {
-  if (IS_BROWSER) {
-    const res = await axios.get<Data>(url);
-    return res.data;
-  }
   const { everestToken: token } = nextCookie(context);
-  const res = await axios.get<Data>(url, {
-    headers: {
+
+  if (IS_SERVER) {
+    config.headers = {
       Authorization: token,
-    },
-  });
+    };
+  }
+  const res = await axios.get<Data>(url, config);
   return res.data;
 }

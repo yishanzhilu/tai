@@ -8,8 +8,6 @@ import * as React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 
-import { withGlobalState } from '@/src/store/global';
-
 const Mission = (): React.ReactElement => {
   const router = useRouter();
   const { id: mid } = router.query;
@@ -23,4 +21,4 @@ const Mission = (): React.ReactElement => {
   );
 };
 
-export default withGlobalState(Mission);
+export default Mission;
