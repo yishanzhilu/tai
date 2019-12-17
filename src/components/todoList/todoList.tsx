@@ -4,18 +4,17 @@
  * All rights reserved
  */
 import React from 'react';
-import { Card } from '@yishanzhilu/blueprint-core';
+import { Card, Divider, H3 } from '@yishanzhilu/blueprint-core';
 
 import { Todo, IUITodo } from './todo';
 import { NewTodo } from './newTodo';
-import { ITodo, IRecord } from '@/src/types/schemas';
+import { ITodo } from '@/src/model/schemas';
+import { TaiList } from '@/src/layout/taiList';
 
 export type ITodosActions =
-  | { type: 'PropsUpdate'; todos: ITodo[] }
   | { type: 'EditTodo'; id: number }
   | { type: 'EditTodoSave'; todo: ITodo; id: number }
-  | { type: 'FinishTodo'; id: number }
-  | { type: 'FinishTodoSave'; record: IRecord; id: number }
+  | { type: 'FinishTodoSave'; id: number }
   | { type: 'Cancel' }
   | { type: 'NewTodo' }
   | { type: 'Freeze' }
@@ -32,14 +31,8 @@ const todoReducer = (
         ...todoState,
         uiState: todoState.id === todosAction.id ? 'editing' : 'default',
       };
-    case 'FinishTodo':
-      return {
-        ...todoState,
-        uiState: todoState.id === todosAction.id ? 'finishing' : 'default',
-      };
     case 'EditTodoSave':
       if (todoState.id === todosAction.id) {
-        console.log(todosAction.todo);
         return {
           ...todosAction.todo,
           uiState: 'default',
@@ -60,7 +53,6 @@ const todoReducer = (
 interface ITodosState {
   todos: IUITodo[];
   addNew: boolean;
-  localNewTodoID: number;
   isFreeze: boolean;
 }
 // todo 本质上状态为 doing 的 work
@@ -68,13 +60,11 @@ const todosReducer = (
   todosState: ITodosState,
   todosAction: ITodosActions
 ): ITodosState => {
-  if (todosState.isFreeze) {
-    if (todosAction.type === 'Unfreeze') {
-      return {
-        ...todosState,
-        isFreeze: false,
-      };
-    }
+  console.debug('todosReducer | todosAction', todosAction);
+  if (
+    todosState.isFreeze &&
+    ['NewTodo', 'FinishTodo', 'EditTodo'].some(a => a === todosAction.type)
+  ) {
     return todosState;
   }
   switch (todosAction.type) {
@@ -83,25 +73,28 @@ const todosReducer = (
         ...todosState,
         isFreeze: true,
       };
-    case 'PropsUpdate':
+
+    case 'Unfreeze':
       return {
-        todos: todosAction.todos,
-        addNew: todosState.addNew,
-        localNewTodoID: todosState.localNewTodoID,
+        ...todosState,
         isFreeze: false,
       };
     case 'NewTodo':
       return {
         todos: todosState.todos.map(t => todoReducer(t, todosAction)),
         addNew: true,
-        localNewTodoID: todosState.localNewTodoID,
+        isFreeze: false,
+      };
+    case 'EditTodoSave':
+      return {
+        todos: todosState.todos.map(t => todoReducer(t, todosAction)),
+        addNew: false,
         isFreeze: false,
       };
     case 'FinishTodoSave':
       return {
         todos: todosState.todos.filter(t => t.id !== todosAction.id),
         addNew: false,
-        localNewTodoID: todosState.localNewTodoID,
         isFreeze: false,
       };
     case 'NewTodoSubmit':
@@ -113,14 +106,12 @@ const todosReducer = (
           },
         ],
         addNew: true,
-        localNewTodoID: todosState.localNewTodoID - 1,
         isFreeze: false,
       };
     default:
       return {
         todos: todosState.todos.map(t => todoReducer(t, todosAction)),
         addNew: false,
-        localNewTodoID: todosState.localNewTodoID,
         isFreeze: false,
       };
   }
@@ -131,23 +122,23 @@ interface IProps {
 }
 
 export const TodoList = ({ todos = [] }: IProps): React.ReactElement => {
-
   const [todosState, dispatchTodosAction] = React.useReducer(todosReducer, {
     todos: [...todos],
     addNew: false,
-    localNewTodoID: -1,
     isFreeze: false,
   });
 
   return (
-    <div className="todo-list">
-      <h2>事项</h2>
-      <Card className="card">
+    <TaiList title="事项">
+      <Card className="card" style={{ marginTop: 20 }}>
         <ul className="bp3-list-unstyled">
           {todosState.todos &&
             todosState.todos.map(t => (
               <li key={t.id}>
-                <Todo todo={t} dispatchTodosAction={dispatchTodosAction} />
+                <div className="todo">
+                  <Todo todo={t} dispatchTodosAction={dispatchTodosAction} />
+                </div>
+                <Divider />
               </li>
             ))}
 
@@ -160,15 +151,10 @@ export const TodoList = ({ todos = [] }: IProps): React.ReactElement => {
         </ul>
       </Card>
       <style jsx>{`
-        li:not(:last-child) {
-          margin: 5px 0;
+        .todo {
           padding: 10px 0;
-          border-bottom: 1px solid #f0f0f0;
-        }
-        .todo-list :global(.card){
-          padding: 20px 40px;
         }
       `}</style>
-    </div>
+    </TaiList>
   );
 };

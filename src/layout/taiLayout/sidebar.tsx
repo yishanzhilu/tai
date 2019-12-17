@@ -8,17 +8,10 @@ import * as React from 'react';
 import classnames from 'classnames';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import {
-  Classes,
-  Divider,
-  Text,
-  ProgressBar,
-  Tooltip,
-  Icon,
-} from '@yishanzhilu/blueprint-core';
+import { Classes, Divider, Text } from '@yishanzhilu/blueprint-core';
 
-import { useGlobalStore } from '@/src/store/global';
-import { Flex } from '@/src/components/flex';
+import { useGlobalContext } from '@/src/contexts/global';
+import { UserProfile } from './sidebarUserProfile';
 
 function SidebarHeader({ children }) {
   return (
@@ -32,7 +25,7 @@ function SidebarHeader({ children }) {
             text-overflow: ellipsis;
             white-space: nowrap;
             word-wrap: normal;
-            margin: 15px 10px 10px;
+            margin: 15px 20px 10px;
             line-height: 17px;
             font-size: 14px;
           }
@@ -69,18 +62,19 @@ function NavLabel({
   asHref = '',
   title,
   emoji,
-  currentPath = '',
   level = 0,
+  active = false,
+  expended = null,
 }) {
   const liClass = classnames(
     Classes.TREE_NODE,
-    currentPath === (asHref || href) && Classes.TREE_NODE_SELECTED
+    active && Classes.TREE_NODE_SELECTED
   );
   return (
     <li className={liClass}>
       <div
         className={Classes.TREE_NODE_CONTENT}
-        style={{ paddingRight: 14, paddingLeft: 23 * level + 14 }}
+        style={{ paddingRight: 20, paddingLeft: 23 * level + 20 }}
       >
         <SidebarAnchor href={href} asHref={asHref}>
           <span className={Classes.TREE_NODE_ICON}>{emoji}</span>
@@ -89,53 +83,61 @@ function NavLabel({
           </Text>
         </SidebarAnchor>
       </div>
+      {expended && <div className={Classes.TREE_NODE_EXPANDED}>{expended}</div>}
     </li>
   );
 }
 
-function SidebarGoal({
-  href,
-  asHref = '',
-  title,
-  emoji,
-  currentPath = '',
-  missions,
-}) {
-  const liClass = classnames(
-    Classes.TREE_NODE,
-    currentPath === (asHref || href) && Classes.TREE_NODE_SELECTED
-  );
+function SidebarMission({ id, title, level = 0 }) {
+  const router = useRouter();
+  const {
+    pathname,
+    query: { id: qid },
+  } = router;
   return (
-    <li className={liClass}>
-      <div className={Classes.TREE_NODE_CONTENT} style={{ padding: '0 14px' }}>
-        <SidebarAnchor href={href} asHref={asHref}>
-          <span className={Classes.TREE_NODE_ICON}>{emoji}</span>
-          <Text className={Classes.TREE_NODE_LABEL} tagName="span" ellipsize>
-            {title}
-          </Text>
-        </SidebarAnchor>
-      </div>
-      <div className={Classes.TREE_NODE_EXPANDED}>
+    <NavLabel
+      asHref={`/workspace/mission/${id}`}
+      href="/workspace/mission/[id]"
+      title={title}
+      emoji="📜"
+      level={level}
+      active={pathname === '/workspace/mission/[id]' && id === Number(qid)}
+    />
+  );
+}
+
+function SidebarGoal({ id, title, missions }) {
+  const router = useRouter();
+  const {
+    pathname,
+    query: { id: qid },
+  } = router;
+
+  return (
+    <NavLabel
+      asHref={`/workspace/goal/${id}`}
+      href="/workspace/goal/[id]"
+      title={title}
+      emoji="🎯"
+      active={pathname === '/workspace/goal/[id]' && id === Number(qid)}
+      expended={
         <ul className={Classes.TREE_NODE_LIST}>
           {missions.map(m => (
-            <NavLabel
+            <SidebarMission
               level={1}
-              key={m.id}
-              asHref={`/workspace/mission/${m.id}`}
-              href="/workspace/mission/[id]"
+              key={`mission-${m.id}`}
               title={m.title}
-              emoji="📜"
-              currentPath={currentPath}
+              id={m.id}
             />
           ))}
         </ul>
-      </div>
-    </li>
+      }
+    />
   );
 }
 
-function SidebarWorks({ currentPath = '' }) {
-  const store = useGlobalStore();
+function SidebarWorks() {
+  const [store] = useGlobalContext();
   return (
     <ul className={Classes.TREE_NODE_LIST}>
       <SidebarHeader>目标</SidebarHeader>
@@ -143,181 +145,63 @@ function SidebarWorks({ currentPath = '' }) {
         store.work.goals.map(g => (
           <SidebarGoal
             key={`goal-${g.id}`}
+            id={g.id}
             missions={g.missions}
-            asHref={`/workspace/goal/${g.id}`}
-            href="/workspace/goal/[id]"
             title={g.title}
-            emoji="🎯"
-            currentPath={currentPath}
           />
         ))}
       <SidebarHeader>独立任务</SidebarHeader>
       {store.work &&
         store.work.missions.map(m => (
-          <NavLabel
-            key={`mission-${m.id}`}
-            asHref={`/workspace/mission/${m.id}`}
-            href="/workspace/mission/[id]"
-            title={m.title}
-            emoji="📜"
-            currentPath={currentPath}
-          />
+          <SidebarMission key={`mission-${m.id}`} title={m.title} id={m.id} />
         ))}
     </ul>
   );
 }
 
-function UserProfileStat({ title = '', hours = 0 }) {
-  return (
-    <div className="user-profile-stat">
-      {/* <h3 className="bp3-heading">{title}</h3> */}
-      <span>{title}</span>
-      <p>
-        <strong>{hours}</strong>
-        <span>小时</span>
-      </p>
-      <style jsx>{`
-        .user-profile-stat {
-          width: 65px;
-          line-height: 1.5;
-        }
-        strong {
-          margin-right: 5px;
-          width: 30px;
-          display: inline-block;
-          font-size: 16px;
-        }
-        p {
-          display: flex;
-          justify-content: space-between;
-          align-items: baseline;
-          margin: 0;
-        }
-        span {
-        }
-      `}</style>
-    </div>
-  );
-}
-
-function UserProfile({ hours } = { hours: 0 }) {
-  return (
-    <div className="user-profile">
-      <div className="total-hours">
-        <div className="bar-title">
-          <div>
-            <strong>{hours}</strong>
-            <span>小时</span>
-          </div>
-          <Tooltip
-            className={Classes.TOOLTIP_INDICATOR}
-            position="bottom-right"
-            interactionKind="hover"
-            hoverCloseDelay={50}
-            content={<span>距离达成1万小时还差9500小时</span>}
-          >
-            <Flex>
-              <span>累计历程</span>
-              <Icon icon="info-sign" iconSize={12} />
-            </Flex>
-          </Tooltip>
-        </div>
-        <ProgressBar
-          animate={false}
-          stripes={false}
-          value={0.05}
-          intent="primary"
-        />
-      </div>
-
-      <div className="hours">
-        <UserProfileStat title="今日历程" hours={24} />
-        <UserProfileStat title="本周历程" hours={24} />
-        <UserProfileStat title="本月历程" hours={24} />
-      </div>
-      <style jsx>{`
-        .user-profile {
-          margin: 0 0 10px;
-        }
-        .bar-title {
-          display: flex;
-          align-items: baseline;
-          justify-content: space-between;
-          margin: 5px 0 5px;
-        }
-        .bar-title strong {
-          margin-right: 5px;
-          font-weight: 500;
-          font-size: 30px;
-          font-style: italic;
-        }
-        .username {
-          margin: 15px;
-          line-height: 1.5;
-          font-size: 14px;
-          display: flex;
-          align-items: center;
-          font-weight: 500;
-        }
-        .username img {
-          width: 20px;
-          height: 20px;
-          border-radius: 3px;
-          margin-right: 10px;
-        }
-        .total-hours {
-          margin: 5px 15px 15px;
-        }
-        .hours {
-          margin: 15px 15px 0;
-          display: flex;
-          flex-wrap: wrap;
-          justify-content: space-between;
-        }
-      `}</style>
-    </div>
-  );
-}
-
 export const Sidebar: React.FC = () => {
   const router = useRouter();
-  const { asPath } = router;
-  console.debug('Sidebar | router', router);
-
-  const store = useGlobalStore();
+  const { pathname } = router;
+  const mainNavList = [
+    {
+      href: '/workspace/dashboard',
+      title: '看板',
+      emoji: '📋',
+    },
+    {
+      href: '/workspace/plan',
+      title: '规划',
+      emoji: '🗓',
+    },
+    {
+      href: '/workspace/success',
+      title: '成就',
+      emoji: '🏆',
+    },
+    {
+      href: '/workspace/recycle',
+      title: '回收站',
+      emoji: '♻️',
+    },
+  ];
   return (
     <div className={classnames(Classes.TREE, Classes.ELEVATION_0)} id="sidebar">
-      <UserProfile hours={store.work.hours} />
+      <UserProfile />
       <Divider />
       <nav>
         <ul className={Classes.TREE_NODE_LIST}>
           <SidebarHeader>导航</SidebarHeader>
-          <NavLabel
-            href="/workspace/dashboard"
-            title="看板"
-            emoji="📋"
-            currentPath={asPath}
-          />
-          <NavLabel
-            href="/workspace/plan"
-            title="规划"
-            emoji="🗓"
-            currentPath={asPath}
-          />
-          <NavLabel
-            href="/workspace/success"
-            title="成就"
-            emoji="🏆"
-            currentPath={asPath}
-          />
-          <NavLabel
-            href="/workspace/recycle"
-            title="回收站"
-            emoji="♻️"
-            currentPath={asPath}
-          />
+          {mainNavList.map(nav => (
+            <NavLabel
+              key={nav.title}
+              href={nav.href}
+              title={nav.title}
+              emoji={nav.emoji}
+              active={pathname === nav.href}
+            />
+          ))}
         </ul>
-        <SidebarWorks currentPath={asPath} />
+        <SidebarWorks />
       </nav>
       <style jsx>
         {`
@@ -325,8 +209,6 @@ export const Sidebar: React.FC = () => {
             display: flex;
             flex-direction: column;
             max-height: calc(100vh - 50px);
-            padding-top: 10px;
-
             height: 100%;
           }
           nav {

@@ -7,12 +7,10 @@
 import * as React from 'react';
 import Link from 'next/link';
 
-import { withGlobalState } from '@/src/store/global';
-
 const WorkSpace = (): React.ReactElement => {
   return (
     <div>
-      <Link href='/workspace'>
+      <Link href="/workspace">
         <a>About Us</a>
       </Link>
       <h1>回收站</h1>
@@ -20,4 +18,4 @@ const WorkSpace = (): React.ReactElement => {
   );
 };
 
-export default withGlobalState(WorkSpace);
+export default WorkSpace;

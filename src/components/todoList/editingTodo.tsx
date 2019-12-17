@@ -18,10 +18,10 @@ import {
 } from '@yishanzhilu/blueprint-core';
 
 import { useInputRef } from '@/src/utils/hooks';
-import { ITodo, IGoalMission } from '@/src/types/schemas';
+import { ITodo, IGoalMission } from '@/src/model/schemas';
 
 import { Flex, FlexPlaceHolder } from '../flex';
-import { GoalMissionUpdateMenu } from './goalMissionMenu';
+import { GoalMissionMenu } from '../goalMission';
 import { ITodosActions } from './todoList';
 import { axios } from '@/src/api';
 
@@ -68,19 +68,23 @@ export const EditingTodo = ({
       missionID: goalMission.missionID,
       content: input.value,
     };
-    const res = await axios.patch<ITodo>(
-      `/workspace/todo/${originTodo.id}`,
-      data
-    );
-    setLoading(false);
-    dispatchTodosAction({
-      type: 'Unfreeze',
-    });
-    dispatchTodosAction({
-      type: 'EditTodoSave',
-      id: originTodo.id,
-      todo: res.data,
-    });
+    try {
+      const res = await axios.patch<ITodo>(
+        `/workspace/todo/${originTodo.id}`,
+        data
+      );
+      setLoading(false);
+      dispatchTodosAction({
+        type: 'EditTodoSave',
+        id: originTodo.id,
+        todo: res.data,
+      });
+    } catch (error) {
+      setLoading(false);
+      dispatchTodosAction({
+        type: 'Unfreeze',
+      });
+    }
   };
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -110,7 +114,7 @@ export const EditingTodo = ({
             autoFocus
             onKeyDown={onKeyDown}
             rightElement={
-              <GoalMissionUpdateMenu
+              <GoalMissionMenu
                 disabled={loading}
                 onSelectGoalMission={onSelectGoalMission}
                 goalMission={goalMission}

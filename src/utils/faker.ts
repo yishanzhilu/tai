@@ -5,14 +5,14 @@
  */
 
 import faker from 'faker';
-import { IGoal, IMission } from '../types/schemas';
+import { IGoal, IMission } from '../model/schemas';
 
 export function fakeMission({ status = null, id = null }): IMission {
   return {
     id: id || faker.random.number(),
     title: faker.hacker.phrase(),
     description: faker.hacker.phrase(),
-    hours: faker.random.number(24),
+    minutes: faker.random.number(24),
     status:
       status || faker.random.arrayElement(['doing', 'done', 'drop', 'plan']),
   };
@@ -21,7 +21,10 @@ export function fakeMission({ status = null, id = null }): IMission {
 export function fakeMissions(num: number): IMission[] {
   const missions = new Array(num);
   for (let index = 0; index < missions.length; index += 1) {
-    missions[index] = fakeMission({ status: 'doing', id: faker.random.number() });
+    missions[index] = fakeMission({
+      status: 'doing',
+      id: faker.random.number(),
+    });
   }
   return missions;
 }
@@ -31,7 +34,7 @@ export function fakeGoal({ status = null, id = null }): IGoal {
     id: id || faker.random.number(),
     title: faker.hacker.noun(),
     description: faker.hacker.phrase(),
-    hours: faker.random.number(24),
+    minutes: faker.random.number(24),
     status:
       status || faker.random.arrayElement(['doing', 'done', 'drop', 'plan']),
     missions: fakeMissions(2),

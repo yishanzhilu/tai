@@ -9,16 +9,17 @@ import { observer } from 'mobx-react-lite';
 import classnames from 'classnames';
 import { Classes } from '@yishanzhilu/blueprint-core';
 
-import { IProps } from '@/src/types/utils';
+import { IProps } from '@/src/model/utils';
 
 import { Navbar } from './navbar';
-import { useGlobalStore } from '../../store/global';
 import { Sidebar } from './sidebar';
+import { useGlobalContext } from '@/src/contexts/global';
 
 export const TaiLayout = observer(({ children }: IProps) => {
-  const store = useGlobalStore();
+  const [store, dispatch] = useGlobalContext();
 
-  const handleToggleTheme = () => store.toggleTheme();
+  const handleToggleTheme = () =>
+    dispatch({ type: 'SetTheme', newTheme: 'dark' });
 
   const isDarkTheme = store.theme === 'dark';
   const mainClass = classnames(isDarkTheme && Classes.DARK);
@@ -37,13 +38,15 @@ export const TaiLayout = observer(({ children }: IProps) => {
           </aside>
           <article>
             <div className="article-inner">{children}</div>
+            <div className="article-footer">
+              © {new Date().getFullYear()} Yishan Authors
+            </div>
           </article>
         </div>
       </div>
 
       <style jsx>{`
         #tai-app {
-          height: 100vh;
           overflow: hidden;
           position: relative;
         }
@@ -55,30 +58,38 @@ export const TaiLayout = observer(({ children }: IProps) => {
         }
         .main {
           display: flex;
+          margin-top: 50px;
+        }
+        header {
+          position: fixed;
+          width: 100%;
+          z-index: 10;
+          top: 0;
         }
         aside {
           flex-grow: 0;
           flex-shrink: 0;
-          position: relative;
+          position: fixed;
           z-index: 9;
-          width: 283px;
+          width: 300px;
+          height: calc(100vh - 50px);
         }
         article {
           flex-grow: 1;
           flex-shrink: 1;
           display: flex;
           flex-direction: column;
-          z-index: 1;
           width: calc(100vw - 283px);
-          height: calc(100vh - 50px);
-          max-height: 100%;
-          padding-left: 100px;
+          padding-left: 400px;
           padding-right: 100px;
-          padding-top: 10px;
-          overflow-y: auto;
         }
-        .article-inner{
+        .article-inner {
           max-width: 1000px;
+          min-height: calc(100vh - 105px);
+        }
+        .article-footer {
+          margin: 32px 0;
+          color: #6a737d;
         }
       `}</style>
     </div>

@@ -8,9 +8,7 @@ import * as React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 
-import { withGlobalState } from '@/src/store/global';
-
-const Goal = (): React.ReactElement => {
+const GoalPage = (): React.ReactElement => {
   const router = useRouter();
   const { id: gid } = router.query;
   return (
@@ -23,4 +21,4 @@ const Goal = (): React.ReactElement => {
   );
 };
 
-export default withGlobalState(Goal);
+export default GoalPage;

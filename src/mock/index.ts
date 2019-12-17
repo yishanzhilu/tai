@@ -22,7 +22,8 @@ export function getInitialState(delay: number) {
         theme,
         work: {
           goals: fakeGoals(3),
-          independentMissions: fakeMissions(3),
+          missions: fakeMissions(3),
+          hours: 0,
         },
       };
       resolve(serverState);

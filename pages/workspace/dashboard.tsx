@@ -7,44 +7,70 @@
 import * as React from 'react';
 import { NextPage } from 'next';
 
-import { withGlobalState } from '@/src/store/global';
 import { TodoList } from '@/src/components/todoList';
+import { RecordList } from '@/src/components/recordList';
 import { useServerRequest } from '@/src/api';
-import { ITodo } from '@/src/types/schemas';
+import { ITodo, IRecord } from '@/src/model/schemas';
 import { redirect } from '@/src/utils/funcs';
-
-interface IDashboardInitialData {
-  todos: ITodo[];
-}
+import { FinishedTodoContext } from '@/src/contexts/finishedTodo';
+import { TaiLayout } from '@/src/layout';
+import { GoalList } from '@/src/components/goalList';
 
 interface IDashboardProps {
-  initialData: IDashboardInitialData;
+  initialTodos?: ITodo[];
+  initialRecords?: IRecord[];
+  initialRecordsNextURL: string;
 }
 
 const Dashboard: NextPage<IDashboardProps> = ({
-  initialData,
+  initialTodos = [],
+  initialRecords = [],
+  initialRecordsNextURL,
 }): React.ReactElement => {
-  console.debug('Dashboard | render', initialData);
-
-  return <TodoList todos={initialData ? initialData.todos : []} />;
+  const [finishedTodo, setFinishedTodo] = React.useState({});
+  return (
+    <TaiLayout>
+      <FinishedTodoContext.Provider value={{ finishedTodo, setFinishedTodo }}>
+        <TodoList todos={initialTodos} />
+        <GoalList />
+        <RecordList
+          initialRecords={initialRecords}
+          initialRecordsNextURL={initialRecordsNextURL}
+        />
+      </FinishedTodoContext.Provider>
+    </TaiLayout>
+  );
 };
 
 Dashboard.getInitialProps = async context => {
-  let initialData: IDashboardInitialData = { todos: [] };
   try {
-    initialData = await useServerRequest<IDashboardInitialData>(
-      '/workspace/todos',
-      context
-    );
-    console.debug('Dashboard | initialData', initialData);
+    const [todoRes, recordRes] = await Promise.all([
+      useServerRequest<{ todos: ITodo[] }>(
+        '/workspace/todos',
+        {
+          params: {
+            status: 'doing',
+          },
+        },
+        context
+      ),
+      useServerRequest<{ data: IRecord[]; nextURL: string }>(
+        '/workspace/records',
+        {},
+        context
+      ),
+    ]);
 
-    return { initialData };
+    return {
+      initialTodos: todoRes.todos,
+      initialRecords: recordRes.data,
+      initialRecordsNextURL: recordRes.nextURL,
+    };
   } catch (error) {
     redirect('/error');
-    console.error('Dashboard | initialData', error);
 
-    return { initialData };
+    return { initialTodos: [], initialRecords: [], initialRecordsNextURL: '' };
   }
 };
 
-export default withGlobalState(Dashboard);
+export default Dashboard;

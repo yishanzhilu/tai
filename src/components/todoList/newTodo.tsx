@@ -15,9 +15,9 @@ import {
 import { Flex } from '../flex';
 import { useInputRef } from '@/src/utils/hooks';
 import { axios } from '@/src/api';
-import { GoalMissionNewMenu } from './goalMissionMenu';
+import { GoalMissionMenu } from '../goalMission';
 import { ITodosActions } from './todoList';
-import { IGoalMission } from '@/src/types/schemas';
+import { IGoalMission } from '@/src/model/schemas';
 
 export const NewTodo = ({
   isEditing,
@@ -66,8 +66,15 @@ export const NewTodo = ({
       todo: res.data,
     });
     input.value = '';
-    input.scrollIntoView({ block: 'start' });
     input.focus();
+  };
+
+  const handleEnter = () => {
+    if (input.value.length === 0) {
+      onCancel();
+      return;
+    }
+    handleSubmit();
   };
   return (
     <div className="new-todo">
@@ -85,14 +92,15 @@ export const NewTodo = ({
                 intent={errorMsg ? 'primary' : 'none'}
                 placeholder="有什么需要做的吗"
                 rightElement={
-                  <GoalMissionNewMenu
+                  <GoalMissionMenu
                     goalMission={goalMission}
                     onSelectGoalMission={onSelectGoalMission}
+                    disabled={loading}
                   />
                 }
                 onKeyDown={e => {
                   if (e.which === Keys.ENTER) {
-                    handleSubmit();
+                    handleEnter();
                   } else if (e.which === Keys.ESCAPE) {
                     onCancel();
                   }
@@ -116,18 +124,17 @@ export const NewTodo = ({
           </Flex>
         </>
       ) : (
-          <Button
-            intent="primary"
-            minimal
-            onClick={() => {
-              dispatchTodosAction({
-                type: 'NewTodo',
-              });
-            }}
-          >
-            添加事项
+        <Button
+          intent="primary"
+          onClick={() => {
+            dispatchTodosAction({
+              type: 'NewTodo',
+            });
+          }}
+        >
+          添加事项
         </Button>
-        )}
+      )}
       <style jsx>{`
         .new-todo {
           padding: 5px 0;
