@@ -1,4 +1,4 @@
-name: Test
+name: CI
 
 on:
   push:
@@ -9,8 +9,8 @@ on:
       - master
 
 jobs:
-  checkout-code:
-    runs-on: ubuntu-latest
+  unit-test:
+    runs-on: ubuntu-18.04
     steps:
     - name: Checkout code
       uses: actions/checkout@v1
@@ -36,4 +36,3 @@ jobs:
         token: ${{ secrets.codecov }}
         name: codecov-umbrella #optional
         fail_ci_if_error: false
-
