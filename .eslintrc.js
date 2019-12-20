@@ -64,6 +64,17 @@ module.exports = {
     ],
     'no-console': ['off'],
     'no-param-reassign': ['off'],
+    'import/no-extraneous-dependencies': [
+      'error',
+      {
+        devDependencies: [
+          '**/*{.,_}{test,spec}.{js,jsx,ts,tsx}', // tests where the extension or filename suffix denotes that it is a test
+          '**/jest.config.js', // jest config
+          '**/jest.setup.js', // jest setup
+        ],
+        optionalDependencies: false,
+      },
+    ],
   },
   overrides: [
     {

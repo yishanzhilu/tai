@@ -20,6 +20,9 @@ type IGoalAction =
 export const goalReducer = (goal: IGoal, goalAction: IGoalAction): IGoal => {
   switch (goalAction.type) {
     case 'AddMission':
+      if (goalAction.mission.goalID !== goal.id) {
+        return goal;
+      }
       return {
         ...goal,
         missions: [...goal.missions, goalAction.mission],
@@ -38,6 +41,7 @@ export const goalReducer = (goal: IGoal, goalAction: IGoalAction): IGoal => {
         missions: goal.missions.map(m => missionReducer(m, goalAction)),
         minutes: goal.minutes + goalAction.minutes,
       };
+    /* istanbul ignore next */
     default:
       return goal;
   }
