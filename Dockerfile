@@ -1,9 +1,13 @@
 FROM node:12-alpine as build
 
-COPY . /src
 WORKDIR /src
+COPY ./package.cache.json /src/package.json
+COPY ./yarn.lock /src/yarn.lock
 
 RUN yarn install --frozen-lockfile --non-interactive
+
+COPY . /src
+
 RUN yarn build
 RUN npm prune --production
 
