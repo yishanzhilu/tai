@@ -27,3 +27,11 @@ jobs:
       run: yarn install --non-interactive --cache-folder ~/.cache/yarn
     - name: verify
       run: yarn verify
+    - name: verify
+      run: yarn
+    - name: Archive code coverage results
+      uses: actions/upload-artifact@v1
+      with:
+        name: code-coverage-report
+        path: coverage
+

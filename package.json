@@ -5,18 +5,17 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "install:lock": "yarn install --frozen-lockfile",
-    "dev": "next -p 10000",
     "build": "next build",
     "build:analyzer": "ANALYZE=true next build",
-    "start": "next start -p 10000",
-    "test": "jest --onlyChanged",
-    "test:updateSnapshot": "jest --onlyChanged --updateSnapshot",
-    "test:full": "jest --coverage",
-    "verify": "npm-run-all compile -p test:full lint",
+    "dev": "next -p 10000",
+    "git-cz": "git-cz -s",
     "lint": "eslint ./ --ext .js,.ts,.tsx",
     "lint:fix": "eslint ./ --ext .js,.ts,.tsx --fix",
-    "git-cz": "git-cz -s"
+    "start": "next start -p 10000",
+    "test": "jest --onlyChanged",
+    "test:full": "jest --coverage",
+    "test:updateSnapshot": "jest --onlyChanged --updateSnapshot",
+    "verify": "npm-run-all -p test:full lint"
   },
   "lint-staged": {
     "*.{js,ts,tsx,jsx}": [
