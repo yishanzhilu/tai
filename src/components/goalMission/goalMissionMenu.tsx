@@ -14,7 +14,7 @@ import {
   MenuDivider,
   ButtonGroup,
   Classes,
-} from '@yishanzhilu/blueprint-core';
+} from '@yishanzhilubp/core';
 
 import { ITodo, IGoalMission } from '@/src/model/schemas';
 

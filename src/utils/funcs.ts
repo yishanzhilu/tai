@@ -50,7 +50,7 @@ export function redirect(
     };
     if (removeCookie) {
       headers['Set-Cookie'] =
-        'token=deleted; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+        'everestToken=deleted; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
     }
     ctx.res.writeHead(302, headers);
     ctx.res.end();

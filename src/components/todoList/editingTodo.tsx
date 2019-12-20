@@ -15,7 +15,7 @@ import {
   Classes,
   Position,
   Callout,
-} from '@yishanzhilu/blueprint-core';
+} from '@yishanzhilubp/core';
 
 import { useInputRef } from '@/src/utils/hooks';
 import { ITodo, IGoalMission } from '@/src/model/schemas';
@@ -46,7 +46,6 @@ export const EditingTodo = ({
     if (input) {
       input.value = originTodo.content;
     }
-    return () => {};
   }, [input]);
 
   const onEditClickSave = async () => {

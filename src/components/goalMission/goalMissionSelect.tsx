@@ -11,12 +11,12 @@ import {
   Button,
   MenuDivider,
   ButtonGroup,
-} from '@yishanzhilu/blueprint-core';
+} from '@yishanzhilubp/core';
 import {
   Select,
   ItemRenderer,
   ItemListRenderer,
-} from '@yishanzhilu/blueprint-select';
+} from '@yishanzhilubp/select';
 
 import { IGoalMission, IWorkProfile } from '@/src/model/schemas';
 
@@ -53,7 +53,7 @@ const renderGoalMission: ItemRenderer<IGoalMissionSelectorItem> = (
             icon={<span>📜</span>}
             text={m.title}
             key={m.id}
-            onClick={(e: React.MouseEvent<HTMLElement>) => handleClick(e, m)}
+            onClick={(e: React.MouseEvent<HTMLElement>) => handleClick(e)}
           />
         ))}
     </MenuItem>

@@ -5,33 +5,22 @@
  */
 
 import React from 'react';
-import App, { AppContext } from 'next/app';
+import App from 'next/app';
 import Head from 'next/head';
 import NextError from 'next/error';
 import NProgress from 'nprogress';
 import Router from 'next/router';
-import nextCookie from 'next-cookies';
 
-import { FocusStyleManager } from '@yishanzhilu/blueprint-core';
-import 'normalize.css/normalize.css';
-import '@yishanzhilu/blueprint-core/lib/css/blueprint.css';
-import '@yishanzhilu/blueprint-datetime/lib/css/blueprint-datetime.css';
-import '@yishanzhilu/blueprint-select/lib/css/blueprint-select.css';
+import { FocusStyleManager } from '@yishanzhilubp/core';
+import '@yishanzhilubp/core/lib/css/blueprint.css';
+// import 'normalize.css/normalize.css';
+import '@yishanzhilubp/datetime/lib/css/blueprint-datetime.css';
+import '@yishanzhilubp/select/lib/css/blueprint-select.css';
 // import AuthingSSO from '@authing/sso';
-import Validator from 'validatorjs';
 
-import { setUpConsole, redirect } from '@/src/utils/funcs';
-import { IS_SERVER } from '@/src/utils';
+import { setUpConsole } from '@/src/utils/funcs';
 
-import {
-  defaultGlobalState,
-  getInitialGlobalState,
-  IGlobalState,
-  GlobalContextProvider,
-} from '@/src/contexts/global';
 import { ErrorBoundary } from '@/src/components/errors/error-handling';
-
-Validator.useLang('zh');
 
 FocusStyleManager.onlyShowFocusOnTabs();
 
@@ -44,49 +33,9 @@ Router.events.on('routeChangeStart', url => {
 Router.events.on('routeChangeComplete', () => NProgress.done());
 Router.events.on('routeChangeError', () => NProgress.done());
 
-const publicPaths = ['/login', '/'];
-
-export default class TaiAPP extends App<{
-  initialGlobalState: IGlobalState;
-}> {
-  public static async getInitialProps({ Component, ctx }: AppContext) {
-    try {
-      console.info('TaiAPP | pathname', ctx.pathname);
-      const { everestToken: token } = nextCookie(ctx);
-
-      const pageProps = Component.getInitialProps
-        ? await Component.getInitialProps(ctx)
-        : {};
-
-      if (publicPaths.some(p => p === ctx.pathname)) {
-        return { pageProps, initialGlobalState: defaultGlobalState };
-      }
-
-      if (!token) {
-        // 没有 token，去login
-        redirect('/login', ctx);
-        return { pageProps, initialGlobalState: defaultGlobalState };
-      }
-      let initialGlobalState = defaultGlobalState;
-      if (IS_SERVER) {
-        initialGlobalState = await getInitialGlobalState(token);
-      }
-      // Run getInitialProps from high order PageComponent
-
-      return {
-        pageProps,
-        initialGlobalState,
-      };
-    } catch (error) {
-      console.error(`TaiAPP.getInitialProps | error: ${error}`);
-      // token 错误，删除通过 redirect 的 removeCookie 删除 token
-      redirect('/login', ctx, true);
-      return { pageProps: {}, initialGlobalState: defaultGlobalState };
-    }
-  }
-
+export default class TaiAPP extends App {
   public render() {
-    const { Component, pageProps, initialGlobalState } = this.props;
+    const { Component, pageProps } = this.props;
     return (
       <>
         <Head>
@@ -101,6 +50,14 @@ export default class TaiAPP extends App<{
             name="viewport"
             content="initial-scale=1.0, width=device-width"
           />
+          <link
+            href="https://cdn.jsdelivr.net/npm/normalizecss@3.0.0/normalize.css"
+            rel="stylesheet"
+          />
+          {/* <link
+            href="https://cdn.jsdelivr.net/npm/@blueprintjs/core@3.22.3/lib/css/blueprint.css"
+            rel="stylesheet"
+          /> */}
           <link rel="icon" type="image/x-icon" href="/static/favicon.ico" />
           <link
             rel="apple-touch-icon"
@@ -120,11 +77,9 @@ export default class TaiAPP extends App<{
             href="/static/favicon-16x16.png"
           />
         </Head>
-        <GlobalContextProvider initialGlobalState={initialGlobalState}>
-          <ErrorBoundary fallback={<NextError statusCode={500} />}>
-            <Component {...pageProps} />
-          </ErrorBoundary>
-        </GlobalContextProvider>
+        <ErrorBoundary fallback={<NextError statusCode={500} title="出错了" />}>
+          <Component {...pageProps} />
+        </ErrorBoundary>
         <style jsx global>{`
           .bp3-card {
             padding: 20px 40px;

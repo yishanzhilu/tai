@@ -1,0 +1,29 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  checkout-code:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v1
+      with:
+        fetch-depth: 1
+    - name: Cache yarn
+      uses: actions/cache@v1
+      with:
+        path:  ~/.cache/yarn
+        key: yarn-cache
+    - name: Cache node modules
+      uses: actions/cache@v1
+      with:
+        path:  node_modules
+        key: yarn-deps-${{ hashFiles('**/yarn.lock') }}
+    - name: install
+      run: yarn install --non-interactive --cache-folder ~/.cache/yarn
+    - name: verify
+      run: yarn verify

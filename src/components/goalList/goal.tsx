@@ -7,7 +7,6 @@
 import * as React from 'react';
 import classNames from 'classnames';
 
-import faker from 'faker';
 import {
   Card,
   H5,
@@ -15,7 +14,7 @@ import {
   Classes,
   Divider,
   H6,
-} from '@yishanzhilu/blueprint-core';
+} from '@yishanzhilubp/core';
 import { Flex } from '../flex';
 import { IGoal, IMission } from '@/src/model/schemas';
 
@@ -67,7 +66,7 @@ export function Goal({ goal }: IProps) {
     <Card>
       <Flex childMargin={15}>
         <img
-          src={faker.image.imageUrl(55, 55)}
+          src="/static/layout/logo.png"
           className={classNames(Classes.ELEVATION_2, 'goal-logo')}
           alt="goal-logo"
           width="55"

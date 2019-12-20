@@ -6,7 +6,11 @@
 
 import getConfig from 'next/config';
 
-const { publicRuntimeConfig } = getConfig();
+const publicRuntimeConfigForTest = {
+  IS_PRODUCTION: true,
+};
+
+const { publicRuntimeConfig = publicRuntimeConfigForTest } = getConfig() || {};
 const { API_URL, IS_PRODUCTION, SERVER_API_URL } = publicRuntimeConfig;
 
 export const AUTHOR = 'Yishan Authors';

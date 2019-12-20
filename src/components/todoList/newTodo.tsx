@@ -11,7 +11,7 @@ import {
   FormGroup,
   TextArea,
   H6,
-} from '@yishanzhilu/blueprint-core';
+} from '@yishanzhilubp/core';
 import { Flex } from '../flex';
 import { useInputRef } from '@/src/utils/hooks';
 import { axios } from '@/src/api';
