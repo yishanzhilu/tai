@@ -1,0 +1,39 @@
+name: Test
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  checkout-code:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v1
+      with:
+        fetch-depth: 1
+    - name: Cache yarn
+      uses: actions/cache@v1
+      with:
+        path:  ~/.cache/yarn
+        key: yarn-cache
+    - name: Cache node modules
+      uses: actions/cache@v1
+      with:
+        path:  node_modules
+        key: yarn-deps-${{ hashFiles('**/yarn.lock') }}
+    - name: Install
+      run: yarn install --non-interactive --cache-folder ~/.cache/yarn
+    - name: Verify
+      run: yarn verify
+    - name: Archive code coverage results
+      uses: codecov/codecov-action@v1
+      with:
+        token: ${{ secrets.codecov }}
+        name: codecov-umbrella #optional
+        fail_ci_if_error: false
+

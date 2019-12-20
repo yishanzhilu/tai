@@ -3,7 +3,7 @@ FROM node:12-alpine as build
 COPY . /src
 WORKDIR /src
 
-RUN yarn install:lock --registry=https://registry.npm.taobao.org
+RUN yarn install --frozen-lockfile --non-interactive --registry=https://registry.npm.taobao.org
 RUN yarn build
 RUN npm prune --production
 
