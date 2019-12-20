@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Index should match snapshot 1`] = `
+exports[`首页 snapshot 必须保持一致 1`] = `
 <div>
   <div
     className="bp3-navbar"
@@ -11,77 +11,215 @@ exports[`Index should match snapshot 1`] = `
       <div
         className="bp3-navbar-heading"
       >
-        Blueprint
+        <img
+          alt="logo"
+          src="/static/layout/logo.png"
+          style={
+            Object {
+              "height": 30,
+              "width": 30,
+            }
+          }
+        />
       </div>
       <div
-        className="bp3-navbar-divider"
-      />
-      <button
-        className="bp3-button bp3-minimal"
-        onKeyDown={[Function]}
-        onKeyUp={[Function]}
-        type="button"
+        className="bp3-navbar-heading"
       >
-        <span
-          className="bp3-icon bp3-icon-home"
-          icon="home"
-        >
-          <svg
-            data-icon="home"
-            height={16}
-            viewBox="0 0 16 16"
-            width={16}
-          >
-            <desc>
-              home
-            </desc>
-            <path
-              d="M2 10v5c0 .55.45 1 1 1h3v-5h4v5h3c.55 0 1-.45 1-1v-5L8 4l-6 6zm13.71-2.71L14 5.59V2c0-.55-.45-1-1-1s-1 .45-1 1v1.59L8.71.29C8.53.11 8.28 0 8 0s-.53.11-.71.29l-7 7a1.003 1.003 0 001.42 1.42L8 2.41l6.29 6.29c.18.19.43.3.71.3a1.003 1.003 0 00.71-1.71z"
-              fillRule="evenodd"
-            />
-          </svg>
-        </span>
-        <span
-          className="bp3-button-text"
-        >
-          Home
-        </span>
-      </button>
-      <button
-        className="bp3-button bp3-minimal"
-        onKeyDown={[Function]}
-        onKeyUp={[Function]}
-        type="button"
-      >
-        <span
-          className="bp3-icon bp3-icon-document"
-          icon="document"
-        >
-          <svg
-            data-icon="document"
-            height={16}
-            viewBox="0 0 16 16"
-            width={16}
-          >
-            <desc>
-              document
-            </desc>
-            <path
-              d="M9 0H3c-.55 0-1 .45-1 1v14c0 .55.45 1 1 1h10c.55 0 1-.45 1-1V5L9 0zm3 14H4V2h4v4h4v8z"
-              fillRule="evenodd"
-            />
-          </svg>
-        </span>
-        <span
-          className="bp3-button-text"
-        >
-          Files
-        </span>
-      </button>
+        移山
+      </div>
     </div>
   </div>
-  <h1>
-    Yishan typescript&next starter
-  </h1>
+  <main
+    className="jsx-4001454894"
+  >
+    <section
+      className="jsx-4079040963"
+    >
+      <div
+        className="jsx-4079040963 content"
+      >
+        <h1
+          className="jsx-4079040963"
+        >
+          确立目标 & 达成理想
+        </h1>
+        <p
+          className="jsx-4079040963"
+        >
+          不仅仅是代办事项
+        </p>
+        <em
+          className="jsx-4079040963"
+        >
+          2020-1-1 开始内测
+        </em>
+      </div>
+      <img
+        alt="people using yishan to get keep on their goal"
+        className="jsx-4079040963"
+        src="/images/banner.jpg"
+      />
+    </section>
+    <section
+      className="jsx-2872071450"
+    >
+      <div
+        className="jsx-2872071450 content"
+        style={
+          Object {
+            "flexDirection": "row",
+          }
+        }
+      >
+        <div
+          className="jsx-2872071450 desc"
+        >
+          <h1
+            className="bp3-heading"
+            style={
+              Object {
+                "marginBottom": 20,
+                "textAlign": "center",
+              }
+            }
+          >
+            设立长远目标
+          </h1>
+          <p
+            className="jsx-2872071450 bp3-text-large"
+          >
+            所有的都将围绕长远价值展开。It's All About the Long Term.
+          </p>
+          <p
+            className="jsx-2872071450 bp3-text-muted credit"
+          >
+            - 
+            贝索斯1997年致股东的信
+          </p>
+        </div>
+        <div
+          className="jsx-2872071450 cover"
+        >
+          <img
+            alt="设立长远目标"
+            className="jsx-2872071450"
+            src="/images/landing/long-term.jpeg"
+          />
+        </div>
+      </div>
+    </section>
+    <section
+      className="jsx-2872071450"
+    >
+      <div
+        className="jsx-2872071450 content"
+        style={
+          Object {
+            "flexDirection": "row-reverse",
+          }
+        }
+      >
+        <div
+          className="jsx-2872071450 desc"
+        >
+          <h1
+            className="bp3-heading"
+            style={
+              Object {
+                "marginBottom": 20,
+                "textAlign": "center",
+              }
+            }
+          >
+            反思与总结
+          </h1>
+          <p
+            className="jsx-2872071450 bp3-text-large"
+          >
+            君子博学而日参省乎己，则知明而行无过矣。
+          </p>
+          <p
+            className="jsx-2872071450 bp3-text-muted credit"
+          >
+            - 
+            《荀子·劝学》
+          </p>
+        </div>
+        <div
+          className="jsx-2872071450 cover"
+        >
+          <img
+            alt="反思与总结"
+            className="jsx-2872071450"
+            src="/images/landing/re-introspect.png"
+          />
+        </div>
+      </div>
+    </section>
+    <section
+      className="jsx-2872071450"
+    >
+      <div
+        className="jsx-2872071450 content"
+        style={
+          Object {
+            "flexDirection": "row",
+          }
+        }
+      >
+        <div
+          className="jsx-2872071450 desc"
+        >
+          <h1
+            className="bp3-heading"
+            style={
+              Object {
+                "marginBottom": 20,
+                "textAlign": "center",
+              }
+            }
+          >
+            记录你的一万小时
+          </h1>
+          <p
+            className="jsx-2872071450 bp3-text-large"
+          >
+            1万小时的锤炼是任何人从平凡变成超凡的必要条件。
+          </p>
+          <p
+            className="jsx-2872071450 bp3-text-muted credit"
+          >
+            - 
+            格拉德威尔《异类》
+          </p>
+        </div>
+        <div
+          className="jsx-2872071450 cover"
+        >
+          <img
+            alt="记录你的一万小时"
+            className="jsx-2872071450"
+            src="/images/landing/10000.jpg"
+          />
+        </div>
+      </div>
+    </section>
+  </main>
+  <div
+    className="bp3-divider"
+  />
+  <footer
+    style={
+      Object {
+        "color": "#8c8c8c",
+        "margin": "10px",
+        "textAlign": "center",
+      }
+    }
+  >
+    © 
+    2019
+     Yishan Authors
+  </footer>
 </div>
 `;

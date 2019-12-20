@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 
-import { Classes, ProgressBar, Tooltip } from '@yishanzhilu/blueprint-core';
+import { Classes, ProgressBar, Tooltip } from '@yishanzhilubp/core';
 import classNames from 'classnames';
 
 import { Flex } from '@/src/components/flex';

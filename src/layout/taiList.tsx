@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { Classes, H3 } from '@yishanzhilu/blueprint-core';
+import { Classes, H3 } from '@yishanzhilubp/core';
 
 export function TaiList({ children, title }): React.ReactElement {
   return (

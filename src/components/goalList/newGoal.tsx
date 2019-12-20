@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 
-import { Card, Button } from '@yishanzhilu/blueprint-core';
+import { Card, Button } from '@yishanzhilubp/core';
 import { Flex } from '../flex';
 
 export function NewGoal() {

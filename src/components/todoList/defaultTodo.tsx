@@ -11,7 +11,7 @@ import {
   Spinner,
   Button,
   Popover,
-} from '@yishanzhilu/blueprint-core';
+} from '@yishanzhilubp/core';
 import classNames from 'classnames';
 
 import { ITodo } from '@/src/model/schemas';

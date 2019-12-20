@@ -9,32 +9,10 @@ import {
   Navbar,
   NavbarGroup,
   NavbarHeading,
-  Alignment,
-  Classes,
-  AnchorButton,
-} from '@yishanzhilu/blueprint-core';
-import Link from 'next/link';
-import jsCookie from 'js-cookie';
-import { redirect } from '../utils/funcs';
+  Divider,
+} from '@yishanzhilubp/core';
 
-export function LandingLayout({
-  children,
-  isLoginPage = false,
-}): React.ReactElement {
-  if (jsCookie.get('everestToken')) {
-    redirect('/workspace');
-  }
-
-  let button = {
-    href: '/login',
-    text: '登录',
-  };
-  if (isLoginPage) {
-    button = {
-      href: '/',
-      text: '返回',
-    };
-  }
+export function LandingLayout({ children }): React.ReactElement {
   return (
     <div>
       <Navbar>
@@ -48,17 +26,27 @@ export function LandingLayout({
           </NavbarHeading>
           <NavbarHeading>移山</NavbarHeading>
         </NavbarGroup>
-        <NavbarGroup align={Alignment.RIGHT}>
-          <Link href={button.href}>
+        {/* <NavbarGroup align={Alignment.RIGHT}>
+          <Link href="/login">
             <AnchorButton
               intent="primary"
               className={Classes.MINIMAL}
-              text={button.text}
+              text="内测用户登录"
             />
           </Link>
-        </NavbarGroup>
+        </NavbarGroup> */}
       </Navbar>
       {children}
+      <Divider />
+      <footer
+        style={{
+          textAlign: 'center',
+          margin: '10px',
+          color: '#8c8c8c',
+        }}
+      >
+        © {new Date().getFullYear()} Yishan Authors
+      </footer>
     </div>
   );
 }

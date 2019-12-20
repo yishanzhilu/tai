@@ -19,7 +19,7 @@ import {
   Popover,
   Menu,
   MenuItem,
-} from '@yishanzhilu/blueprint-core';
+} from '@yishanzhilubp/core';
 import cookie from 'js-cookie';
 import { useRouter } from 'next/router';
 import { useGlobalContext } from '@/src/contexts/global';
