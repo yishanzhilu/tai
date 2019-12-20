@@ -21,8 +21,11 @@ import '@yishanzhilubp/select/lib/css/blueprint-select.css';
 import { setUpConsole } from '@/src/utils/funcs';
 
 import { ErrorBoundary } from '@/src/components/errors/error-handling';
+import { VERSION } from '@/src/utils';
 
 FocusStyleManager.onlyShowFocusOnTabs();
+
+console.log('TAI VERSION', VERSION);
 
 setUpConsole();
 NProgress.configure({ showSpinner: false });

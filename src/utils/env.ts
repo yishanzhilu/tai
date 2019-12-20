@@ -11,11 +11,11 @@ const publicRuntimeConfigForTest = {
 };
 
 const { publicRuntimeConfig = publicRuntimeConfigForTest } = getConfig() || {};
-const { API_URL, IS_PRODUCTION, SERVER_API_URL } = publicRuntimeConfig;
+const { API_URL, IS_PRODUCTION, SERVER_API_URL, VERSION } = publicRuntimeConfig;
 
 export const AUTHOR = 'Yishan Authors';
 
 export const IS_SERVER = typeof window === 'undefined';
 export const IS_BROWSER = !IS_SERVER;
 
-export { API_URL, IS_PRODUCTION, SERVER_API_URL };
+export { API_URL, IS_PRODUCTION, SERVER_API_URL, VERSION };

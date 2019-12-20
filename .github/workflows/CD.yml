@@ -9,15 +9,32 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@master
-      - name: Publish to Registry
-        uses: HurricanKai/Publish-Docker-Github-Action@master
         if: contains(github.ref, 'refs/tags/v')
+      - name: Docker Login
+        uses: Azure/docker-login@v1
         with:
-          name: yishanzhilu/tai
-          registry: ccr.ccs.tencentyun.com
+          # Container registry username
           username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-          tagging: true
-          snapshot: true
-          cache: true
+          # Container registry password
+          password:  ${{ secrets.DOCKER_PASSWORD }}
+          # Container registry server url
+          login-server: ccr.ccs.tencentyun.com
+      - name: Build, tag, and push image
+        env:
+          REGISTRY: ccr.ccs.tencentyun.com
+          REPOSITORY: yishanzhilu/tai
+          IMAGE_TAG: ${{ github.ref }}
+          IMAGE_TAG_DATE: $(TZ='Asia/Shanghai' date -Iminutes)
+        run: |
+          # Build a docker container and
+          # push it to ECR so that it can
+          # be deployed to ECS.
+          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG .
+          echo "::build image::$REGISTRY/$REPOSITORY:$IMAGE_TAG success::"
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+          echo "::push image::$REGISTRY/$REPOSITORY:$IMAGE_TAG success::"
+          docker tag $REGISTRY/$REPOSITORY:$IMAGE_TAG $REGISTRY/$REPOSITORY:$IMAGE_TAG_DATE
+          echo "::tag image::$REGISTRY/$REPOSITORY:$IMAGE_TAG_DATE success::"
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG_DATE
+          echo "::push image::$REGISTRY/$REPOSITORY:$IMAGE_TAG_DATE success::"
 
