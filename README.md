@@ -1,12 +1,11 @@
-# frontend-starter
+# Tai 泰山  &middot; [![Actions Status](https://github.com/yishanzhilu/tai/workflows/Main%20Test/badge.svg)](https://github.com/{owner}/{repo}/actions) [![codecov](https://codecov.io/gh/yishanzhilu/tai/branch/master/graph/badge.svg)](https://codecov.io/gh/yishanzhilu/tai)
 
-# Start DEV
+泰山是移山的 Web APP，基于 react-hooks，nextjs
 
-@yishanzhilu is github registry, which has no Integrity check, so `yarn install`
-will generate error. To fix it, use
+# Contributing
 
 ```
-yarn install --update-checksums
+yarn install
 ```
 
 ## DOCS
