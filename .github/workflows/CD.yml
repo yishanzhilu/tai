@@ -6,7 +6,7 @@ on:
 
 jobs:
   build-and-push-image:
-    runs-on: ubuntu-18.04
+    runs-on: self-hosted
     steps:
       - uses: actions/checkout@master
       - name: Publish to Registry
@@ -18,5 +18,4 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
           tagging: true
-          snapshot: true
 
