@@ -2,7 +2,7 @@ name: CD
 
 on:
   release:
-    types: [published]
+    types: [published, edited]
 
 jobs:
   build-and-push-image:
