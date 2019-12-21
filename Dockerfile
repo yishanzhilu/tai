@@ -4,7 +4,7 @@ WORKDIR /src
 COPY ./package.cache.json /src/package.json
 COPY ./yarn.lock /src/yarn.lock
 
-RUN yarn install --frozen-lockfile --non-interactive
+RUN yarn install --frozen-lockfile --non-interactive --registry=https://registry.npm.taobao.org
 
 COPY . /src
 
