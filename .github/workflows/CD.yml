@@ -9,13 +9,18 @@ jobs:
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@master
-      - name: Publish to Registry
-        uses: HurricanKai/Publish-Docker-Github-Action@master
         if: contains(github.ref, 'refs/tags/v')
-        with:
-          name: ccr.ccs.tencentyun.com/yishanzhilu/tai
-          registry: ccr.ccs.tencentyun.com
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-          tagging: true
-
+      - name: Build, tag, and push image
+        env:
+          REGISTRY: ccr.ccs.tencentyun.com
+          REPOSITORY: yishanzhilu/tai
+          GITHUB_REF: ${{ github.ref }}
+          IMAGE_TAG: $(echo ${GITHUB_REF} | sed -e 's/refs\/tags\/v//')
+          IMAGE_TAG_DATE: $(TZ='Asia/Shanghai' date -Iminutes)
+        run: |
+          echo ${DOCKER_PASSWORD} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin $REGISTRY
+          docker build -t $REGISTRY/$REPOSITORY:latest -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -t $REGISTRY/$REPOSITORY:$IMAGE_TAG_DATE .
+          echo "build success"
+          docker push $REGISTRY/$REPOSITORY:latest
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG_DATE
