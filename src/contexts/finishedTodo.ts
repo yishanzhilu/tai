@@ -7,10 +7,11 @@
 import React from 'react';
 
 import { ITodo } from '../model/schemas';
+import { eventHandlerWarning } from '../utils/funcs';
 
 const finishedTodo: Partial<ITodo> = {};
 
-const setFinishedTodo: (todo: Partial<ITodo>) => void = () => {};
+const setFinishedTodo: (todo: Partial<ITodo>) => void = eventHandlerWarning('setFinishedTodo');
 
 export const FinishedTodoContext = React.createContext({
   finishedTodo,

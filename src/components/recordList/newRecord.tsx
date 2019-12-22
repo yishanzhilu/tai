@@ -13,10 +13,10 @@ import {
   Card,
   Keys,
   H6,
-} from '@yishanzhilu/blueprint-core';
+} from '@yishanzhilubp/core';
 import useForm from 'react-hook-form';
 
-import { TimePicker } from '@yishanzhilu/blueprint-datetime';
+import { TimePicker } from '@yishanzhilubp/datetime';
 
 import { Flex } from '../flex';
 import { IRecord, IGoalMission } from '@/src/model/schemas';

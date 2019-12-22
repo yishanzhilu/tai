@@ -7,7 +7,7 @@
 import * as React from 'react';
 
 import Link from 'next/link';
-import { Tag } from '@yishanzhilu/blueprint-core';
+import { Tag } from '@yishanzhilubp/core';
 
 import { IGoalMission } from '@/src/model/schemas';
 

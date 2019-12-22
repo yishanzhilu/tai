@@ -1,27 +1,8 @@
 {
   "name": "@yishanzhilu/tai",
-  "version": "0.0.3",
   "author": "Yishan Authors",
   "license": "MIT",
   "private": true,
-  "scripts": {
-    "build": "next build",
-    "build:analyzer": "ANALYZE=true next build",
-    "dev": "next -p 10000",
-    "git-cz": "git-cz -s",
-    "lint": "eslint ./ --ext .js,.ts,.tsx",
-    "lint:fix": "eslint ./ --ext .js,.ts,.tsx --fix",
-    "start": "next start -p 10000",
-    "test": "jest --onlyChanged",
-    "test:full": "jest --coverage",
-    "test:updateSnapshot": "jest --onlyChanged --updateSnapshot",
-    "verify": "npm-run-all -p test:full lint"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm-run-all -p test lint"
-    }
-  },
   "dependencies": {
     "@next/bundle-analyzer": "^9.1.5",
     "@yishanzhilubp/core": "^4.0.0",

@@ -1,0 +1,225 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`首页 snapshot 必须保持一致 1`] = `
+<div>
+  <div
+    className="bp3-navbar"
+  >
+    <div
+      className="bp3-navbar-group bp3-align-left"
+    >
+      <div
+        className="bp3-navbar-heading"
+      >
+        <img
+          alt="logo"
+          src="/static/layout/logo.png"
+          style={
+            Object {
+              "height": 30,
+              "width": 30,
+            }
+          }
+        />
+      </div>
+      <div
+        className="bp3-navbar-heading"
+      >
+        移山
+      </div>
+    </div>
+  </div>
+  <main
+    className="jsx-4001454894"
+  >
+    <section
+      className="jsx-4079040963"
+    >
+      <div
+        className="jsx-4079040963 content"
+      >
+        <h1
+          className="jsx-4079040963"
+        >
+          确立目标 & 达成理想
+        </h1>
+        <p
+          className="jsx-4079040963"
+        >
+          不仅仅是代办事项
+        </p>
+        <em
+          className="jsx-4079040963"
+        >
+          2020-1-1 开始内测
+        </em>
+      </div>
+      <img
+        alt="people using yishan to get keep on their goal"
+        className="jsx-4079040963"
+        src="/images/banner.jpg"
+      />
+    </section>
+    <section
+      className="jsx-2872071450"
+    >
+      <div
+        className="jsx-2872071450 content"
+        style={
+          Object {
+            "flexDirection": "row",
+          }
+        }
+      >
+        <div
+          className="jsx-2872071450 desc"
+        >
+          <h1
+            className="bp3-heading"
+            style={
+              Object {
+                "marginBottom": 20,
+                "textAlign": "center",
+              }
+            }
+          >
+            设立长远目标
+          </h1>
+          <p
+            className="jsx-2872071450 bp3-text-large"
+          >
+            所有的都将围绕长远价值展开。It's All About the Long Term.
+          </p>
+          <p
+            className="jsx-2872071450 bp3-text-muted credit"
+          >
+            - 
+            贝索斯1997年致股东的信
+          </p>
+        </div>
+        <div
+          className="jsx-2872071450 cover"
+        >
+          <img
+            alt="设立长远目标"
+            className="jsx-2872071450"
+            src="/images/landing/long-term.jpeg"
+          />
+        </div>
+      </div>
+    </section>
+    <section
+      className="jsx-2872071450"
+    >
+      <div
+        className="jsx-2872071450 content"
+        style={
+          Object {
+            "flexDirection": "row-reverse",
+          }
+        }
+      >
+        <div
+          className="jsx-2872071450 desc"
+        >
+          <h1
+            className="bp3-heading"
+            style={
+              Object {
+                "marginBottom": 20,
+                "textAlign": "center",
+              }
+            }
+          >
+            反思与总结
+          </h1>
+          <p
+            className="jsx-2872071450 bp3-text-large"
+          >
+            君子博学而日参省乎己，则知明而行无过矣。
+          </p>
+          <p
+            className="jsx-2872071450 bp3-text-muted credit"
+          >
+            - 
+            《荀子·劝学》
+          </p>
+        </div>
+        <div
+          className="jsx-2872071450 cover"
+        >
+          <img
+            alt="反思与总结"
+            className="jsx-2872071450"
+            src="/images/landing/re-introspect.png"
+          />
+        </div>
+      </div>
+    </section>
+    <section
+      className="jsx-2872071450"
+    >
+      <div
+        className="jsx-2872071450 content"
+        style={
+          Object {
+            "flexDirection": "row",
+          }
+        }
+      >
+        <div
+          className="jsx-2872071450 desc"
+        >
+          <h1
+            className="bp3-heading"
+            style={
+              Object {
+                "marginBottom": 20,
+                "textAlign": "center",
+              }
+            }
+          >
+            记录你的一万小时
+          </h1>
+          <p
+            className="jsx-2872071450 bp3-text-large"
+          >
+            1万小时的锤炼是任何人从平凡变成超凡的必要条件。
+          </p>
+          <p
+            className="jsx-2872071450 bp3-text-muted credit"
+          >
+            - 
+            格拉德威尔《异类》
+          </p>
+        </div>
+        <div
+          className="jsx-2872071450 cover"
+        >
+          <img
+            alt="记录你的一万小时"
+            className="jsx-2872071450"
+            src="/images/landing/10000.jpg"
+          />
+        </div>
+      </div>
+    </section>
+  </main>
+  <div
+    className="bp3-divider"
+  />
+  <footer
+    style={
+      Object {
+        "color": "#8c8c8c",
+        "margin": "10px",
+        "textAlign": "center",
+      }
+    }
+  >
+    © 
+    2019
+     Yishan Authors
+  </footer>
+</div>
+`;

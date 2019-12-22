@@ -4,7 +4,7 @@
  * All rights reserved
  */
 import React from 'react';
-import { Card, Divider, H3 } from '@yishanzhilu/blueprint-core';
+import { Card, Divider } from '@yishanzhilubp/core';
 
 import { Todo, IUITodo } from './todo';
 import { NewTodo } from './newTodo';

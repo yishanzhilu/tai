@@ -6,7 +6,7 @@
 
 import * as React from 'react';
 import classNames from 'classnames';
-import { Card, Classes, H6, Button } from '@yishanzhilu/blueprint-core';
+import { Card, Classes, H6, Button } from '@yishanzhilubp/core';
 
 import { IRecord } from '@/src/model/schemas';
 import { GoalMission } from '../goalMission';

@@ -177,8 +177,6 @@ export const useGlobalContext = () => {
 
 export const GlobalContextProvider = ({ children, initialGlobalState }) => {
   const [state, dispatch] = React.useReducer(globalReducer, initialGlobalState);
-  console.log('GlobalContextProvider', state);
-
   return (
     <GlobalContext.Provider value={[state, dispatch]}>
       <ErrorBoundary fallback={<NextError statusCode={500} />}>

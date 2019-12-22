@@ -5,7 +5,7 @@
  */
 
 import * as React from 'react';
-import { Card, Classes, H6 } from '@yishanzhilu/blueprint-core';
+import { Card, Classes, H6 } from '@yishanzhilubp/core';
 import classNames from 'classnames';
 
 import { IRecord } from '@/src/model/schemas';

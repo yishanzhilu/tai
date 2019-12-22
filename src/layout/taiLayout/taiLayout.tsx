@@ -5,9 +5,8 @@
  */
 
 import * as React from 'react';
-import { observer } from 'mobx-react-lite';
 import classnames from 'classnames';
-import { Classes } from '@yishanzhilu/blueprint-core';
+import { Classes } from '@yishanzhilubp/core';
 
 import { IProps } from '@/src/model/utils';
 
@@ -15,7 +14,7 @@ import { Navbar } from './navbar';
 import { Sidebar } from './sidebar';
 import { useGlobalContext } from '@/src/contexts/global';
 
-export const TaiLayout = observer(({ children }: IProps) => {
+export const TaiLayout = ({ children }: IProps) => {
   const [store, dispatch] = useGlobalContext();
 
   const handleToggleTheme = () =>
@@ -94,4 +93,4 @@ export const TaiLayout = observer(({ children }: IProps) => {
       `}</style>
     </div>
   );
-});
+};

@@ -4,7 +4,6 @@
  * All rights reserved
  */
 
-import useSWR, { ConfigInterface } from 'swr';
 import { NextPageContext } from 'next';
 import Axios, { AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
 import jsCookie from 'js-cookie';
@@ -49,35 +48,6 @@ axios.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-
-export function useRequest<Data, Error>(
-  key: string,
-  axiosConfig: AxiosRequestConfig,
-  swrConfig: ConfigInterface
-) {
-  const { initialData, ...config } = swrConfig;
-  const { data: response, error, isValidating, revalidate } = useSWR<
-    AxiosResponse<Data>,
-    AxiosError<Error>
-  >(key, () => axios.get<Data>(key, axiosConfig), {
-    ...config,
-    initialData: initialData && {
-      status: 200,
-      statusText: 'InitialData',
-      headers: {},
-      data: initialData,
-      config: {},
-    },
-  });
-
-  return {
-    data: response && response.data,
-    response,
-    error,
-    isValidating,
-    revalidate,
-  };
-}
 
 export async function useServerRequest<Data>(
   url: string,

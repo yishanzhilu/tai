@@ -8,7 +8,7 @@ import * as React from 'react';
 import classnames from 'classnames';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import { Classes, Divider, Text } from '@yishanzhilu/blueprint-core';
+import { Classes, Divider, Text } from '@yishanzhilubp/core';
 
 import { useGlobalContext } from '@/src/contexts/global';
 import { UserProfile } from './sidebarUserProfile';

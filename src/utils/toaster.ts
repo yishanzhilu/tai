@@ -4,7 +4,7 @@
  * All rights reserved
  */
 
-import { Toaster, Position } from '@yishanzhilu/blueprint-core';
+import { Toaster, Position } from '@yishanzhilubp/core';
 import { IS_BROWSER } from './env';
 
 export const Toast = IS_BROWSER

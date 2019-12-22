@@ -1,0 +1,40 @@
+name: CD
+
+on:
+  release:
+    types: [published, edited]
+
+jobs:
+  build-and-push-image:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@master
+        with:
+          fetch-depth: 1
+        if: contains(github.ref, 'refs/tags/v')
+      - name: Docker Login
+        uses: Azure/docker-login@v1
+        with:
+          # Container registry username
+          username: ${{ secrets.DOCKER_USERNAME }}
+          # Container registry password
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          # Container registry server url
+          login-server: ${{ secrets.DOCKER_REGISTRY }}
+      - name: Build, tag, and push image
+        env:
+          REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
+          REPOSITORY: yishanzhilu/tai
+          GITHUB_REF: ${{ github.ref }}
+        run: |
+          VERSION=$(echo ${GITHUB_REF} | sed -e 's/refs\/tags\/v//')
+          timestamp=`date +%y-%m-%d_%H-%M`
+          shortSha=$(echo "${GITHUB_SHA}" | cut -c1-6)
+          SHA_DOCKER_NAME="${timestamp}_${shortSha}"
+          docker build -t $REGISTRY/$REPOSITORY:latest -t $REGISTRY/$REPOSITORY:$VERSION -t $REGISTRY/$REPOSITORY:$SHA_DOCKER_NAME .
+          echo "build success"
+          docker push $REGISTRY/$REPOSITORY:latest
+          docker push $REGISTRY/$REPOSITORY:$VERSION
+          docker push $REGISTRY/$REPOSITORY:$SHA_DOCKER_NAME
+          echo "push success"
+          echo "::set-output name=image::$REGISTRY/$REPOSITORY:$VERSION"

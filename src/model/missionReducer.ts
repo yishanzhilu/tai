@@ -26,6 +26,7 @@ export const missionReducer = (
         };
       }
       return mission;
+    /* istanbul ignore next */
     default:
       return mission;
   }
