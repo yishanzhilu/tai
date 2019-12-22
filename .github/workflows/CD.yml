@@ -30,7 +30,7 @@ jobs:
           VERSION=$(echo ${GITHUB_REF} | sed -e 's/refs\/tags\/v//')
           timestamp=`date +%y-%m-%d_%H-%M`
           shortSha=$(echo "${GITHUB_SHA}" | cut -c1-6)
-          SHA_DOCKER_NAME="${INPUT_NAME}:${timestamp}_${shortSha}"
+          SHA_DOCKER_NAME="${timestamp}_${shortSha}"
           docker build -t $REGISTRY/$REPOSITORY:latest -t $REGISTRY/$REPOSITORY:$VERSION -t $REGISTRY/$REPOSITORY:$SHA_DOCKER_NAME .
           echo "build success"
           docker push $REGISTRY/$REPOSITORY:latest
