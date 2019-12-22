@@ -23,8 +23,7 @@ jobs:
         env:
           REGISTRY: ccr.ccs.tencentyun.com
           REPOSITORY: yishanzhilu/tai
-          GITHUB_REF: ${{ github.ref }}
-          IMAGE_TAG: $(echo ${GITHUB_REF} | sed -e 's/refs\/tags\/v//')
+          IMAGE_TAG: $(echo ${{ github.ref }} | sed -e 's/refs\/tags\/v//')
           IMAGE_TAG_DATE: $(TZ='Asia/Shanghai' date -Iminutes)
         run: |
           docker build -t $REGISTRY/$REPOSITORY:latest -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -t $REGISTRY/$REPOSITORY:$IMAGE_TAG_DATE .
