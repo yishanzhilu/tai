@@ -25,10 +25,14 @@ jobs:
           REPOSITORY: yishanzhilu/tai
           GITHUB_REF: ${{ github.ref }}
         run: |
-          IMAGE_TAG=$(echo ${GITHUB_REF} | sed -e 's/refs\/tags\/v//')
-          IMAGE_TAG_DATE=$(TZ='Asia/Shanghai' date -Iminutes)
-          docker build -t $REGISTRY/$REPOSITORY:latest -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -t $REGISTRY/$REPOSITORY:$IMAGE_TAG_DATE .
+          VERSION=$(echo ${GITHUB_REF} | sed -e 's/refs\/tags\/v//')
+          timestamp=`date +%y-%m-%d_%H-%M`
+          shortSha=$(echo "${GITHUB_SHA}" | cut -c1-6)
+          SHA_DOCKER_NAME="${INPUT_NAME}:${timestamp}_${shortSha}"
+          docker build -t $REGISTRY/$REPOSITORY:latest -t $REGISTRY/$REPOSITORY:$VERSION -t $REGISTRY/$REPOSITORY:$SHA_DOCKER_NAME .
           echo "build success"
           docker push $REGISTRY/$REPOSITORY:latest
-          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
-          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG_DATE
+          docker push $REGISTRY/$REPOSITORY:$VERSION
+          docker push $REGISTRY/$REPOSITORY:$SHA_DOCKER_NAME
+          echo "push success"
+          echo "::set-output name=image::$REGISTRY/$REPOSITORY:$VERSION"
