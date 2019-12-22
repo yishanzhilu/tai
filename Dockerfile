@@ -1,6 +1,7 @@
 FROM node:12-alpine as build
 
 WORKDIR /src
+# use a package.cache.json, which only change when add new dep, to cahce docker layer
 COPY ./package.cache.json /src/package.json
 COPY ./yarn.lock /src/yarn.lock
 
