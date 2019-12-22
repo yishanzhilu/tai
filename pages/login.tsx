@@ -4,149 +4,143 @@
  * All rights reserved
  */
 
-import React, { useEffect, useReducer } from 'react';
-import {
-  FormGroup,
-  InputGroup,
-  Card,
-  Elevation,
-  Button,
-  Classes,
-} from '@yishanzhilubp/core';
-import Link from 'next/link';
-import cookie from 'js-cookie';
-import { axios } from '@/src/api';
-import { redirect } from '@/src/utils/funcs';
+import React from 'react';
+// import {
+//   Button,
+//   Classes,
+// } from '@yishanzhilubp/core';
+// import Link from 'next/link';
+// import { axios } from '@/src/api';
 
-interface ISendMottoButtonState {
-  seconds: number;
-  buttonStatus: 'ready' | 'sending' | 'countdown';
-}
+// interface ISendMottoButtonState {
+//   seconds: number;
+//   buttonStatus: 'ready' | 'sending' | 'countdown';
+// }
 
-type ISendMottoButtonActions = {
-  type: 'countdown' | 'sendEmail' | 'countdownEnd';
-};
+// type ISendMottoButtonActions = {
+//   type: 'countdown' | 'sendEmail' | 'countdownEnd';
+// };
 
-const countdownTotal = 60;
+// const countdownTotal = 60;
 
-function sendMottoReducer(
-  state: ISendMottoButtonState,
-  action: ISendMottoButtonActions
-) {
-  switch (action.type) {
-    case 'countdown':
-      if (state.buttonStatus !== 'countdown') {
-        // 首次触发倒计时，不减一
-        return { seconds: state.seconds, buttonStatus: 'countdown' };
-      }
-      return { seconds: state.seconds - 1, buttonStatus: 'countdown' };
-    case 'sendEmail':
-      return { seconds: state.seconds, buttonStatus: 'sending' };
-    case 'countdownEnd':
-      return { seconds: countdownTotal, buttonStatus: 'ready' };
-    default:
-      throw new Error();
-  }
-}
+// function sendMottoReducer(
+//   state: ISendMottoButtonState,
+//   action: ISendMottoButtonActions
+// ) {
+//   switch (action.type) {
+//     case 'countdown':
+//       if (state.buttonStatus !== 'countdown') {
+//         // 首次触发倒计时，不减一
+//         return { seconds: state.seconds, buttonStatus: 'countdown' };
+//       }
+//       return { seconds: state.seconds - 1, buttonStatus: 'countdown' };
+//     case 'sendEmail':
+//       return { seconds: state.seconds, buttonStatus: 'sending' };
+//     case 'countdownEnd':
+//       return { seconds: countdownTotal, buttonStatus: 'ready' };
+//     default:
+//       throw new Error();
+//   }
+// }
 
-function SendMottoButton({ email: { error, value: email } }) {
-  const [state, dispatch] = useReducer(sendMottoReducer, {
-    seconds: countdownTotal,
-    buttonStatus: 'ready',
-  });
-  useEffect(() => {
-    let interval: NodeJS.Timeout;
-    if (state.buttonStatus === 'sending') {
-      (async () => {
-        try {
-          await axios.post('/users/login', {
-            email,
-          });
-          dispatch({ type: 'countdown' });
-        } catch (err) {
-          console.error(err);
-          dispatch({ type: 'countdownEnd' });
-        }
-      })();
-    } else if (state.buttonStatus === 'countdown') {
-      if (state.seconds >= 0) {
-        clearTimeout(interval);
-        interval = setTimeout(() => {
-          dispatch({ type: 'countdown' });
-        }, 1000);
-      } else {
-        dispatch({ type: 'countdownEnd' });
-      }
-    }
-    return () => {
-      clearTimeout(interval);
-    };
-  }, [state]);
+// function SendMottoButton({ email: { error, value: email } }) {
+//   const [state, dispatch] = useReducer(sendMottoReducer, {
+//     seconds: countdownTotal,
+//     buttonStatus: 'ready',
+//   });
+//   useEffect(() => {
+//     let interval: NodeJS.Timeout;
+//     if (state.buttonStatus === 'sending') {
+//       (async () => {
+//         try {
+//           await axios.post('/users/login', {
+//             email,
+//           });
+//           dispatch({ type: 'countdown' });
+//         } catch (err) {
+//           console.error(err);
+//           dispatch({ type: 'countdownEnd' });
+//         }
+//       })();
+//     } else if (state.buttonStatus === 'countdown') {
+//       if (state.seconds >= 0) {
+//         clearTimeout(interval);
+//         interval = setTimeout(() => {
+//           dispatch({ type: 'countdown' });
+//         }, 1000);
+//       } else {
+//         dispatch({ type: 'countdownEnd' });
+//       }
+//     }
+//     return () => {
+//       clearTimeout(interval);
+//     };
+//   }, [state]);
 
-  return (
-    <Button
-      minimal
-      intent="primary"
-      onClick={() => {
-        if (state.buttonStatus === 'ready' && !error)
-          dispatch({ type: 'sendEmail' });
-      }}
-      disabled={state.buttonStatus !== 'ready' || error || !email}
-      loading={state.buttonStatus === 'sending'}
-    >
-      {state.buttonStatus === 'countdown'
-        ? `${state.seconds} 秒`
-        : '获取验证格言'}
-    </Button>
-  );
-}
+//   return (
+//     <Button
+//       minimal
+//       intent="primary"
+//       onClick={() => {
+//         if (state.buttonStatus === 'ready' && !error)
+//           dispatch({ type: 'sendEmail' });
+//       }}
+//       disabled={state.buttonStatus !== 'ready' || error || !email}
+//       loading={state.buttonStatus === 'sending'}
+//     >
+//       {state.buttonStatus === 'countdown'
+//         ? `${state.seconds} 秒`
+//         : '获取验证格言'}
+//     </Button>
+//   );
+// }
 
-function FormHeader() {
-  return (
-    <header>
-      <Link href="/">
-        <a>
-          <img
-            className={Classes.ELEVATION_2}
-            src="/static/apple-touch-icon.png"
-            alt="logo"
-          />
-        </a>
-      </Link>
-      <h1>移山</h1>
-      <h2>规划工作学习的伙伴</h2>
-      <style jsx>{`
-        header {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          margin-bottom: 15px;
-        }
-        img {
-          width: 64px;
-          height: 64px;
-          border-radius: 5px;
-        }
-        h1 {
-          font-size: 32px;
-          margin: 0;
-          margin-top: 20px;
-          line-height: 1.2;
-          color: #262626;
-          font-weight: 500;
-        }
-        h2 {
-          color: #595959;
-          margin: 0;
-          margin-top: 18px;
-          text-align: center;
-          font-size: 16px;
-          font-weight: 500;
-        }
-      `}</style>
-    </header>
-  );
-}
+// function FormHeader() {
+//   return (
+//     <header>
+//       <Link href="/">
+//         <a>
+//           <img
+//             className={Classes.ELEVATION_2}
+//             src="/static/apple-touch-icon.png"
+//             alt="logo"
+//           />
+//         </a>
+//       </Link>
+//       <h1>移山</h1>
+//       <h2>规划工作学习的伙伴</h2>
+//       <style jsx>{`
+//         header {
+//           display: flex;
+//           flex-direction: column;
+//           align-items: center;
+//           margin-bottom: 15px;
+//         }
+//         img {
+//           width: 64px;
+//           height: 64px;
+//           border-radius: 5px;
+//         }
+//         h1 {
+//           font-size: 32px;
+//           margin: 0;
+//           margin-top: 20px;
+//           line-height: 1.2;
+//           color: #262626;
+//           font-weight: 500;
+//         }
+//         h2 {
+//           color: #595959;
+//           margin: 0;
+//           margin-top: 18px;
+//           text-align: center;
+//           font-size: 16px;
+//           font-weight: 500;
+//         }
+//       `}</style>
+//     </header>
+//   );
+// }
 
 const Login = (): React.ReactElement => {
   // const login = useLocalStore(() => ({

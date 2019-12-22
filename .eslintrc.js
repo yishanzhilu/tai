@@ -59,7 +59,7 @@ module.exports = {
     'react/prop-types': ['off'],
     '@typescript-eslint/interface-name-prefix': ['error', 'always'],
     '@typescript-eslint/no-unused-vars': [
-      'warn',
+      'error',
       { argsIgnorePattern: '^_', args: 'after-used', varsIgnorePattern: '^_' },
     ],
     'no-console': ['off'],
