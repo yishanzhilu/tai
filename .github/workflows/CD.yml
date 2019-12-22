@@ -18,14 +18,14 @@ jobs:
           # Container registry password
           password:  ${{ secrets.DOCKER_PASSWORD }}
           # Container registry server url
-          login-server: ccr.ccs.tencentyun.com
+          login-server: ${{ secrets.DOCKER_REGISTRY }}
       - name: Build, tag, and push image
         env:
-          REGISTRY: ccr.ccs.tencentyun.com
+          REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
           REPOSITORY: yishanzhilu/tai
-          IMAGE_TAG: $(echo ${{ github.ref }} | sed -e 's/refs\/tags\/v//')
-          IMAGE_TAG_DATE: $(TZ='Asia/Shanghai' date -Iminutes)
         run: |
+          IMAGE_TAG=$(echo ${{ github.ref }} | sed -e '/refs\/tags\/v//')
+          IMAGE_TAG_DATE=$(TZ='Asia/Shanghai' date -Iminutes)
           docker build -t $REGISTRY/$REPOSITORY:latest -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -t $REGISTRY/$REPOSITORY:$IMAGE_TAG_DATE .
           echo "build success"
           docker push $REGISTRY/$REPOSITORY:latest
