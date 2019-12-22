@@ -16,15 +16,16 @@ jobs:
           # Container registry username
           username: ${{ secrets.DOCKER_USERNAME }}
           # Container registry password
-          password:  ${{ secrets.DOCKER_PASSWORD }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
           # Container registry server url
           login-server: ${{ secrets.DOCKER_REGISTRY }}
       - name: Build, tag, and push image
         env:
           REGISTRY: ${{ secrets.DOCKER_REGISTRY }}
           REPOSITORY: yishanzhilu/tai
+          GITHUB_REF: ${{ github.ref }}
         run: |
-          IMAGE_TAG=$(echo ${{ github.ref }} | sed -e '/refs\/tags\/v//')
+          IMAGE_TAG=$(echo ${GITHUB_REF} | sed -e 's/refs\/tags\/v//')
           IMAGE_TAG_DATE=$(TZ='Asia/Shanghai' date -Iminutes)
           docker build -t $REGISTRY/$REPOSITORY:latest -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -t $REGISTRY/$REPOSITORY:$IMAGE_TAG_DATE .
           echo "build success"
