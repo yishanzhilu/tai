@@ -88,6 +88,7 @@ const globalWorkReducer = (
 type IGlobalAction =
   | { type: 'SetTheme'; newTheme: ITheme }
   | { type: 'LogOut' }
+  | { type: 'Login' }
   | IGlobalWorkAction;
 
 export interface IGlobalState {
@@ -119,6 +120,11 @@ export const globalReducer = (
       return {
         ...defaultGlobalState,
         theme: globalState.theme,
+      };
+    case 'Login':
+      return {
+        ...defaultGlobalState,
+        isLogin: true,
       };
     case 'SetTheme':
       return {
@@ -175,8 +181,8 @@ export const useGlobalContext = () => {
   return context;
 };
 
-export const GlobalContextProvider = ({ children, initialGlobalState }) => {
-  const [state, dispatch] = React.useReducer(globalReducer, initialGlobalState);
+export const GlobalContextProvider = ({ children }) => {
+  const [state, dispatch] = React.useReducer(globalReducer, defaultGlobalState);
   return (
     <GlobalContext.Provider value={[state, dispatch]}>
       <ErrorBoundary fallback={<NextError statusCode={500} />}>

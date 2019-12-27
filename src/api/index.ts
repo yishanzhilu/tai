@@ -8,7 +8,7 @@ import { NextPageContext } from 'next';
 import Axios, { AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
 import jsCookie from 'js-cookie';
 import nextCookie from 'next-cookies';
-import { IS_SERVER, SERVER_API_URL, API_URL, IS_BROWSER } from '../utils';
+import { IS_SERVER, SERVER_API_URL, API_URL, IS_BROWSER } from '../utils/env';
 
 const baseURL = IS_SERVER ? SERVER_API_URL : API_URL;
 

@@ -5,19 +5,32 @@
  */
 
 import * as React from 'react';
-import { Classes, H1 } from '@yishanzhilubp/core';
-
+import jsCookie from 'js-cookie';
 import { NextPage } from 'next';
 
+import { Classes, H1, Button } from '@yishanzhilubp/core';
+
 import { LandingLayout } from '@/src/layout';
+import { GITHUB_OAUTH_URL } from '@/src/utils/constants';
+import { redirect } from '@/src/utils/funcs';
+
+const onClick = () => {
+  if (jsCookie.get('token')) {
+    redirect('/workspace/dashboard');
+  } else {
+    window.location.href = GITHUB_OAUTH_URL;
+  }
+};
 
 export function Banner() {
   return (
     <section>
       <div className="content">
         <h1>确立目标 & 达成理想</h1>
-        <p>不仅仅是代办事项</p>
-        <em>2020-1-1 开始内测</em>
+        <p>关于长期目标的代办事项</p>
+        <Button intent="primary" onClick={onClick}>
+          内测用户登录
+        </Button>
       </div>
       <img
         src="/images/banner.jpg"

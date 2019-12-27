@@ -7,7 +7,7 @@
   "scripts": {
     "build": "next build",
     "build:analyzer": "ANALYZE=true next build",
-    "dev": "next -p 10000",
+    "dev": "GITHUB_OAUTH_CLIENT_ID=0199e4fad84cdfade238 next -p 10000",
     "git-cz": "git-cz -s",
     "lint": "eslint ./ --ext .js,.ts,.tsx",
     "lint:fix": "eslint ./ --ext .js,.ts,.tsx --fix",
@@ -48,6 +48,7 @@
     "@types/jest": "^24.0.23",
     "@types/js-cookie": "^2.2.4",
     "@types/node": "^12.12.8",
+    "@types/nprogress": "^0.2.0",
     "@types/react": "^16.9.11",
     "@types/react-dom": "^16.9.4",
     "@types/react-test-renderer": "^16.9.1",

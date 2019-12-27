@@ -18,5 +18,8 @@
   "cSpell.ignoreWords": [
     "callout",
     "nprogress"
-  ]
+  ],
+  "files.watcherExclude": {
+    "**/.next/**": true
+  }
 }

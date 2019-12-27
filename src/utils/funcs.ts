@@ -11,13 +11,13 @@ import cookie from 'js-cookie';
 import { NextPageContext } from 'next';
 import { OutgoingHttpHeaders } from 'http';
 
-import { IS_PRODUCTION, IS_SERVER } from './env';
+import { IS_PRODUCTION, IS_SERVER, IS_BROWSER } from './env';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function
 export function noop() {}
 
 export function setUpConsole() {
-  if (!IS_SERVER && IS_PRODUCTION) {
+  if (IS_PRODUCTION && IS_BROWSER) {
     console.log = noop;
     console.debug = noop;
     console.info = noop;
@@ -50,7 +50,7 @@ export function redirect(
     };
     if (removeCookie) {
       headers['Set-Cookie'] =
-        'everestToken=deleted; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+        'token=deleted; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
     }
     ctx.res.writeHead(302, headers);
     ctx.res.end();

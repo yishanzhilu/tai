@@ -11,7 +11,7 @@ import { IProps } from '@/src/model/utils';
 interface IFlexProps {
   children: React.ReactNode;
   className?: string;
-  dir?: 'row';
+  dir?: 'row' | 'row-reverse' | 'column' | 'column-reverse';
   alignItems?: 'flex-start' | 'flex-end' | 'center' | 'baseline' | 'stretch';
   wrap?: boolean;
   justifyContent?:
@@ -32,6 +32,24 @@ export function Flex({
   justifyContent = 'flex-start',
   childMargin = 5,
 }: IFlexProps) {
+  let margin: string;
+  switch (dir) {
+    case 'row':
+      margin = `0 ${childMargin}px 0 0`;
+      break;
+    case 'row-reverse':
+      margin = `0 0 0 ${childMargin}px`;
+      break;
+    case 'column':
+      margin = `0 0 ${childMargin}px 0`;
+      break;
+    case 'column-reverse':
+      margin = `${childMargin}px 0 0 0`;
+      break;
+    default:
+      margin = ' 0 0 0 0';
+      break;
+  }
   return (
     <div className={classNames('container', className)}>
       {children}
@@ -45,10 +63,10 @@ export function Flex({
             flex-wrap: ${wrap ? 'wrap' : 'nowrap'};
           }
           .container > :global(*) {
-            margin-right: ${childMargin}px;
+            margin: ${margin};
           }
           .container > :global(*):last-child {
-            margin-right: 0;
+            margin: 0;
           }
         `}
       </style>

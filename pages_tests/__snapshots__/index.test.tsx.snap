@@ -48,11 +48,20 @@ exports[`首页 snapshot 必须保持一致 1`] = `
         >
           不仅仅是代办事项
         </p>
-        <em
-          className="jsx-4079040963"
+        <a
+          className="bp3-button bp3-intent-primary"
+          href="https://github.com/login/oauth/authorize?client_id=undefined&redirect_uri=http://dev.yishan.co/oauth/github/redirect"
+          onKeyDown={[Function]}
+          onKeyUp={[Function]}
+          role="button"
+          tabIndex={0}
         >
-          2020-1-1 开始内测
-        </em>
+          <span
+            className="bp3-button-text"
+          >
+            内测用户登录
+          </span>
+        </a>
       </div>
       <img
         alt="people using yishan to get keep on their goal"

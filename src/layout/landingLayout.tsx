@@ -10,7 +10,11 @@ import {
   NavbarGroup,
   NavbarHeading,
   Divider,
+  Alignment,
+  AnchorButton,
 } from '@yishanzhilubp/core';
+
+import { GITHUB_OAUTH_URL } from '@/src/utils/constants';
 
 export function LandingLayout({ children }): React.ReactElement {
   return (
@@ -26,15 +30,11 @@ export function LandingLayout({ children }): React.ReactElement {
           </NavbarHeading>
           <NavbarHeading>移山</NavbarHeading>
         </NavbarGroup>
-        {/* <NavbarGroup align={Alignment.RIGHT}>
-          <Link href="/login">
-            <AnchorButton
-              intent="primary"
-              className={Classes.MINIMAL}
-              text="内测用户登录"
-            />
-          </Link>
-        </NavbarGroup> */}
+        <NavbarGroup align={Alignment.RIGHT}>
+          <AnchorButton minimal intent="primary" href={GITHUB_OAUTH_URL}>
+            内测用户登录
+          </AnchorButton>
+        </NavbarGroup>
       </Navbar>
       {children}
       <Divider />

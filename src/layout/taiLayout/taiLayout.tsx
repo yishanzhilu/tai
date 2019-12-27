@@ -11,7 +11,7 @@ import { Classes } from '@yishanzhilubp/core';
 import { IProps } from '@/src/model/utils';
 
 import { Navbar } from './navbar';
-import { Sidebar } from './sidebar';
+// import { Sidebar } from './sidebar';
 import { useGlobalContext } from '@/src/contexts/global';
 
 export const TaiLayout = ({ children }: IProps) => {
@@ -32,9 +32,9 @@ export const TaiLayout = ({ children }: IProps) => {
           />
         </header>
         <div className="main">
-          <aside>
+          {/* <aside>
             <Sidebar />
-          </aside>
+          </aside> */}
           <article>
             <div className="article-inner">{children}</div>
             <div className="article-footer">
@@ -81,6 +81,7 @@ export const TaiLayout = ({ children }: IProps) => {
           width: calc(100vw - 283px);
           padding-left: 400px;
           padding-right: 100px;
+          padding-top: 20px;
         }
         .article-inner {
           max-width: 1000px;

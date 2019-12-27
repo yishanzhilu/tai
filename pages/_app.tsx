@@ -7,28 +7,27 @@
 import React from 'react';
 import App from 'next/app';
 import Head from 'next/head';
-import NextError from 'next/error';
 import NProgress from 'nprogress';
 import Router from 'next/router';
 
 import { FocusStyleManager } from '@yishanzhilubp/core';
 import '@yishanzhilubp/core/lib/css/blueprint.css';
-// import 'normalize.css/normalize.css';
 import '@yishanzhilubp/datetime/lib/css/blueprint-datetime.css';
 import '@yishanzhilubp/select/lib/css/blueprint-select.css';
-// import AuthingSSO from '@authing/sso';
 
 import { setUpConsole } from '@/src/utils/funcs';
 
-import { ErrorBoundary } from '@/src/components/errors/error-handling';
-import { VERSION } from '@/src/utils';
+import { VERSION } from '@/src/utils/env';
+import { GlobalContextProvider } from '@/src/contexts/global';
 
 FocusStyleManager.onlyShowFocusOnTabs();
 
 console.log('TAI VERSION', VERSION);
 
 setUpConsole();
+
 NProgress.configure({ showSpinner: false });
+
 Router.events.on('routeChangeStart', url => {
   console.debug(`routeChangeStart | url: ${url}`);
   NProgress.start();
@@ -80,9 +79,9 @@ export default class TaiAPP extends App {
             href="/static/favicon-16x16.png"
           />
         </Head>
-        <ErrorBoundary fallback={<NextError statusCode={500} title="出错了" />}>
+        <GlobalContextProvider >
           <Component {...pageProps} />
-        </ErrorBoundary>
+        </GlobalContextProvider>
         <style jsx global>{`
           .bp3-card {
             padding: 20px 40px;

@@ -44,9 +44,9 @@ const ProfileMenu: React.FC = () => {
         icon="log-out"
         text="退出"
         onClick={() => {
-          localStorage.removeItem('everestRefreshToken');
-          cookie.remove('everestToken');
-          router.replace('/');
+          localStorage.removeItem('refreshToken');
+          cookie.remove('token');
+          router.replace('/').then(() => window.scrollTo(0, 0));
           dispatch({ type: 'LogOut' });
         }}
       />
