@@ -10,21 +10,20 @@ import { Spinner, Classes } from '@yishanzhilubp/core';
 import { useRouter } from 'next/router';
 import cookie from 'js-cookie';
 
-import { axios } from '@/src/api';
+import { axios, HandleError } from '@/src/api';
 import { IS_BROWSER } from '@/src/utils/env';
 import { LandingLayout } from '@/src/layout';
 import { Flex } from '@/src/components/flex';
-import { Toast } from '@/src/utils/toaster';
 import { redirect } from '@/src/utils/funcs';
 import { useGlobalContext } from '@/src/contexts/global';
 
-interface IJWT {
+interface IToken {
   userID: string;
   exp: number;
   iss: string;
 }
 
-const parseJWT = (token: string): IJWT => {
+const parseJWT = (token: string): IToken => {
   try {
     return JSON.parse(atob(token.split('.')[1]));
   } catch (e) {
@@ -43,17 +42,11 @@ const oauthGithub = async (code: string) => {
     console.debug(res.data);
     localStorage.setItem('refreshToken', res.data.refreshToken);
     const { exp } = parseJWT(res.data.token);
-    cookie.set('token', res.data.token, {
+    cookie.set('token', `Bearer ${res.data.token}`, {
       expires: new Date(exp * 1000),
     });
   } catch (err) {
-    Toast.show({ message: err.message, intent: 'warning' });
-    console.log(err.response);
-
-    sessionStorage.setItem(
-      `err-${Date.now()}`,
-      err.response ? JSON.stringify(err.response.data) : err
-    );
+    HandleError(err, true);
     redirect('/');
   }
 };

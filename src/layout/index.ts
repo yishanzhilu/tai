@@ -4,5 +4,6 @@
  * All rights reserved
  */
 
-export { TaiLayout } from './taiLayout';
+export { WorkspaceLayout } from './workspaceLayout';
 export { LandingLayout } from './landingLayout';
+export { SettingLayout } from './settingLayout';

@@ -29,7 +29,7 @@ export function Banner() {
         <h1>确立目标 & 达成理想</h1>
         <p>关于长期目标的代办事项</p>
         <Button intent="primary" onClick={onClick}>
-          内测用户登录
+          内测 Github 账户登录
         </Button>
       </div>
       <img

@@ -69,7 +69,7 @@ export const RecordList = ({
       <span className={classNames(Classes.TEXT_SMALL, Classes.TEXT_MUTED)}>
         @{getDateDiffFromNow(globalState.user.createdAt)}
       </span>
-      <div style={{ lineHeight: '24px' }}>💫开始使用移山</div>
+      <div style={{ lineHeight: '24px' }}>💫 首次使用移山</div>
     </H6>
   );
   return (
@@ -84,7 +84,7 @@ export const RecordList = ({
           </li>
         ))}
         <li className="more">
-          <Card interactive={nextURL != null} onClick={handleMoreClick}>
+          <Card interactive={!!nextURL} onClick={handleMoreClick}>
             {loadingMore ? '加载更多...' : moreText}
           </Card>
         </li>

@@ -54,7 +54,13 @@ const ProfileMenu: React.FC = () => {
   );
 };
 
-export const Navbar = ({ isDarkTheme, handleToggleTheme }) => {
+export const Navbar = () => {
+  const [store, dispatch] = useGlobalContext();
+
+  const handleToggleTheme = () =>
+    dispatch({ type: 'SetTheme', newTheme: 'dark' });
+
+  const isDarkTheme = store.theme === 'dark';
   return (
     <NavbarContainer>
       <NavbarGroup>

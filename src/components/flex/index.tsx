@@ -35,16 +35,16 @@ export function Flex({
   let margin: string;
   switch (dir) {
     case 'row':
-      margin = `0 ${childMargin}px 0 0`;
+      margin = `0 ${childMargin}px ${childMargin}px 0`;
       break;
     case 'row-reverse':
-      margin = `0 0 0 ${childMargin}px`;
+      margin = `0 0 ${childMargin}px ${childMargin}px`;
       break;
     case 'column':
-      margin = `0 0 ${childMargin}px 0`;
+      margin = `0 ${childMargin}px ${childMargin}px 0`;
       break;
     case 'column-reverse':
-      margin = `${childMargin}px 0 0 0`;
+      margin = `${childMargin}px ${childMargin}px 0 0`;
       break;
     default:
       margin = ' 0 0 0 0';
@@ -64,9 +64,6 @@ export function Flex({
           }
           .container > :global(*) {
             margin: ${margin};
-          }
-          .container > :global(*):last-child {
-            margin: 0;
           }
         `}
       </style>

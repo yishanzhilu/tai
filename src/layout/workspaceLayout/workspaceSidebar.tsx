@@ -11,7 +11,7 @@ import Link from 'next/link';
 import { Classes, Divider, Text } from '@yishanzhilubp/core';
 
 import { useGlobalContext } from '@/src/contexts/global';
-import { UserProfile } from './sidebarUserProfile';
+import { UserProfile } from './workspaceSidebarUserProfile';
 
 function SidebarHeader({ children }) {
   return (
@@ -159,7 +159,7 @@ function SidebarWorks() {
   );
 }
 
-export const Sidebar: React.FC = () => {
+export const WorkSpaceSidebar: React.FC = () => {
   const router = useRouter();
   const { pathname } = router;
   const mainNavList = [

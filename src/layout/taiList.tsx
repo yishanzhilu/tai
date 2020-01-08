@@ -15,6 +15,7 @@ export function TaiList({ children, title }): React.ReactElement {
       <style jsx>{`
         .tai-list {
           margin-top: 20px;
+          width: 100%;
         }
         ul {
           margin-top: 20px;

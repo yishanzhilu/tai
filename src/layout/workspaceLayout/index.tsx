@@ -6,35 +6,35 @@
 
 import * as React from 'react';
 import classnames from 'classnames';
+import Head from 'next/head';
+
 import { Classes } from '@yishanzhilubp/core';
 
 import { IProps } from '@/src/model/utils';
-
-import { Navbar } from './navbar';
-// import { Sidebar } from './sidebar';
 import { useGlobalContext } from '@/src/contexts/global';
 
-export const TaiLayout = ({ children }: IProps) => {
-  const [store, dispatch] = useGlobalContext();
+import { Navbar } from '../common/navbar';
+import { WorkSpaceSidebar } from './workspaceSidebar';
 
-  const handleToggleTheme = () =>
-    dispatch({ type: 'SetTheme', newTheme: 'dark' });
+export const WorkspaceLayout = ({ children }: IProps) => {
+  const [store] = useGlobalContext();
 
   const isDarkTheme = store.theme === 'dark';
   const mainClass = classnames(isDarkTheme && Classes.DARK);
+
   return (
     <div className={mainClass} id="tai-app">
+      <Head>
+        <title>工作台 · 移山</title>
+      </Head>
       <div className="tai-app-inner">
         <header>
-          <Navbar
-            handleToggleTheme={handleToggleTheme}
-            isDarkTheme={isDarkTheme}
-          />
+          <Navbar />
         </header>
         <div className="main">
-          {/* <aside>
-            <Sidebar />
-          </aside> */}
+          <aside>
+            <WorkSpaceSidebar />
+          </aside>
           <article>
             <div className="article-inner">{children}</div>
             <div className="article-footer">
@@ -71,21 +71,28 @@ export const TaiLayout = ({ children }: IProps) => {
           position: fixed;
           z-index: 9;
           width: 300px;
+
           height: calc(100vh - 50px);
+        }
+        @media (max-width: 1200px) {
+          aside {
+            width: 250px;
+          }
         }
         article {
           flex-grow: 1;
           flex-shrink: 1;
           display: flex;
           flex-direction: column;
-          width: calc(100vw - 283px);
           padding-left: 400px;
-          padding-right: 100px;
+          padding-right: 400px;
           padding-top: 20px;
         }
         .article-inner {
+          width: 100%;
           max-width: 1000px;
-          min-height: calc(100vh - 105px);
+          min-height: calc(100vh - 150px);
+          margin: 0 auto;
         }
         .article-footer {
           margin: 32px 0;
