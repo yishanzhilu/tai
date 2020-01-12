@@ -15,27 +15,28 @@ interface IState {
   error?: Error;
 }
 
-export class ErrorBoundary extends React.Component<IProps, IState> {
+export class TaiErrorBoundary extends React.Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
     this.state = { hasError: false, error: null };
   }
 
-  static getDerivedStateFromError(error) {
+  static getDerivedStateFromError(error: Error) {
     return {
       hasError: true,
       error,
     };
   }
 
-  componentDidCatch(error, errorInfo) {
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     // You can also log the error to an error reporting service
-    console.error(error, errorInfo);
+    console.error('errorBoundary', error, errorInfo);
   }
 
   render() {
     const { hasError, error } = this.state;
     const { fallback, children } = this.props;
+
     if (hasError) {
       const fallbackWithError = React.cloneElement(fallback, {
         title: error.message,

@@ -6,7 +6,6 @@
 
 import * as React from 'react';
 
-import NextError from 'next/error';
 import {
   IUserProfile,
   IWorkProfile,
@@ -14,7 +13,9 @@ import {
   IMission,
 } from '@/src/model/schemas';
 import { axios } from '@/src/api';
-import { ErrorBoundary } from '@/src/components/errors/error-handling';
+import { TaiErrorBoundary } from '@/src/components/errors/errorBoundary';
+import TaiError from '@/pages/_error';
+
 import { goalReducer } from '../model/goalReducer';
 import { missionReducer } from '../model/missionReducer';
 
@@ -185,9 +186,9 @@ export const GlobalContextProvider = ({ children }) => {
   const [state, dispatch] = React.useReducer(globalReducer, defaultGlobalState);
   return (
     <GlobalContext.Provider value={[state, dispatch]}>
-      <ErrorBoundary fallback={<NextError statusCode={500} />}>
+      <TaiErrorBoundary fallback={<TaiError statusCode={500} />}>
         {children}
-      </ErrorBoundary>
+      </TaiErrorBoundary>
     </GlobalContext.Provider>
   );
 };

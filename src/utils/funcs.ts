@@ -88,7 +88,7 @@ export function Hour2HourMinutes(hourFloat: number): IHourMinute {
   };
 }
 
-// JavaScript函数
+// getDateDiffFromNow 获取从当前到目标时间的差值的口语化描述
 const minute = 1000 * 60;
 const hour = minute * 60;
 const day = hour * 24;

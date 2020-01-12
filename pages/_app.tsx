@@ -56,10 +56,6 @@ export default class TaiAPP extends App {
             href="https://cdn.jsdelivr.net/npm/normalizecss@3.0.0/normalize.css"
             rel="stylesheet"
           />
-          {/* <link
-            href="https://cdn.jsdelivr.net/npm/@blueprintjs/core@3.22.3/lib/css/blueprint.css"
-            rel="stylesheet"
-          /> */}
           <link rel="icon" type="image/x-icon" href="/static/favicon.ico" />
           <link
             rel="apple-touch-icon"

@@ -9,4 +9,16 @@ export interface IProps {
   className?: string;
 }
 
+export interface ITaiPageError {
+  statusCode: number;
+  title: string;
+}
+
+
+export interface IPageProps {
+  error?: ITaiPageError;
+}
+
 export type ITheme = 'light' | 'dark';
+
+

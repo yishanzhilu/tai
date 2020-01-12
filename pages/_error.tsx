@@ -8,6 +8,7 @@ import * as React from 'react';
 import Head from 'next/head';
 import { AnchorButton } from '@yishanzhilubp/core';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 
 /* eslint-disable react/no-danger */
 
@@ -39,10 +40,17 @@ function TaiError({ statusCode, title = '出错了' }) {
           <h1 style={{ fontSize: 40, margin: 0 }}>{statusCode}</h1>
         ) : null}
         <p style={{ fontSize: 18, margin: '23px 0', maxWidth: 300 }}>{title}</p>
-
-        <AnchorButton href="/" intent="primary">
-          返回首页
-        </AnchorButton>
+        <Link href="/" passHref>
+          <AnchorButton intent="primary">返回首页</AnchorButton>
+        </Link>
+        {statusCode === 403 && (
+          <Link
+            href={{ pathname: '/login', query: { 'redirect-from': asPath } }}
+            passHref
+          >
+            <AnchorButton style={{ marginLeft: 20 }}>登录访问</AnchorButton>
+          </Link>
+        )}
       </div>
       <img
         style={{ width: 150, height: 150, marginLeft: 100 }}
