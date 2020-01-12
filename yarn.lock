@@ -5453,6 +5453,16 @@ kleur@^3.0.3:
   resolved "https://registry.npm.taobao.org/kleur/download/kleur-3.0.3.tgz#a79c9ecc86ee1ce3fa6206d1216c501f147fc07e"
   integrity sha1-p5yezIbuHOP6YgbRIWxQHxR/wH4=
 
+konva@2.5.1:
+  version "2.5.1"
+  resolved "https://registry.npm.taobao.org/konva/download/konva-2.5.1.tgz?cache=0&sync_timestamp=1578490404002&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fkonva%2Fdownload%2Fkonva-2.5.1.tgz#cca611a9522e831e54cf57c508a1aed3f0ceac25"
+  integrity sha1-zKYRqVIugx5Uz1fFCKGu0/DOrCU=
+
+konva@^4.1.2:
+  version "4.1.2"
+  resolved "https://registry.npm.taobao.org/konva/download/konva-4.1.2.tgz?cache=0&sync_timestamp=1578490404002&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fkonva%2Fdownload%2Fkonva-4.1.2.tgz#b0718ae02539866ff9d4897dec42d2fb58dc3812"
+  integrity sha1-sHGK4CU5hm/51Il97ELS+1jcOBI=
+
 launch-editor@2.2.1:
   version "2.2.1"
   resolved "https://registry.npm.taobao.org/launch-editor/download/launch-editor-2.2.1.tgz#871b5a3ee39d6680fcc26d37930b6eeda89db0ca"
@@ -7370,6 +7380,13 @@ raw-body@2.4.0:
     http-errors "1.7.2"
     iconv-lite "0.4.24"
     unpipe "1.0.0"
+
+react-avatar-edit@^0.8.3:
+  version "0.8.3"
+  resolved "https://registry.npm.taobao.org/react-avatar-edit/download/react-avatar-edit-0.8.3.tgz#0ebf21391328fc255429bdfbc782f795827109bf"
+  integrity sha1-Dr8hORMo/CVUKb37x4L3lYJxCb8=
+  dependencies:
+    konva "2.5.1"
 
 react-day-picker@^7.3.2:
   version "7.4.0"

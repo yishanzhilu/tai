@@ -15,11 +15,11 @@ interface IFlexProps {
   alignItems?: 'flex-start' | 'flex-end' | 'center' | 'baseline' | 'stretch';
   wrap?: boolean;
   justifyContent?:
-    | 'flex-start'
-    | 'flex-end'
-    | 'center'
-    | 'space-between'
-    | 'space-around';
+  | 'flex-start'
+  | 'flex-end'
+  | 'center'
+  | 'space-between'
+  | 'space-around';
   childMargin?: number;
 }
 
