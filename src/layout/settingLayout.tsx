@@ -12,6 +12,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import classNames from 'classnames';
 
+
 import { Navbar } from './common/navbar';
 
 function SettingSidebar() {
@@ -91,7 +92,7 @@ export function SettingLayout({ children }): React.ReactElement {
         <div style={{ width: 250 }}>
           <SettingSidebar />
         </div>
-        <div style={{ marginLeft: 20, width: '100%' }}>{children}</div>
+        <div style={{ marginLeft: 20, width: '100%', maxWidth: '805px' }}>{children}</div>
       </main>
       <Divider />
       <footer
