@@ -47,7 +47,7 @@ export function UserProfile() {
   const [store] = useGlobalContext();
   const {
     work: { minutes },
-    user: { username },
+    user: { name, avatarUrl },
   } = store;
   const hours = Math.floor(minutes / 24);
   const hoursTo10k = 10000 - Math.ceil(minutes / 24);
@@ -55,7 +55,10 @@ export function UserProfile() {
     <div className="user-profile">
       <Flex className="row" alignItems="center">
         <img
-          src="https://avatars0.githubusercontent.com/u/39581744?s=40&amp;v=4"
+          src={avatarUrl}
+          className={Classes.ELEVATION_1}
+          style={{ borderRadius: 10 }}
+          crossOrigin="anonymous"
           width="20"
           height="20"
           alt="@ChiQianBingYue"
@@ -64,7 +67,7 @@ export function UserProfile() {
           className={classNames(Classes.TEXT_OVERFLOW_ELLIPSIS)}
           style={{ fontWeight: 600, maxWidth: 125 }}
         >
-          {username || '您好'}
+          {name || '您好'}
         </div>
       </Flex>
       <div className="row">

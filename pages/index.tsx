@@ -13,6 +13,8 @@ import { Classes, H1, Button } from '@yishanzhilubp/core';
 import { LandingLayout } from '@/src/layout';
 import { GITHUB_OAUTH_URL } from '@/src/utils/constants';
 import { redirect } from '@/src/utils/funcs';
+import { withPageGuard } from '@/src/utils/pageGuard';
+import { IPageProps } from '@/src/model/utils';
 
 const onClick = () => {
   if (jsCookie.get('token')) {
@@ -163,7 +165,7 @@ export function Section({
   );
 }
 
-const Index: NextPage = () => {
+const Index: NextPage<IPageProps> = () => {
   return (
     <LandingLayout>
       <main>
@@ -201,4 +203,4 @@ const Index: NextPage = () => {
   );
 };
 
-export default Index;
+export default withPageGuard(Index);

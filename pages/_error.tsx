@@ -21,11 +21,11 @@ const styles: { [k: string]: React.CSSProperties } = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 180,
+    marginTop: '30vh',
   },
 };
 
-function TaiError({ statusCode, title = '出错了' }) {
+function TaiError({ statusCode = 500, title = '出错了' }) {
   const { asPath } = useRouter();
   if (statusCode === 404) {
     title = `请求的 URL ${asPath} 不存在`;
@@ -40,9 +40,9 @@ function TaiError({ statusCode, title = '出错了' }) {
           <h1 style={{ fontSize: 40, margin: 0 }}>{statusCode}</h1>
         ) : null}
         <p style={{ fontSize: 18, margin: '23px 0', maxWidth: 300 }}>{title}</p>
-        <Link href="/" passHref>
-          <AnchorButton intent="primary">返回首页</AnchorButton>
-        </Link>
+        <AnchorButton href="/" intent="primary">
+          返回首页
+        </AnchorButton>
         {statusCode === 403 && (
           <Link
             href={{ pathname: '/login', query: { 'redirect-from': asPath } }}

@@ -18,6 +18,7 @@ import TaiError from '@/pages/_error';
 
 import { goalReducer } from '../model/goalReducer';
 import { missionReducer } from '../model/missionReducer';
+import { IS_BROWSER } from '../utils/env';
 
 export type ITheme = 'light' | 'dark';
 
@@ -86,10 +87,10 @@ const globalWorkReducer = (
   }
 };
 
-type IGlobalAction =
+export type IGlobalAction =
   | { type: 'SetTheme'; newTheme: ITheme }
   | { type: 'LogOut' }
-  | { type: 'Login' }
+  | { type: 'Login'; user: IUserProfile }
   | IGlobalWorkAction;
 
 export interface IGlobalState {
@@ -100,7 +101,7 @@ export interface IGlobalState {
 }
 
 export const defaultGlobalState: IGlobalState = {
-  user: { username: '', email: '', userID: 0, createdAt: '', updatedAt: '' },
+  user: { name: '', avatarUrl: '', id: 0, createdAt: '', updatedAt: '' },
   theme: 'light',
   isLogin: false,
   work: {
@@ -114,7 +115,7 @@ export const globalReducer = (
   globalState: IGlobalState,
   globalAction: IGlobalAction
 ): IGlobalState => {
-  console.debug('globalReducer', globalAction);
+  console.debug('globalReducer', globalAction, globalState);
 
   switch (globalAction.type) {
     case 'LogOut':
@@ -124,10 +125,12 @@ export const globalReducer = (
       };
     case 'Login':
       return {
-        ...defaultGlobalState,
+        ...globalState,
+        user: globalAction.user,
         isLogin: true,
       };
     case 'SetTheme':
+      if (IS_BROWSER) localStorage.setItem('tai-theme', globalAction.newTheme);
       return {
         ...globalState,
         theme: globalAction.newTheme,
@@ -183,6 +186,7 @@ export const useGlobalContext = () => {
 };
 
 export const GlobalContextProvider = ({ children }) => {
+  console.debug('GlobalContextProvider');
   const [state, dispatch] = React.useReducer(globalReducer, defaultGlobalState);
   return (
     <GlobalContext.Provider value={[state, dispatch]}>

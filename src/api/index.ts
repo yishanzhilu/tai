@@ -8,8 +8,16 @@ import { NextPageContext } from 'next';
 import Axios, { AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
 import jsCookie from 'js-cookie';
 import nextCookie from 'next-cookies';
-import { IS_SERVER, SERVER_API_URL, API_URL, IS_BROWSER } from '../utils/env';
+import {
+  IS_SERVER,
+  SERVER_API_URL,
+  API_URL,
+  IS_BROWSER,
+  VERSION,
+} from '../utils/env';
 import { Toast } from '../utils/toaster';
+import { parseJWT } from '../model/utils';
+import { REFRESH_TOKEN_KEY, USER_ID_KEY, TOKEN_KEY } from '../utils/constants';
 
 const baseURL = IS_SERVER ? SERVER_API_URL : API_URL;
 
@@ -18,17 +26,50 @@ export const axios = Axios.create({
   timeout: 10000,
 });
 
-axios.interceptors.request.use(
-  (config): AxiosRequestConfig => {
-    if (IS_BROWSER) {
-      const token = jsCookie.get('everestToken');
-      if (token) {
-        config.headers.Authorization = token;
+axios.interceptors.request.use(async config => {
+  if (IS_BROWSER) {
+    if (config.headers.skipToken) {
+      delete config.headers.skipToken;
+      return config;
+    }
+    const token = jsCookie.get(TOKEN_KEY);
+    if (token) {
+      config.headers.Authorization = token;
+    } else {
+      // token expired
+      const refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY);
+      const userID = Number(localStorage.getItem(USER_ID_KEY));
+      if (!refreshToken) {
+        throw Error('Refresh Token Disappeared');
+      }
+      try {
+        const res = await axios.post<{ token: string }>(
+          '/user/token',
+          {
+            userID,
+            refreshToken,
+          },
+          {
+            headers: {
+              skipToken: true,
+            },
+          }
+        );
+        const { exp } = parseJWT(res.data.token);
+        jsCookie.set(TOKEN_KEY, `Bearer ${res.data.token}`, {
+          expires: new Date(exp * 1000),
+        });
+        config.headers.Authorization = res.data.token;
+        return config;
+      } catch (error) {
+        throw Error('Refresh Token Not Right');
       }
     }
-    return config;
+  } else if (IS_SERVER) {
+    config.headers['User-Agent'] = `tai ${VERSION}`;
   }
-);
+  return config;
+});
 
 axios.interceptors.response.use(
   (response): AxiosResponse => {
@@ -77,18 +118,18 @@ const praseHTTPErrorStatusText = (status: number): string => {
 };
 
 export function HandleError(error: AxiosError, toast = true) {
-  console.error(error);
   if (!error.response) {
     throw error;
   }
   const message =
     error.response.data.error ||
     praseHTTPErrorStatusText(error.response.status);
-  if (toast) {
+  if (toast && IS_BROWSER) {
     Toast.show({ message, intent: 'warning' });
     sessionStorage.setItem(
       `err-${Date.now()}`,
       error.response ? JSON.stringify(error.response.data) : error.message
     );
   }
+  return { code: error.response.status, message };
 }

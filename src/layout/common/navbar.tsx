@@ -5,6 +5,10 @@
  */
 
 import * as React from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import cookie from 'js-cookie';
+
 import {
   Button,
   Classes,
@@ -19,10 +23,12 @@ import {
   Popover,
   Menu,
   MenuItem,
+  AnchorButton,
+  MenuDivider,
 } from '@yishanzhilubp/core';
-import cookie from 'js-cookie';
-import { useRouter } from 'next/router';
+
 import { useGlobalContext } from '@/src/contexts/global';
+import { GITHUB_OAUTH_URL } from '@/src/utils/constants';
 
 const CreateMenu: React.FC = () => {
   return (
@@ -40,12 +46,37 @@ const ProfileMenu: React.FC = () => {
   const [, dispatch] = useGlobalContext();
   return (
     <Menu>
+      <MenuDivider
+        title={
+          <div
+            style={{
+              fontSize: 16,
+              fontWeight: 600,
+              marginBottom: 10,
+              marginTop: 5,
+            }}
+          >
+            qy
+          </div>
+        }
+      />
+      <MenuDivider />
+      <Link href="/settings/profile" passHref>
+        <MenuItem icon="settings" text="设置" />
+      </Link>
       <MenuItem
         icon="log-out"
         text="退出"
         onClick={() => {
-          localStorage.removeItem('refreshToken');
-          cookie.remove('token');
+          localStorage.removeItem('taiUserID');
+          localStorage.removeItem('taiRefreshToken');
+          cookie.remove('x-tai-everest-fresh-token', {
+            path: '/refresh-login',
+          });
+          cookie.remove('x-tai-everest-user-id', {
+            path: '/refresh-login',
+          });
+          cookie.remove('x-tai-everest-token');
           router.replace('/').then(() => window.scrollTo(0, 0));
           dispatch({ type: 'LogOut' });
         }}
@@ -57,19 +88,25 @@ const ProfileMenu: React.FC = () => {
 export const Navbar = () => {
   const [store, dispatch] = useGlobalContext();
 
-  const handleToggleTheme = () =>
-    dispatch({ type: 'SetTheme', newTheme: 'dark' });
+  const handleToggleTheme = () => {
+    const newTheme = store.theme === 'light' ? 'dark' : 'light';
+    dispatch({ type: 'SetTheme', newTheme });
+  };
 
   const isDarkTheme = store.theme === 'dark';
   return (
     <NavbarContainer>
       <NavbarGroup>
         <NavbarHeading>
-          <img
-            src="/static/layout/logo.png"
-            alt="logo"
-            style={{ width: 30, height: 30 }}
-          />
+          <Link href={store.isLogin ? '/workspace/dashboard' : '/'}>
+            <a>
+              <img
+                src="/static/layout/logo.png"
+                alt="logo"
+                style={{ width: 30, height: 30 }}
+              />
+            </a>
+          </Link>
         </NavbarHeading>
         <div className="bp3-input-group">
           <Icon icon="search" />
@@ -77,20 +114,37 @@ export const Navbar = () => {
         </div>
       </NavbarGroup>
       <NavbarGroup align={Alignment.RIGHT}>
-        <Switch
-          checked={isDarkTheme}
-          label="Dark Mode"
-          alignIndicator={Alignment.RIGHT}
-          onChange={handleToggleTheme}
-          style={{ marginBottom: 0 }}
-        />
-        <NavbarDivider />
-        <Popover content={<CreateMenu />} position={Position.BOTTOM_RIGHT}>
-          <Button className={Classes.MINIMAL} icon="add" />
-        </Popover>
-        <Popover content={<ProfileMenu />} position={Position.BOTTOM_RIGHT}>
-          <Button className={Classes.MINIMAL} icon="cog" />
-        </Popover>
+        {store.isLogin ? (
+          <>
+            <Switch
+              checked={isDarkTheme}
+              label="深色模式"
+              alignIndicator={Alignment.RIGHT}
+              onChange={handleToggleTheme}
+              style={{ marginBottom: 0 }}
+            />
+            <NavbarDivider />
+            <Popover content={<CreateMenu />} position={Position.BOTTOM_RIGHT}>
+              <Button className={Classes.MINIMAL} icon="add" />
+            </Popover>
+            <Popover content={<ProfileMenu />} position={Position.BOTTOM_RIGHT}>
+              <Button
+                className={Classes.MINIMAL}
+                rightIcon="caret-down"
+                icon={
+                  <img
+                    src={store.user.avatarUrl}
+                    style={{ width: 20, height: 20, borderRadius: 4 }}
+                  />
+                }
+              />
+            </Popover>
+          </>
+        ) : (
+          <AnchorButton minimal intent="primary" href={GITHUB_OAUTH_URL}>
+            内测用户登录
+          </AnchorButton>
+        )}
       </NavbarGroup>
     </NavbarContainer>
   );

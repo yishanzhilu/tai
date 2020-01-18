@@ -12,8 +12,8 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import classNames from 'classnames';
 
-
 import { Navbar } from './common/navbar';
+import { ThemeLayout } from './themeLayout';
 
 function SettingSidebar() {
   const { pathname } = useRouter();
@@ -31,40 +31,41 @@ function SettingSidebar() {
         </Link>
       </li>
       <li>
-        <Link href="/settings/account" passHref>
-          <a
-            className={classNames([
-              pathname === '/settings/account' && 'active',
-            ])}
-          >
-            账户管理
+        <Link href="/settings/app" passHref>
+          <a className={classNames([pathname === '/settings/app' && 'active'])}>
+            应用配置
           </a>
         </Link>
       </li>
       <style jsx>
         {`
           ul {
-            border: 1px solid #e8e8e8;
+            box-shadow: 0 0 0 1px rgba(16, 22, 26, 0.15),
+              0 0 0 rgba(16, 22, 26, 0), 0 0 0 rgba(16, 22, 26, 0);
+            margin: -1px;
           }
           li {
-            border-bottom: 1px solid #e8e8e8;
+            box-shadow: 0 0 0 1px rgba(16, 22, 26, 0.15),
+              0 0 0 rgba(16, 22, 26, 0), 0 0 0 rgba(16, 22, 26, 0);
           }
           a {
             display: block;
             border-left: 2px solid rgba(0, 0, 0, 0);
             font-weight: 500;
-            color: #595959;
+            color: inherit;
             line-height: 32px;
             height: 32px;
             padding-left: 24px;
           }
           a:hover {
             text-decoration: none;
+            color: inherit;
+            font-weight: 600;
           }
 
           a.active {
-            color: #262626;
             border-left-color: #e53934;
+            font-weight: 900;
           }
         `}
       </style>
@@ -74,7 +75,7 @@ function SettingSidebar() {
 
 export function SettingLayout({ children }): React.ReactElement {
   return (
-    <div>
+    <ThemeLayout>
       <Head>
         <title>设置 · 移山</title>
       </Head>
@@ -92,7 +93,9 @@ export function SettingLayout({ children }): React.ReactElement {
         <div style={{ width: 250 }}>
           <SettingSidebar />
         </div>
-        <div style={{ marginLeft: 20, width: '100%', maxWidth: '805px' }}>{children}</div>
+        <div style={{ marginLeft: 20, width: '100%', maxWidth: '805px' }}>
+          {children}
+        </div>
       </main>
       <Divider />
       <footer
@@ -104,6 +107,6 @@ export function SettingLayout({ children }): React.ReactElement {
       >
         © {new Date().getFullYear()} Yishan Authors
       </footer>
-    </div>
+    </ThemeLayout>
   );
 }

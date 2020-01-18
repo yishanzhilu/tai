@@ -9,6 +9,10 @@ import getConfig from 'next/config';
 const publicRuntimeConfigForTest = {
   IS_PRODUCTION: true,
 };
+export const AUTHOR = 'Yishan Authors';
+
+export const IS_SERVER = typeof window === 'undefined';
+export const IS_BROWSER = !IS_SERVER;
 
 const { publicRuntimeConfig = publicRuntimeConfigForTest } = getConfig() || {};
 const {
@@ -18,11 +22,6 @@ const {
   VERSION,
   GITHUB_OAUTH_CLIENT_ID,
 } = publicRuntimeConfig;
-
-export const AUTHOR = 'Yishan Authors';
-
-export const IS_SERVER = typeof window === 'undefined';
-export const IS_BROWSER = !IS_SERVER;
 
 export {
   API_URL,

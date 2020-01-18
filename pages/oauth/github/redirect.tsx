@@ -7,65 +7,62 @@
 import React from 'react';
 import { NextPage } from 'next';
 import { Spinner, Classes } from '@yishanzhilubp/core';
-import { useRouter } from 'next/router';
 import cookie from 'js-cookie';
 
 import { axios, HandleError } from '@/src/api';
-import { IS_BROWSER } from '@/src/utils/env';
 import { LandingLayout } from '@/src/layout';
 import { Flex } from '@/src/components/flex';
+import { parseJWT, IPageProps } from '@/src/model/utils';
+import TaiError from '@/pages/_error';
 import { redirect } from '@/src/utils/funcs';
-import { useGlobalContext } from '@/src/contexts/global';
+import {
+  REFRESH_TOKEN_EXPIRE_DAYS,
+  REFRESH_TOKEN_KEY,
+  USER_ID_KEY,
+  TOKEN_KEY,
+} from '@/src/utils/constants';
 
-interface IToken {
-  userID: string;
-  exp: number;
-  iss: string;
+interface IProps extends IPageProps {
+  token?: string;
+  refreshToken?: string;
 }
 
-const parseJWT = (token: string): IToken => {
-  try {
-    return JSON.parse(atob(token.split('.')[1]));
-  } catch (e) {
-    return null;
-  }
-};
-
-const oauthGithub = async (code: string) => {
-  try {
-    const res = await axios.get<{ token: string; refreshToken: string }>(
-      '/user/oauth/github',
-      {
-        params: { code },
-      }
-    );
-    console.debug(res.data);
-    localStorage.setItem('refreshToken', res.data.refreshToken);
-    const { exp } = parseJWT(res.data.token);
-    cookie.set('token', `Bearer ${res.data.token}`, {
-      expires: new Date(exp * 1000),
-    });
-  } catch (err) {
-    HandleError(err, true);
-    redirect('/');
-  }
-};
-
-const OauthGithubRedirect: NextPage = () => {
-  const {
-    query: { code },
-  } = useRouter();
-  const [_, dispatchGlobalAction] = useGlobalContext();
+const OauthGithubRedirect: NextPage<IProps> = ({
+  token,
+  refreshToken,
+  error,
+}) => {
   React.useEffect(() => {
-    console.log('OauthGithubRedirect useEffect, code:', code);
-
-    if (IS_BROWSER && code) {
-      oauthGithub(code as string).then(() => {
-        dispatchGlobalAction({ type: 'Login' });
-        redirect('/workspace/dashboard');
+    console.debug('OauthGithubRedirect useEffect, error:', error);
+    if (token && refreshToken) {
+      const { exp, userID } = parseJWT(token);
+      cookie.set(TOKEN_KEY, `Bearer ${token}`, {
+        expires: new Date(exp * 1000),
       });
+
+      // add refresh-token and user id to cookie
+      // with path /refresh-login for refresh login
+      cookie.set(REFRESH_TOKEN_KEY, refreshToken, {
+        expires: REFRESH_TOKEN_EXPIRE_DAYS,
+        path: '/refresh-login',
+      });
+
+      cookie.set(USER_ID_KEY, userID, {
+        expires: REFRESH_TOKEN_EXPIRE_DAYS,
+        path: '/refresh-login',
+      });
+
+      // add refresh-token and user id to localStorage
+      // for axios to refresh token
+      localStorage.setItem(REFRESH_TOKEN_KEY, refreshToken);
+      localStorage.setItem(USER_ID_KEY, userID);
+
+      redirect('/workspace/dashboard');
     }
-  }, [code]);
+  }, [token]);
+  if (error) {
+    return <TaiError statusCode={error.statusCode} title={error.title} />;
+  }
   return (
     <LandingLayout>
       <main>
@@ -76,7 +73,7 @@ const OauthGithubRedirect: NextPage = () => {
           childMargin={20}
         >
           <Spinner />
-          <p className={Classes.TEXT_LARGE}>重定向中</p>
+          <p className={Classes.TEXT_LARGE}>登录中</p>
         </Flex>
       </main>
       <style jsx>
@@ -89,6 +86,32 @@ const OauthGithubRedirect: NextPage = () => {
       </style>
     </LandingLayout>
   );
+};
+
+OauthGithubRedirect.getInitialProps = async ctx => {
+  const { code } = ctx.query;
+  console.debug('OauthGithubRedirect getInitialProps, code:', code);
+
+  if (code) {
+    try {
+      const oauthResp = await axios.get<{
+        token: string;
+        refreshToken: string;
+      }>('/user/oauth/github', {
+        params: { code },
+      });
+      return oauthResp.data;
+    } catch (err) {
+      const { message, code: errCode } = HandleError(err);
+      return {
+        error: { statusCode: errCode, title: message },
+      };
+    }
+  } else {
+    return {
+      error: { statusCode: 400, title: '链接错误' },
+    };
+  }
 };
 
 export default OauthGithubRedirect;

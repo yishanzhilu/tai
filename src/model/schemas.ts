@@ -5,9 +5,9 @@
  */
 
 export interface IUserProfile {
-  username: string;
-  email: string;
-  userID: number;
+  name: string;
+  avatarUrl: string;
+  id: number;
   createdAt: string;
   updatedAt: string;
 }

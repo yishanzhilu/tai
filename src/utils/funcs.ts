@@ -10,6 +10,7 @@ import Router from 'next/router';
 import cookie from 'js-cookie';
 import { NextPageContext } from 'next';
 import { OutgoingHttpHeaders } from 'http';
+import querystring, { ParsedUrlQuery } from 'querystring';
 
 import { IS_PRODUCTION, IS_SERVER, IS_BROWSER } from './env';
 
@@ -17,12 +18,14 @@ import { IS_PRODUCTION, IS_SERVER, IS_BROWSER } from './env';
 export function noop() {}
 
 export function setUpConsole() {
-  if (IS_PRODUCTION && IS_BROWSER) {
-    console.log = noop;
+  if (IS_PRODUCTION) {
+    if (IS_BROWSER) {
+      console.log = noop;
+      console.info = noop;
+      console.warn = noop;
+      console.error = noop;
+    }
     console.debug = noop;
-    console.info = noop;
-    console.warn = noop;
-    console.error = noop;
   }
 }
 
@@ -37,16 +40,25 @@ export function sleep(delay: number) {
 export function redirect(
   url: string,
   ctx?: NextPageContext,
-  removeCookie?: boolean
+  removeCookie = false,
+  withRedirectFrom = false,
+  query: ParsedUrlQuery = {}
 ): void {
+  function parseUrl(asPath: string) {
+    if (withRedirectFrom) query['redirect-from'] = asPath;
+    if (removeCookie) {
+      query['clear-token'] = '';
+    }
+    const queryStr = querystring.stringify(query);
+    url = queryStr === '' ? url : `${url}?${queryStr}`;
+    return url;
+  }
   if (IS_SERVER) {
     if (!ctx || !ctx.res) {
       return;
     }
     const headers: OutgoingHttpHeaders = {
-      Location: `${url}?redirect-from=${ctx.asPath}${
-        removeCookie ? '&clear-token' : ''
-      }`,
+      Location: parseUrl(ctx.asPath),
     };
     if (removeCookie) {
       headers['Set-Cookie'] =
@@ -59,7 +71,7 @@ export function redirect(
       cookie.remove('token');
       localStorage.removeItem('refreshToken');
     }
-    Router.replace(url);
+    Router.replace(parseUrl(Router.asPath));
   }
 }
 
