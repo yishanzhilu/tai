@@ -5,19 +5,14 @@
  */
 import React from 'react';
 
-import {
-  Button,
-  Keys,
-  FormGroup,
-  TextArea,
-  H6,
-} from '@yishanzhilubp/core';
+import { Button, Keys, FormGroup, TextArea, H6 } from '@yishanzhilubp/core';
 import { Flex } from '../flex';
 import { useInputRef } from '@/src/utils/hooks';
-import { axios } from '@/src/api';
+import { f } from '@/src/api';
 import { GoalMissionMenu } from '../goalMission';
 import { ITodosActions } from './todoList';
 import { IGoalMission } from '@/src/model/schemas';
+import { Toast } from '@/src/utils/toaster';
 
 export const NewTodo = ({
   isEditing,
@@ -53,20 +48,25 @@ export const NewTodo = ({
     });
     const data = {
       content: input.value,
-      status: 'doing',
+      status: 'todo',
       ...goalMission,
     };
-    const res = await axios.post('/workspace/todo', data);
-    setLoading(false);
-    dispatchTodosAction({
-      type: 'Unfreeze',
-    });
-    dispatchTodosAction({
-      type: 'NewTodoSubmit',
-      todo: res.data,
-    });
-    input.value = '';
-    input.focus();
+    try {
+      const res = await f.post('/tasks', data);
+      dispatchTodosAction({
+        type: 'NewTodoSubmit',
+        todo: res.data,
+      });
+      input.value = '';
+    } catch (error) {
+      Toast.show({ message: error.message, intent: 'primary' });
+    } finally {
+      setLoading(false);
+      dispatchTodosAction({
+        type: 'Unfreeze',
+      });
+      input.focus();
+    }
   };
 
   const handleEnter = () => {
@@ -125,12 +125,12 @@ export const NewTodo = ({
         </>
       ) : (
         <Button
-          intent="primary"
           onClick={() => {
             dispatchTodosAction({
               type: 'NewTodo',
             });
           }}
+          icon={<span>✔️</span>}
         >
           添加事项
         </Button>

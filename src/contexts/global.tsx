@@ -12,7 +12,6 @@ import {
   IGoal,
   IMission,
 } from '@/src/model/schemas';
-import { axios } from '@/src/api';
 import { TaiErrorBoundary } from '@/src/components/errors/errorBoundary';
 import TaiError from '@/pages/_error';
 
@@ -147,28 +146,6 @@ export const globalReducer = (
   }
 };
 
-export async function getInitialGlobalState(
-  token: string
-): Promise<IGlobalState> {
-  const res = await Promise.all([
-    axios.get('/users/me', {
-      headers: {
-        Authorization: token,
-      },
-    }),
-    axios.get('/workspace/overview', {
-      headers: {
-        Authorization: token,
-      },
-    }),
-  ]);
-  return {
-    user: res[0].data,
-    work: res[1].data,
-    theme: 'light',
-    isLogin: true,
-  };
-}
 
 // context and its provider for global store
 export const GlobalContext = React.createContext<

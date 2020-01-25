@@ -7,7 +7,7 @@
 import React from 'react';
 import { NextPage } from 'next';
 import nextCookie from 'next-cookies';
-import { axios, HandleError } from '@/src/api';
+import { f, HandleError } from '@/src/api';
 import { parseJWT } from '@/src/model/utils';
 import { redirect } from '@/src/utils/funcs';
 import {
@@ -43,7 +43,7 @@ RefreshLogin.getInitialProps = async ctx => {
       });
       return;
     }
-    const res = await axios.post<{ token: string }>('/user/token', {
+    const res = await f.post<{ token: string }>('/user/token', {
       userID,
       refreshToken,
     });

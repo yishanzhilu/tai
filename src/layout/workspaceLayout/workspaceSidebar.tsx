@@ -141,7 +141,7 @@ function SidebarWorks() {
   return (
     <ul className={Classes.TREE_NODE_LIST}>
       <SidebarHeader>目标</SidebarHeader>
-      {store.work &&
+      {store.work.goals.length > 0 ? (
         store.work.goals.map(g => (
           <SidebarGoal
             key={`goal-${g.id}`}
@@ -149,12 +149,26 @@ function SidebarWorks() {
             missions={g.missions}
             title={g.title}
           />
-        ))}
+        ))
+      ) : (
+        <li className={Classes.TREE_NODE}>
+          <div className={Classes.TEXT_MUTED} style={{ padding: '0 20px' }}>
+            <span>未设立</span>
+          </div>
+        </li>
+      )}
       <SidebarHeader>独立任务</SidebarHeader>
-      {store.work &&
+      {store.work.missions.length > 0 ? (
         store.work.missions.map(m => (
           <SidebarMission key={`mission-${m.id}`} title={m.title} id={m.id} />
-        ))}
+        ))
+      ) : (
+        <li className={Classes.TREE_NODE}>
+          <div className={Classes.TEXT_MUTED} style={{ padding: '0 20px' }}>
+            <span>未设立</span>
+          </div>
+        </li>
+      )}
     </ul>
   );
 }

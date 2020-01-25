@@ -60,12 +60,12 @@ function SettingSidebar() {
           a:hover {
             text-decoration: none;
             color: inherit;
-            font-weight: 600;
+            font-weight: bold;
           }
 
           a.active {
             border-left-color: #e53934;
-            font-weight: 900;
+            font-weight: bold;
           }
         `}
       </style>

@@ -9,54 +9,30 @@ import { NextPage } from 'next';
 import { Spinner, Classes } from '@yishanzhilubp/core';
 import cookie from 'js-cookie';
 
-import { axios, HandleError } from '@/src/api';
+import { f, HandleError } from '@/src/api';
 import { LandingLayout } from '@/src/layout';
 import { Flex } from '@/src/components/flex';
-import { parseJWT, IPageProps } from '@/src/model/utils';
+import { IPageProps } from '@/src/model/utils';
 import TaiError from '@/pages/_error';
 import { redirect } from '@/src/utils/funcs';
 import {
-  REFRESH_TOKEN_EXPIRE_DAYS,
-  REFRESH_TOKEN_KEY,
-  USER_ID_KEY,
   TOKEN_KEY,
 } from '@/src/utils/constants';
 
 interface IProps extends IPageProps {
   token?: string;
-  refreshToken?: string;
 }
 
 const OauthGithubRedirect: NextPage<IProps> = ({
   token,
-  refreshToken,
   error,
 }) => {
   React.useEffect(() => {
     console.debug('OauthGithubRedirect useEffect, error:', error);
-    if (token && refreshToken) {
-      const { exp, userID } = parseJWT(token);
+    if (token) {
       cookie.set(TOKEN_KEY, `Bearer ${token}`, {
-        expires: new Date(exp * 1000),
+        expires: 365,
       });
-
-      // add refresh-token and user id to cookie
-      // with path /refresh-login for refresh login
-      cookie.set(REFRESH_TOKEN_KEY, refreshToken, {
-        expires: REFRESH_TOKEN_EXPIRE_DAYS,
-        path: '/refresh-login',
-      });
-
-      cookie.set(USER_ID_KEY, userID, {
-        expires: REFRESH_TOKEN_EXPIRE_DAYS,
-        path: '/refresh-login',
-      });
-
-      // add refresh-token and user id to localStorage
-      // for axios to refresh token
-      localStorage.setItem(REFRESH_TOKEN_KEY, refreshToken);
-      localStorage.setItem(USER_ID_KEY, userID);
-
       redirect('/workspace/dashboard');
     }
   }, [token]);
@@ -94,9 +70,8 @@ OauthGithubRedirect.getInitialProps = async ctx => {
 
   if (code) {
     try {
-      const oauthResp = await axios.get<{
+      const oauthResp = await f.get<{
         token: string;
-        refreshToken: string;
       }>('/user/oauth/github', {
         params: { code },
       });

@@ -17,7 +17,7 @@ import classNames from 'classnames';
 import { ITodo } from '@/src/model/schemas';
 import { GoalMission } from '../goalMission';
 import { ITodosActions } from './todoList';
-import { axios } from '@/src/api';
+import { f } from '@/src/api';
 import { Flex } from '../flex';
 import { FinishedTodoContext } from '@/src/contexts/finishedTodo';
 
@@ -36,7 +36,7 @@ export const DefaultTodo = ({ todo, dispatchTodosAction }: IProps) => {
       type: 'Freeze',
     });
     try {
-      await axios.patch<ITodo>(`/workspace/todo/${todo.id}`, {
+      await f.patch<ITodo>(`/workspace/todo/${todo.id}`, {
         status: 'done',
       });
       setStatus('done');

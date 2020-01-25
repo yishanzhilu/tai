@@ -14,7 +14,7 @@ import { FinishedTodoContext } from '@/src/contexts/finishedTodo';
 import { Record } from './record';
 import { NewRecord } from './newRecord';
 import { recordListReducer, RecordsContext } from './recordListReduceContext';
-import { axios } from '@/src/api';
+import { f } from '@/src/api';
 import { Toast } from '@/src/utils/toaster';
 import { TaiList } from '@/src/layout/taiList';
 import { getDateDiffFromNow } from '@/src/utils/funcs';
@@ -49,7 +49,7 @@ export const RecordList = ({
     setLoadingMore(true);
     dispatch({ type: 'Freeze' });
     try {
-      const res = await axios.get<{ data: IRecord[]; nextURL?: string }>(
+      const res = await f.get<{ data: IRecord[]; nextURL?: string }>(
         nextURL
       );
       dispatch({ type: 'AppendRecordListDone', records: res.data.data });

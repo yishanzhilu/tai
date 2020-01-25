@@ -11,7 +11,7 @@ import { AxiosError } from 'axios';
 
 import { ITaiPageError, IPageProps } from '../model/utils';
 import TaiError from '@/pages/_error';
-import { axios } from '../api';
+import { f } from '../api';
 import { IUserProfile } from '../model/schemas';
 import { redirect } from './funcs';
 import { useGlobalContext } from '../contexts/global';
@@ -33,15 +33,10 @@ async function useGetInitialPropsGuard(ctx: NextPageContext) {
     return { token, error, user };
   }
   if (!token) {
-    if (ctx.query['refresh-login-fail'] != null) {
-      error = { statusCode: 403, title: '您尚未登录' };
-    } else {
-      // 尝试使用 refresh token
-      redirect('/refresh-login', ctx, false, true);
-    }
+    error = { statusCode: 403, title: '您尚未登录' };
   } else {
     try {
-      const resp = await axios.get<IUserProfile>('user', {
+      const resp = await f.get<IUserProfile>('user', {
         headers: {
           Authorization: token,
         },

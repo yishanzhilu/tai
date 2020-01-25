@@ -16,17 +16,16 @@ import {
   VERSION,
 } from '../utils/env';
 import { Toast } from '../utils/toaster';
-import { parseJWT } from '../model/utils';
-import { REFRESH_TOKEN_KEY, USER_ID_KEY, TOKEN_KEY } from '../utils/constants';
+import {  TOKEN_KEY } from '../utils/constants';
 
 const baseURL = IS_SERVER ? SERVER_API_URL : API_URL;
 
-export const axios = Axios.create({
+export const f = Axios.create({
   baseURL,
   timeout: 10000,
 });
 
-axios.interceptors.request.use(async config => {
+f.interceptors.request.use(async config => {
   if (IS_BROWSER) {
     if (config.headers.skipToken) {
       delete config.headers.skipToken;
@@ -35,35 +34,6 @@ axios.interceptors.request.use(async config => {
     const token = jsCookie.get(TOKEN_KEY);
     if (token) {
       config.headers.Authorization = token;
-    } else {
-      // token expired
-      const refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY);
-      const userID = Number(localStorage.getItem(USER_ID_KEY));
-      if (!refreshToken) {
-        throw Error('Refresh Token Disappeared');
-      }
-      try {
-        const res = await axios.post<{ token: string }>(
-          '/user/token',
-          {
-            userID,
-            refreshToken,
-          },
-          {
-            headers: {
-              skipToken: true,
-            },
-          }
-        );
-        const { exp } = parseJWT(res.data.token);
-        jsCookie.set(TOKEN_KEY, `Bearer ${res.data.token}`, {
-          expires: new Date(exp * 1000),
-        });
-        config.headers.Authorization = res.data.token;
-        return config;
-      } catch (error) {
-        throw Error('Refresh Token Not Right');
-      }
     }
   } else if (IS_SERVER) {
     config.headers['User-Agent'] = `tai ${VERSION}`;
@@ -71,7 +41,7 @@ axios.interceptors.request.use(async config => {
   return config;
 });
 
-axios.interceptors.response.use(
+f.interceptors.response.use(
   (response): AxiosResponse => {
     return response;
   },
@@ -91,7 +61,7 @@ axios.interceptors.response.use(
   }
 );
 
-export async function useServerRequest<Data>(
+export async function sf<Data>(
   url: string,
   config: AxiosRequestConfig,
   context: NextPageContext
@@ -103,7 +73,7 @@ export async function useServerRequest<Data>(
       Authorization: token,
     };
   }
-  const res = await axios.get<Data>(url, config);
+  const res = await f.get<Data>(url, config);
   return res.data;
 }
 

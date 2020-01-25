@@ -17,8 +17,6 @@ import {
   NavbarHeading,
   Alignment,
   Icon,
-  Switch,
-  NavbarDivider,
   Position,
   Popover,
   Menu,
@@ -35,8 +33,8 @@ const CreateMenu: React.FC = () => {
     <Menu>
       <MenuItem icon={<span>🎯</span>} text="设立目标" />
       <MenuItem icon={<span>📜</span>} text="创建任务" />
-      <MenuItem icon={<span>🎬</span>} text="添加记录" />
-      <MenuItem icon={<span>✔️</span>} text="新增代办" />
+      <MenuItem icon={<span>✔️</span>} text="添加事项" />
+      <MenuItem icon={<span>📝</span>} text="记录历程" />
     </Menu>
   );
 };
@@ -61,9 +59,9 @@ const ProfileMenu: React.FC = () => {
         }
       />
       <MenuDivider />
-      <Link href="/settings/profile" passHref>
+      {/* <Link href="/settings/profile" passHref>
         <MenuItem icon="settings" text="设置" />
-      </Link>
+      </Link> */}
       <MenuItem
         icon="log-out"
         text="退出"
@@ -86,14 +84,8 @@ const ProfileMenu: React.FC = () => {
 };
 
 export const Navbar = () => {
-  const [store, dispatch] = useGlobalContext();
+  const [store] = useGlobalContext();
 
-  const handleToggleTheme = () => {
-    const newTheme = store.theme === 'light' ? 'dark' : 'light';
-    dispatch({ type: 'SetTheme', newTheme });
-  };
-
-  const isDarkTheme = store.theme === 'dark';
   return (
     <NavbarContainer>
       <NavbarGroup>
@@ -116,14 +108,14 @@ export const Navbar = () => {
       <NavbarGroup align={Alignment.RIGHT}>
         {store.isLogin ? (
           <>
-            <Switch
+            {/* <Switch
               checked={isDarkTheme}
               label="深色模式"
               alignIndicator={Alignment.RIGHT}
               onChange={handleToggleTheme}
               style={{ marginBottom: 0 }}
             />
-            <NavbarDivider />
+            <NavbarDivider /> */}
             <Popover content={<CreateMenu />} position={Position.BOTTOM_RIGHT}>
               <Button className={Classes.MINIMAL} icon="add" />
             </Popover>

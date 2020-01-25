@@ -11,8 +11,14 @@ import { TodoList } from '@/src/components/todoList';
 import { RecordList } from '@/src/components/recordList';
 import { IPageProps } from '@/src/model/utils';
 import { withPageGuard } from '@/src/utils/pageGuard';
+import { ITodo } from '@/src/model/schemas';
+import { sf } from '@/src/api';
 
-const Dashboard: NextPage<IPageProps> = () => {
+interface IProps extends IPageProps {
+  todos: ITodo[];
+}
+
+const Dashboard: NextPage<IProps> = () => {
   return (
     <WorkspaceLayout>
       <TodoList todos={[]} />
@@ -20,5 +26,12 @@ const Dashboard: NextPage<IPageProps> = () => {
     </WorkspaceLayout>
   );
 };
+
+Dashboard.getInitialProps = async (ctx) => {
+  const todos = await sf<Array<ITodo>>('/tasks', {} ,ctx);
+  return {
+    todos,
+  }
+}
 
 export default withPageGuard(Dashboard, true);

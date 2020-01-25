@@ -23,7 +23,7 @@ import { ITodo, IGoalMission } from '@/src/model/schemas';
 import { Flex, FlexPlaceHolder } from '../flex';
 import { GoalMissionMenu } from '../goalMission';
 import { ITodosActions } from './todoList';
-import { axios } from '@/src/api';
+import { f } from '@/src/api';
 
 interface IProps {
   todo: ITodo;
@@ -68,7 +68,7 @@ export const EditingTodo = ({
       content: input.value,
     };
     try {
-      const res = await axios.patch<ITodo>(
+      const res = await f.patch<ITodo>(
         `/workspace/todo/${originTodo.id}`,
         data
       );

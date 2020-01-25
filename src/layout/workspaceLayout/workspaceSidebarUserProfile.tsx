@@ -58,10 +58,9 @@ export function UserProfile() {
           src={avatarUrl}
           className={Classes.ELEVATION_1}
           style={{ borderRadius: 10 }}
-          crossOrigin="anonymous"
           width="20"
           height="20"
-          alt="@ChiQianBingYue"
+          alt="avatar"
         />
         <div
           className={classNames(Classes.TEXT_OVERFLOW_ELLIPSIS)}

@@ -21,7 +21,7 @@ import { TimePicker } from '@yishanzhilubp/datetime';
 import { Flex } from '../flex';
 import { IRecord, IGoalMission } from '@/src/model/schemas';
 import { FinishedTodoContext } from '@/src/contexts/finishedTodo';
-import { axios } from '@/src/api';
+import { f } from '@/src/api';
 import { GoalMissionSelect } from '../goalMission';
 import { RecordsContext } from './recordListReduceContext';
 import { Toast } from '@/src/utils/toaster';
@@ -81,7 +81,7 @@ export const NewRecordEditing = () => {
     });
     setLoading(true);
     try {
-      const res = await axios.post<IRecord>(`/workspace/record`, {
+      const res = await f.post<IRecord>(`/workspace/record`, {
         content,
         thoughts,
         minutes,
