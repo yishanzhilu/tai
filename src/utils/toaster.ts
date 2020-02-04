@@ -7,7 +7,7 @@
 import { Toaster, Position } from '@yishanzhilubp/core';
 import { IS_BROWSER } from './env';
 
-export const Toast = IS_BROWSER
+export const TaiToast = IS_BROWSER
   ? Toaster.create({
       className: 'my-toaster',
       position: Position.TOP,

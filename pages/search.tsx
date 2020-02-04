@@ -9,8 +9,7 @@ import { NextPage } from 'next';
 
 import { useRouter } from 'next/router';
 
-import { LandingLayout } from '@/src/layout';
-
+import { LandingLayout } from '@/src/components/layouts/landing';
 
 const Search: NextPage = () => {
   const { query } = useRouter();

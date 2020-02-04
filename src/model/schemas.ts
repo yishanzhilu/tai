@@ -8,6 +8,7 @@ export interface IUserProfile {
   name: string;
   avatarUrl: string;
   id: number;
+  minutes: number;
   createdAt: string;
   updatedAt: string;
 }
@@ -15,7 +16,6 @@ export interface IUserProfile {
 export interface IWorkProfile {
   goals: IGoal[];
   missions: IMission[];
-  minutes: number;
 }
 
 export interface IGoalMission {
@@ -32,6 +32,8 @@ export interface IGoal {
   description: string;
   minutes: number;
   missions: IMission[];
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface IMission {
@@ -42,20 +44,24 @@ export interface IMission {
   minutes: number;
   goalID?: number;
   goalTitle?: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
-export interface IRecord {
+export interface IRecord extends IGoalMission {
   id: number;
   content: string;
-  thoughts: string;
+  review: string;
   minutes: number;
-  goalID?: number;
+  status: 'done' | 'todo';
   createdAt: string;
-  missionID?: number;
+  updatedAt: string;
 }
 
 export interface ITodo extends IGoalMission {
   id: number;
   content: string;
-  status: 'doing' | 'done';
+  status: 'todo';
+  createdAt: string;
+  updatedAt: string;
 }

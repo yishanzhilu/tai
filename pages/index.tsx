@@ -10,10 +10,9 @@ import { NextPage } from 'next';
 
 import { Classes, H1, Button } from '@yishanzhilubp/core';
 
-import { LandingLayout } from '@/src/layout';
-import { GITHUB_OAUTH_URL } from '@/src/utils/constants';
+import { LandingLayout } from '@/src/components/layouts/landing';
+import { GITHUB_OAUTH_URL, TOKEN_KEY } from '@/src/utils/constants';
 import { redirect } from '@/src/utils/funcs';
-import { withPageGuard } from '@/src/utils/pageGuard';
 import { IPageProps } from '@/src/model/utils';
 
 const onClick = () => {
@@ -166,6 +165,14 @@ export function Section({
 }
 
 const Index: NextPage<IPageProps> = () => {
+  React.useEffect(() => {
+    const token = jsCookie.get(TOKEN_KEY);
+    if (token) {
+      // don't use Router.push so it will use ssr
+      // and pageGuard will find /user info and /overview jobs
+      window.location.replace('/workspace/dashboard');
+    }
+  }, []);
   return (
     <LandingLayout>
       <main>
@@ -203,4 +210,4 @@ const Index: NextPage<IPageProps> = () => {
   );
 };
 
-export default withPageGuard(Index);
+export default Index;

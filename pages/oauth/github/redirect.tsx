@@ -10,23 +10,18 @@ import { Spinner, Classes } from '@yishanzhilubp/core';
 import cookie from 'js-cookie';
 
 import { f, HandleError } from '@/src/api';
-import { LandingLayout } from '@/src/layout';
+import { LandingLayout } from '@/src/components/layouts/landing';
 import { Flex } from '@/src/components/flex';
 import { IPageProps } from '@/src/model/utils';
 import TaiError from '@/pages/_error';
 import { redirect } from '@/src/utils/funcs';
-import {
-  TOKEN_KEY,
-} from '@/src/utils/constants';
+import { TOKEN_KEY } from '@/src/utils/constants';
 
 interface IProps extends IPageProps {
   token?: string;
 }
 
-const OauthGithubRedirect: NextPage<IProps> = ({
-  token,
-  error,
-}) => {
+const OauthGithubRedirect: NextPage<IProps> = ({ token, error }) => {
   React.useEffect(() => {
     console.debug('OauthGithubRedirect useEffect, error:', error);
     if (token) {
@@ -37,7 +32,7 @@ const OauthGithubRedirect: NextPage<IProps> = ({
     }
   }, [token]);
   if (error) {
-    return <TaiError statusCode={error.statusCode} title={error.title} />;
+    return <TaiError code={error.code} message={error.message} />;
   }
   return (
     <LandingLayout>
@@ -77,14 +72,14 @@ OauthGithubRedirect.getInitialProps = async ctx => {
       });
       return oauthResp.data;
     } catch (err) {
-      const { message, code: errCode } = HandleError(err);
+      const error = HandleError(err);
       return {
-        error: { statusCode: errCode, title: message },
+        error,
       };
     }
   } else {
     return {
-      error: { statusCode: 400, title: '链接错误' },
+      error: { code: 400, message: '链接错误' },
     };
   }
 };

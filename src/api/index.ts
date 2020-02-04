@@ -15,14 +15,15 @@ import {
   IS_BROWSER,
   VERSION,
 } from '../utils/env';
-import { Toast } from '../utils/toaster';
-import {  TOKEN_KEY } from '../utils/constants';
+import { TaiToast } from '../utils/toaster';
+import { TOKEN_KEY } from '../utils/constants';
+import { ITaiPageError } from '../model/utils';
 
 const baseURL = IS_SERVER ? SERVER_API_URL : API_URL;
 
 export const f = Axios.create({
   baseURL,
-  timeout: 10000,
+  timeout: 3000,
 });
 
 f.interceptors.request.use(async config => {
@@ -47,15 +48,11 @@ f.interceptors.response.use(
   },
   (error: AxiosError): Promise<never> => {
     if (IS_SERVER) {
-      if (error.response) {
-        console.error(error.response.data);
-        console.error(error.response.status);
-        console.error(error.response.headers);
-      } else if (error.request) {
-        console.error(error.request);
-      } else {
-        console.error('Error', error.message);
-      }
+      console.error(
+        'f interceptors on error:',
+        error.message,
+        error.config.url
+      );
     }
     return Promise.reject(error);
   }
@@ -66,12 +63,13 @@ export async function sf<Data>(
   config: AxiosRequestConfig,
   context: NextPageContext
 ): Promise<Data> {
-  const { everestToken: token } = nextCookie(context);
-
+  const { 'x-tai-everest-token': token } = nextCookie(context);
   if (IS_SERVER) {
-    config.headers = {
-      Authorization: token,
-    };
+    if (token) {
+      config.headers = {
+        Authorization: token,
+      };
+    }
   }
   const res = await f.get<Data>(url, config);
   return res.data;
@@ -87,19 +85,14 @@ const praseHTTPErrorStatusText = (status: number): string => {
   throw Error('请求未出错，但被要求进行错误处理');
 };
 
-export function HandleError(error: AxiosError, toast = true) {
+export function HandleError(error: AxiosError, toast = true): ITaiPageError {
   if (!error.response) {
     throw error;
   }
   const message =
-    error.response.data.error ||
-    praseHTTPErrorStatusText(error.response.status);
+    error.response.data || praseHTTPErrorStatusText(error.response.status);
   if (toast && IS_BROWSER) {
-    Toast.show({ message, intent: 'warning' });
-    sessionStorage.setItem(
-      `err-${Date.now()}`,
-      error.response ? JSON.stringify(error.response.data) : error.message
-    );
+    TaiToast.show({ message, intent: 'warning' });
   }
   return { code: error.response.status, message };
 }

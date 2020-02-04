@@ -5,5 +5,3 @@
  */
 
 export { GoalMission } from './goalMission';
-export { GoalMissionMenu } from './goalMissionMenu';
-export { GoalMissionSelect } from './goalMissionSelect';

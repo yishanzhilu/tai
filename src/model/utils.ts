@@ -4,7 +4,7 @@
  * All rights reserved
  */
 
-import { IUserProfile } from './schemas';
+import { IUserProfile, IWorkProfile } from './schemas';
 import { base64ToString } from '../utils/encoding';
 
 export interface IProps {
@@ -13,13 +13,14 @@ export interface IProps {
 }
 
 export interface ITaiPageError {
-  statusCode: number;
-  title: string;
+  code: number;
+  message: string;
 }
 
 export interface IPageProps {
   error?: ITaiPageError;
-  initUser?: IUserProfile;
+  user?: IUserProfile;
+  work?: IWorkProfile;
 }
 
 export interface IToken {

@@ -25,25 +25,32 @@ const styles: { [k: string]: React.CSSProperties } = {
   },
 };
 
-function TaiError({ statusCode = 500, title = '出错了' }) {
+function TaiError({ code = 500, message = '出错了' }) {
   const { asPath } = useRouter();
-  if (statusCode === 404) {
-    title = `请求的 URL ${asPath} 不存在`;
+  if (code === 404) {
+    message = `请求的 URL ${asPath} 不存在`;
   }
   return (
     <div style={styles.error}>
       <Head>
-        <title>{statusCode} - 移山</title>
+        <title>{code || '出错了'} - 移山</title>
       </Head>
       <div>
-        {statusCode ? (
-          <h1 style={{ fontSize: 40, margin: 0 }}>{statusCode}</h1>
-        ) : null}
-        <p style={{ fontSize: 18, margin: '23px 0', maxWidth: 300 }}>{title}</p>
+        {code ? <h1 style={{ fontSize: 40, margin: 0 }}>{code}</h1> : null}
+        <p
+          style={{
+            fontSize: 18,
+            margin: '23px 0',
+            maxWidth: 300,
+            lineHeight: '22px',
+          }}
+        >
+          {message.toString()}
+        </p>
         <AnchorButton href="/" intent="primary">
           返回首页
         </AnchorButton>
-        {statusCode === 403 && (
+        {code === 403 && (
           <Link
             href={{ pathname: '/login', query: { 'redirect-from': asPath } }}
             passHref
@@ -62,15 +69,15 @@ function TaiError({ statusCode = 500, title = '出错了' }) {
 }
 
 TaiError.getInitialProps = ({ res, err }) => {
-  let statusCode: number;
+  let code: number;
   if (res) {
-    statusCode = res.statusCode;
+    code = res.statusCode;
   } else if (err) {
-    statusCode = res.statusCode;
+    code = err.statusCode;
   } else {
-    statusCode = 404;
+    code = 404;
   }
-  return { statusCode };
+  return { code };
 };
 
 export default TaiError;

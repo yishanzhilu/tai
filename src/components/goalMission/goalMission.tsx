@@ -13,14 +13,16 @@ import { IGoalMission } from '@/src/model/schemas';
 
 export const GoalMission = ({
   goalMission,
-  emptyText = '独立事项',
+  emptyText = '无',
   isLink = false,
   isTag = true,
+  inline = false,
 }: {
   goalMission: IGoalMission;
   isLink?: boolean;
   isTag?: boolean;
   emptyText?: string;
+  inline?: boolean;
 }) => {
   let goalElement: React.ReactNode;
   let missionElement: React.ReactNode;
@@ -68,7 +70,10 @@ export const GoalMission = ({
       return <div style={{ minWidth: 100 }}>{content}</div>;
     }
     return (
-      <div className="goal-mission-link">
+      <div
+        className="goal-mission-link"
+        style={{ display: inline ? 'inline' : 'block' }}
+      >
         {content}
         <style jsx>{`
           .goal-mission-link :global(a:hover) {

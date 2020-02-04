@@ -54,6 +54,7 @@ export function redirect(
     return url;
   }
   if (IS_SERVER) {
+    console.debug('redirect with server');
     if (!ctx || !ctx.res) {
       return;
     }
@@ -67,11 +68,12 @@ export function redirect(
     ctx.res.writeHead(302, headers);
     ctx.res.end();
   } else {
+    console.debug('redirect with browser');
     if (removeCookie) {
       cookie.remove('token');
       localStorage.removeItem('refreshToken');
     }
-    Router.replace(parseUrl(Router.asPath));
+    Router.push(parseUrl(Router.asPath));
   }
 }
 
@@ -110,7 +112,8 @@ export function getDateDiffFromNow(dateTimeStamp: string) {
   const old = new Date(dateTimeStamp);
   const diffValue = now - old.getTime();
   if (diffValue < 0) {
-    return dateTimeStamp;
+    console.error('negative time', { old, now });
+    return `${dateTimeStamp}`;
   }
   const monthC = diffValue / month;
   const weekC = diffValue / (7 * day);
@@ -132,4 +135,14 @@ export function getDateDiffFromNow(dateTimeStamp: string) {
     result = `${Math.floor(minC).toString()}分钟前`;
   } else result = '刚刚';
   return result;
+}
+
+export function formatMinutes(mintues: number) {
+  const hours = (mintues / 60).toFixed();
+  return `${hours} : ${(mintues % 60).toString().padStart(2, '0')}`;
+}
+
+export function formatDate(dateTimeStamp: string) {
+  const date = new Date(dateTimeStamp);
+  return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
 }

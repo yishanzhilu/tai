@@ -15,11 +15,11 @@ interface IFlexProps {
   alignItems?: 'flex-start' | 'flex-end' | 'center' | 'baseline' | 'stretch';
   wrap?: boolean;
   justifyContent?:
-  | 'flex-start'
-  | 'flex-end'
-  | 'center'
-  | 'space-between'
-  | 'space-around';
+    | 'flex-start'
+    | 'flex-end'
+    | 'center'
+    | 'space-between'
+    | 'space-around';
   childMargin?: number;
 }
 
@@ -47,7 +47,7 @@ export function Flex({
       margin = `${childMargin}px ${childMargin}px 0 0`;
       break;
     default:
-      margin = ' 0 0 0 0';
+      margin = '0 0 0 0';
       break;
   }
   return (

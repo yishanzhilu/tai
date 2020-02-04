@@ -80,7 +80,6 @@ module.exports = {
     {
       files: ['*.test.tsx', '*.test.ts'],
       rules: {
-        'header/header': 'off',
         '@typescript-eslint/no-explicit-any': 'off',
       },
     },
