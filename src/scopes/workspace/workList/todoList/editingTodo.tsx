@@ -48,7 +48,6 @@ export const EditingTodo = ({
   }, [input]);
 
   const onEditClickSave = async () => {
-    console.debug('EditingTodo | onEditClickSave', goalMission);
     if (input.value.length === 0) {
       setErrorMsg('必填');
       return;
@@ -84,11 +83,33 @@ export const EditingTodo = ({
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     switch (e.which) {
+      case Keys.ENTER:
+        onEditClickSave();
+        break;
       case Keys.ESCAPE:
         onClickCancel();
         break;
       default:
         break;
+    }
+  };
+
+  const onDelete = async () => {
+    setLoading(true);
+    dispatchTodosAction({
+      type: 'Freeze',
+    });
+    try {
+      await f.delete(`/todo/${originTodo.id}`);
+      dispatchTodosAction({
+        type: 'DeleteTodo',
+        id: originTodo.id,
+      });
+    } catch (error) {
+      setLoading(false);
+      dispatchTodosAction({
+        type: 'Unfreeze',
+      });
     }
   };
 
@@ -136,6 +157,7 @@ export const EditingTodo = ({
                   intent="primary"
                   className={Classes.POPOVER_DISMISS}
                   loading={loading}
+                  onClick={onDelete}
                 >
                   确认
                 </Button>

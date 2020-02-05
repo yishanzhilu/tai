@@ -15,6 +15,7 @@ export type ITodosActions =
   | { type: 'InitTodo'; todos: ITodo[] }
   | { type: 'EditTodo'; id: number }
   | { type: 'EditTodoSave'; todo: ITodo; id: number }
+  | { type: 'DeleteTodo'; id: number }
   | { type: 'FinishTodoSave'; id: number }
   | { type: 'Cancel' }
   | { type: 'NewTodo' }
@@ -101,6 +102,7 @@ const todosReducer = (
         addNew: false,
         isFreeze: false,
       };
+    case 'DeleteTodo':
     case 'FinishTodoSave':
       return {
         todos: todosState.todos.filter(t => t.id !== todosAction.id),
