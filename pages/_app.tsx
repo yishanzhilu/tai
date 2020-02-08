@@ -16,7 +16,7 @@ import '@yishanzhilubp/select/lib/css/blueprint-select.css';
 
 import { setUpConsole } from '@/src/utils/funcs';
 
-import { VERSION } from '@/src/utils/env';
+import { VERSION } from '@/src/utils/constants';
 import { GlobalContextsProvider } from '@/src/scopes/global';
 
 FocusStyleManager.onlyShowFocusOnTabs();
@@ -27,8 +27,7 @@ setUpConsole();
 
 NProgress.configure({ showSpinner: false });
 
-Router.events.on('routeChangeStart', url => {
-  console.debug(`routeChangeStart | url: ${url}`);
+Router.events.on('routeChangeStart', () => {
   NProgress.start();
 });
 Router.events.on('routeChangeComplete', () => NProgress.done());

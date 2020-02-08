@@ -49,10 +49,13 @@ GoalDetail.getInitialProps = async ctx => {
       sf<ITodo[]>(`/todos`, { params: { goalID: ctx.query.id } }, ctx),
       sf<IRecord[]>(`/records`, { params: { goalID: ctx.query.id } }, ctx),
     ]);
+    if (goal.status !== 'doing') {
+      err = { code: 400, message: '错误的请求，目标无法查看详情' };
+    }
   } catch (error) {
     err = HandleError(error);
   }
-  return { goal, todos, records, err };
+  return { goal, todos, records, error: err };
 };
 
 export default withPageGuard(GoalDetail);

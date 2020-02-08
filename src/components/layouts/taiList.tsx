@@ -5,20 +5,20 @@
  */
 
 import * as React from 'react';
-import { Classes, H3 } from '@yishanzhilubp/core';
+import { Classes, H5 } from '@yishanzhilubp/core';
 
 export function TaiList({ children, title }): React.ReactElement {
   return (
     <div className="tai-list">
-      <H3>{title}</H3>
+      <H5>{title}</H5>
       <ul className={Classes.LIST_UNSTYLED}>{children}</ul>
       <style jsx>{`
         .tai-list {
-          margin-bottom: 20px;
+          margin-bottom: 10px;
           width: 100%;
         }
         ul {
-          margin-top: 20px;
+          margin-top: 10px;
         }
         ul :global(li) {
           margin: 0 0 10px;

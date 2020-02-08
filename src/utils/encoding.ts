@@ -4,7 +4,7 @@
  * All rights reserved
  */
 
-import { IS_SERVER } from './env';
+import { IS_SERVER } from './constants';
 
 export function base64ToString(base64: string) {
   if (IS_SERVER) {

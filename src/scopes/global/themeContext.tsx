@@ -24,7 +24,7 @@ export const ThemeContextPorvider: React.FC = ({ children }) => {
     <ThemeContext.Provider value={{ theme, setTheme }}>
       <div
         className={isDarkTheme ? Classes.DARK : ''}
-        style={{ background: isDarkTheme ? '#30404d' : '' }}
+        style={{ background: isDarkTheme ? '#30404d' : null }}
       >
         {children}
       </div>

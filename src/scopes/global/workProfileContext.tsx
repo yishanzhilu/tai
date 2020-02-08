@@ -17,7 +17,7 @@ import { noop } from '@/src/utils/funcs';
 export type IMissionBrief = Pick<IMission, 'title' | 'id' | 'goalID'>;
 
 export interface IGoalBrief extends Pick<IGoal, 'title' | 'id'> {
-  missions: IMissionBrief[];
+  missions?: IMissionBrief[];
 }
 
 interface IWorkProfileContextState {

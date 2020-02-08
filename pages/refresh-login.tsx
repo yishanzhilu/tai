@@ -7,7 +7,7 @@
 import React from 'react';
 import { NextPage } from 'next';
 import nextCookie from 'next-cookies';
-import { f, HandleError } from '@/src/api';
+import { f } from '@/src/api';
 import { parseJWT } from '@/src/model/utils';
 import { redirect } from '@/src/utils/funcs';
 import {
@@ -58,8 +58,6 @@ RefreshLogin.getInitialProps = async ctx => {
     });
     ctx.res.end();
   } catch (error) {
-    const { code, message } = HandleError(error);
-    console.log('/refresh-token', { code, message });
     redirect(redirectFrom as string, ctx, true, false, {
       'refresh-login-fail': 'true',
     });

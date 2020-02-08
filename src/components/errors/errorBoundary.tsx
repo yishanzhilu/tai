@@ -30,7 +30,7 @@ export class TaiErrorBoundary extends React.Component<IProps, IState> {
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     // You can also log the error to an error reporting service
-    console.error('errorBoundary', error, errorInfo);
+    console.error('TaiErrorBoundary componentDidCatch', error, errorInfo);
   }
 
   render() {
@@ -39,7 +39,7 @@ export class TaiErrorBoundary extends React.Component<IProps, IState> {
 
     if (hasError) {
       const fallbackWithError = React.cloneElement(fallback, {
-        title: error.message,
+        message: error.message,
       });
       return fallbackWithError;
     }

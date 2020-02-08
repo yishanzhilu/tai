@@ -23,7 +23,6 @@ interface IProps extends IPageProps {
 
 const OauthGithubRedirect: NextPage<IProps> = ({ token, error }) => {
   React.useEffect(() => {
-    console.debug('OauthGithubRedirect useEffect, error:', error);
     if (token) {
       cookie.set(TOKEN_KEY, `Bearer ${token}`, {
         expires: 365,
@@ -61,16 +60,14 @@ const OauthGithubRedirect: NextPage<IProps> = ({ token, error }) => {
 
 OauthGithubRedirect.getInitialProps = async ctx => {
   const { code } = ctx.query;
-  console.debug('OauthGithubRedirect getInitialProps, code:', code);
-
   if (code) {
     try {
-      const oauthResp = await f.get<{
+      const { data } = await f.get<{
         token: string;
       }>('/user/oauth/github', {
         params: { code },
       });
-      return oauthResp.data;
+      return data;
     } catch (err) {
       const error = HandleError(err);
       return {
@@ -79,7 +76,7 @@ OauthGithubRedirect.getInitialProps = async ctx => {
     }
   } else {
     return {
-      error: { code: 400, message: '链接错误' },
+      error: { code: 400, message: '链接错误', url: '' },
     };
   }
 };

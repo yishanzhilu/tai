@@ -3,13 +3,9 @@
  *
  * All rights reserved
  */
-import React, { useState } from 'react';
-import useForm from 'react-hook-form';
+import React, { useState, useEffect, useCallback } from 'react';
 
 import {
-  FormGroup,
-  InputGroup,
-  TextArea,
   Button,
   H4,
   Popover,
@@ -18,23 +14,26 @@ import {
   Tag,
   Classes,
   Divider,
+  Dialog,
 } from '@yishanzhilubp/core';
 import Head from 'next/head';
 
-import { f, HandleError } from '@/src/api';
+import { f } from '@/src/api';
 import { TaiCard } from '@/src/components/layouts';
 import { InfoBlock } from '@/src/components/infoBlock';
 import { Flex } from '@/src/components/flex';
 import { STATUS_CONFIG_MAP } from '@/src/utils/constants';
 import { formatMinutes, formatDate } from '@/src/utils/funcs';
-import { useWorkProfileContext } from '@/src/scopes/global/workProfileContext';
 import { useWorkSpaceContext } from '@/src/scopes/workspace';
+import { BasicStatus } from '@/src/model/schemas';
+import { DetailCardEditing } from './detailCardEditing';
+import { detailTypeConfigs } from './detailCardConfigs';
 
 export interface IDetail {
   id: number;
   type: 'mission' | 'goal';
   title: string;
-  status: 'doing' | 'done' | 'drop' | 'plan';
+  status: 'doing' | 'done' | 'drop' | 'todo';
   goalID?: number;
   description: string;
   minutes: number;
@@ -42,110 +41,49 @@ export interface IDetail {
   updatedAt: string;
 }
 
-const detailTypeConfigs = {
-  goal: {
-    labelName: '目标',
-    descPlaceholder: '目标的具体内容，例如关键指标，时间节点',
-  },
-  mission: {
-    labelName: '任务',
-    descPlaceholder: '任务的具体内容，和执行的步骤',
-  },
+const status2Action = (status: BasicStatus) => {
+  switch (status) {
+    case 'todo':
+      return '暂停';
+    case 'done':
+      return '完成';
+    case 'drop':
+      return '放弃';
+    case 'doing':
+      return '开始';
+    default:
+      return '完成';
+  }
 };
 
-const DetailCardEditing: React.FC<{
-  detail: IDetail;
-  onStopEditing: () => void;
-  setDetail: React.Dispatch<React.SetStateAction<IDetail>>;
-}> = ({ detail, onStopEditing, setDetail }) => {
-  interface IPatchMissionFormValue {
-    title: string;
-    description: string;
+const status2ActionDesc = (status: BasicStatus) => {
+  switch (status) {
+    case 'todo':
+      return '暂停后将进入规划';
+    case 'done':
+      return '完成后将进入成就';
+    case 'drop':
+      return '放弃后将进入回收站';
+    case 'doing':
+      return "Let's do this!";
+    default:
+      return '完成';
   }
-  const { dispatch } = useWorkProfileContext();
-  const { register, handleSubmit, errors } = useForm<IPatchMissionFormValue>({
-    defaultValues: {
-      title: detail.title,
-      description: detail.description,
-    },
-  });
-  const { labelName, descPlaceholder } = detailTypeConfigs[detail.type];
-  const [loading, setLoading] = useState(false);
-  const onSubmit = handleSubmit(async data => {
-    setLoading(true);
-    try {
-      const { data: updated } = await f.patch<IDetail>(
-        `/${detail.type}/${detail.id}`,
-        {
-          ...data,
-        }
-      );
+};
 
-      onStopEditing();
-      setDetail({ ...updated, type: detail.type });
-      dispatch({
-        type: 'UpdateTitle',
-        title: updated.title,
-        id: detail.id,
-        goalID: updated.goalID,
-        schema: detail.type,
-      });
-    } catch (error) {
-      HandleError(error, true);
-    } finally {
-      setLoading(false);
-    }
-  });
+export const StatusTag: React.FC<{ status: BasicStatus }> = ({ status }) => {
+  const statusConfig = STATUS_CONFIG_MAP[status];
   return (
-    <TaiCard title={`${labelName}详情`}>
-      <form onSubmit={onSubmit}>
-        <FormGroup
-          disabled={loading}
-          intent="primary"
-          label={`${labelName}名`}
-          helperText={errors.title && errors.title.message}
-        >
-          <InputGroup
-            fill
-            autoComplete="off"
-            disabled={loading}
-            placeholder={`${labelName}的简洁代号`}
-            autoFocus
-            inputRef={register({
-              required: '必填',
-              maxLength: { value: 255, message: '不能大于255个字符' },
-            })}
-            name="title"
-          />
-        </FormGroup>
-        <FormGroup
-          disabled={loading}
-          intent="primary"
-          label={`${labelName}描述`}
-          labelInfo="（可选）"
-          helperText={errors.description && errors.description.message}
-        >
-          <TextArea
-            fill
-            autoComplete="off"
-            disabled={loading}
-            placeholder={descPlaceholder}
-            growVertically
-            rows={2}
-            inputRef={register({
-              maxLength: { value: 255, message: '不能大于255个字符' },
-            })}
-            name="description"
-          />
-        </FormGroup>
-        <Flex>
-          <Button intent="primary" type="submit">
-            更新
-          </Button>
-          <Button onClick={onStopEditing}>取消</Button>
-        </Flex>
-      </form>
-    </TaiCard>
+    <Tag
+      minimal
+      style={{
+        backgroundColor: statusConfig.color,
+        color: 'white',
+        fontSize: 10,
+      }}
+    >
+      {statusConfig.text}
+    </Tag>
   );
 };
 
@@ -157,8 +95,36 @@ export const DetailCard: React.FC<{ detail: IDetail }> = ({
   } = useWorkSpaceContext();
   const [isEditing, setIsEditing] = useState(false);
   const [detail, setDetail] = useState(initDetail);
-  const statusConfig = STATUS_CONFIG_MAP[detail.status];
+  const [dialogConfig, setDialogCOnfig] = useState<{
+    newStatus?: BasicStatus;
+    isOpen: boolean;
+  }>({
+    newStatus: null,
+    isOpen: false,
+  });
+  const closeDialog = () => {
+    setDialogCOnfig({
+      newStatus: null,
+      isOpen: false,
+    });
+  };
   const { labelName } = detailTypeConfigs[detail.type];
+  useEffect(() => {
+    setDetail(initDetail);
+  }, [initDetail.id]);
+
+  const setStatus = (newStatus: BasicStatus) => {
+    setDialogCOnfig({
+      newStatus,
+      isOpen: true,
+    });
+  };
+  const onDialogConfirm = useCallback(async () => {
+    console.log(dialogConfig);
+    await f.patch(`/${detail.type}/${detail.id}`, {
+      status: dialogConfig.newStatus,
+    });
+  }, [dialogConfig]);
 
   if (isEditing) {
     return (
@@ -191,7 +157,11 @@ export const DetailCard: React.FC<{ detail: IDetail }> = ({
                 text={`更新${labelName}`}
                 onClick={() => setIsEditing(true)}
               />
-              <MenuItem icon={<span>⏸️</span>} text={`暂停${labelName}`} />
+              <MenuItem
+                icon={<span>⏸️</span>}
+                text={`暂停${labelName}`}
+                onClick={() => setStatus('todo')}
+              />
               <MenuItem icon={<span>🏆</span>} text={`完成${labelName}`} />
               <MenuItem icon={<span>⛔</span>} text={`放弃${labelName}`} />
             </Menu>
@@ -199,10 +169,25 @@ export const DetailCard: React.FC<{ detail: IDetail }> = ({
         >
           <Button minimal small icon="more" />
         </Popover>
+        <Dialog
+          title={`${status2Action(dialogConfig.newStatus)}${labelName}`}
+          isOpen={dialogConfig.isOpen}
+          onClose={closeDialog}
+        >
+          <div className={Classes.DIALOG_BODY}>
+            {status2ActionDesc(dialogConfig.newStatus)}
+          </div>
+          <div className={Classes.DIALOG_FOOTER}>
+            <div className={Classes.DIALOG_FOOTER_ACTIONS}>
+              <Button intent="primary" onClick={onDialogConfirm}>
+                确定
+              </Button>
+              <Button onClick={closeDialog}>取消</Button>
+            </div>
+          </div>
+        </Dialog>
       </div>
-      <Tag style={{ backgroundColor: statusConfig.color }}>
-        {statusConfig.text}
-      </Tag>
+      <StatusTag status={detail.status} />
       {detail.description && (
         <>
           <p style={{ marginTop: 20 }} className={Classes.TEXT_MUTED}>
@@ -211,7 +196,6 @@ export const DetailCard: React.FC<{ detail: IDetail }> = ({
           <p>{detail.description}</p>
         </>
       )}
-
       <Divider style={{ margin: '15px 0' }} />
       <Flex justifyContent="space-between">
         <InfoBlock label="累计时长" value={formatMinutes(minutes)} />

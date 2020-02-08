@@ -14,6 +14,7 @@ interface IFlexProps {
   dir?: 'row' | 'row-reverse' | 'column' | 'column-reverse';
   alignItems?: 'flex-start' | 'flex-end' | 'center' | 'baseline' | 'stretch';
   wrap?: boolean;
+  margin?: string;
   justifyContent?:
     | 'flex-start'
     | 'flex-end'
@@ -32,24 +33,6 @@ export function Flex({
   justifyContent = 'flex-start',
   childMargin = 5,
 }: IFlexProps) {
-  let margin: string;
-  switch (dir) {
-    case 'row':
-      margin = `0 ${childMargin}px ${childMargin}px 0`;
-      break;
-    case 'row-reverse':
-      margin = `0 0 ${childMargin}px ${childMargin}px`;
-      break;
-    case 'column':
-      margin = `0 ${childMargin}px ${childMargin}px 0`;
-      break;
-    case 'column-reverse':
-      margin = `${childMargin}px ${childMargin}px 0 0`;
-      break;
-    default:
-      margin = '0 0 0 0';
-      break;
-  }
   return (
     <div className={classNames('container', className)}>
       {children}
@@ -61,9 +44,10 @@ export function Flex({
             align-items: ${alignItems};
             justify-content: ${justifyContent};
             flex-wrap: ${wrap ? 'wrap' : 'nowrap'};
+            margin: -${childMargin}px;
           }
           .container > :global(*) {
-            margin: ${margin};
+            margin: ${childMargin}px;
           }
         `}
       </style>

@@ -12,7 +12,7 @@ import { NextPageContext } from 'next';
 import { OutgoingHttpHeaders } from 'http';
 import querystring, { ParsedUrlQuery } from 'querystring';
 
-import { IS_PRODUCTION, IS_SERVER, IS_BROWSER } from './env';
+import { IS_PRODUCTION, IS_SERVER, IS_BROWSER } from './constants';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function
 export function noop() {}

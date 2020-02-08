@@ -39,7 +39,6 @@ export const NewGoalForm: React.FC = () => {
   const onSubmit = useCallback(
     handleSubmit(async data => {
       setLoading(true);
-      console.log(data);
       try {
         const { data: createdGoal } = await f.post<IGoal>('/goals', {
           ...data,

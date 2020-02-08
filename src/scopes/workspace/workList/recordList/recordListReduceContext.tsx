@@ -7,6 +7,7 @@
 import * as React from 'react';
 
 import { IRecord } from '@/src/model/schemas';
+import { noop } from '@/src/utils/funcs';
 
 type IRecordListAction =
   | { type: 'DeleteRecordDone'; id: number }
@@ -24,18 +25,18 @@ interface IRecordListState {
   isFreeze: boolean;
 }
 
-export const RecordsContext = React.createContext({
+export const RecordsContext = React.createContext<{
+  state: IRecordListState;
+  dispatch:  React.Dispatch<IRecordListAction>;
+}>({
   state: { records: [], addNew: false, isFreeze: false },
-  dispatch: (action: IRecordListAction) => {
-    console.debug('RecordsContext default dispatch', action);
-  },
+  dispatch: noop,
 });
 
 export const recordListReducer = (
   recordListState: IRecordListState,
   recordListAction: IRecordListAction
 ): IRecordListState => {
-  console.debug('recordListReducer', recordListAction);
   if (recordListAction.type === 'Reset') {
     return {
       records: recordListAction.records,

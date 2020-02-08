@@ -219,7 +219,7 @@ class AvatarEditor extends React.Component<
     let imgWidth: number;
 
     if (imageHeight && imageWidth) {
-      console.warn(
+      throw Error(
         'The imageWidth and imageHeight properties can not be set together, using only imageWidth.'
       );
     }

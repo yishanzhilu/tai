@@ -11,3 +11,13 @@ yarn install
 ## DOCS
 
 [react-hook-form](https://react-hook-form.com/)
+
+## ENVS
+```
+SERVER_API_URL
+
+API_URL
+
+GITHUB_OAUTH_CLIENT_ID
+
+```

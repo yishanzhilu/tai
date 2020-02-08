@@ -7,6 +7,7 @@
 import * as React from 'react';
 import jsCookie from 'js-cookie';
 import { NextPage } from 'next';
+import NProgress from 'nprogress';
 
 import { Classes, H1, Button } from '@yishanzhilubp/core';
 
@@ -170,6 +171,7 @@ const Index: NextPage<IPageProps> = () => {
     if (token) {
       // don't use Router.push so it will use ssr
       // and pageGuard will find /user info and /overview jobs
+      NProgress.start();
       window.location.replace('/workspace/dashboard');
     }
   }, []);

@@ -16,8 +16,7 @@ import { IUserProfile, IWorkProfile } from '@/src/model/schemas';
 import { useWorkProfileContext } from '@/src/scopes/global/workProfileContext';
 import { useUserContext } from '@/src/scopes/global/userContext';
 
-import { TOKEN_KEY } from './constants';
-import { IS_SERVER } from './env';
+import { TOKEN_KEY, IS_SERVER } from './constants';
 
 /**
  * useGetInitialPropsGuard 用于在 getInitialProps 方法中守卫页面
@@ -32,7 +31,7 @@ async function useGetInitialPropsGuard(ctx: NextPageContext) {
   const cookies = nextCookie(ctx);
   const token = cookies[TOKEN_KEY];
   if (!token) {
-    error = { code: 403, message: '您尚未登录' };
+    error = { code: 403, message: '您尚未登录', url: ctx.asPath };
   } else if (IS_SERVER) {
     try {
       [user, work] = await Promise.all([
@@ -56,9 +55,18 @@ async function useGetInitialPropsGuard(ctx: NextPageContext) {
  */
 export const withPageGuard = (WrappedPage: NextPage<IPageProps>) => {
   const Wrapper: NextPage<IPageProps> = props => {
-    const { state, dispatch } = useUserContext();
-    const { dispatch: dispatchWorkProfile } = useWorkProfileContext();
     const { error, user, work } = props;
+    if (error) {
+      return (
+        <TaiError code={error.code} message={error.message} url={error.url} />
+      );
+    }
+    const { state, dispatch } = useUserContext();
+
+    if (!state.isLogin && !user) {
+      return <TaiError code={403} message="您无权访问该页面" />;
+    }
+    const { dispatch: dispatchWorkProfile } = useWorkProfileContext();
     React.useEffect(() => {
       if (!state.isLogin && user) {
         dispatch({ type: 'Login', user });
@@ -69,21 +77,18 @@ export const withPageGuard = (WrappedPage: NextPage<IPageProps>) => {
         });
       }
     }, [state.isLogin]);
-    if (error) {
-      return <TaiError code={error.code} message={error.message} />;
-    }
-    if (!state.isLogin && !user) {
-      return <TaiError code={403} message="您无权访问该页面" />;
-    }
     return <WrappedPage {...props} />;
   };
 
   Wrapper.getInitialProps = async (ctx: NextPageContext) => {
     const { error, user, work } = await useGetInitialPropsGuard(ctx);
+    if (error) {
+      return { user, work, error };
+    }
     const componentProps =
       WrappedPage.getInitialProps && (await WrappedPage.getInitialProps(ctx));
 
-    return { ...componentProps, user, work, error };
+    return { user, work, error, ...componentProps };
   };
 
   return Wrapper;

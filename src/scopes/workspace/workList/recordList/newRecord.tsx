@@ -25,10 +25,7 @@ export const NewRecord = () => {
     if (state.addNew) {
       const headerOffset = 110;
       const elementPosition = NewRecordEl.current.offsetTop;
-      console.debug('elementPosition', elementPosition);
       const offsetPosition = elementPosition - headerOffset;
-      console.debug('offsetPosition', offsetPosition);
-
       window.scrollTo({
         top: offsetPosition,
         behavior: 'smooth',

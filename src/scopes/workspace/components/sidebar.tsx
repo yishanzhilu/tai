@@ -13,6 +13,7 @@ import { Classes, Divider, Text } from '@yishanzhilubp/core';
 import {
   useWorkProfileContext,
   IGoalBrief,
+  IMissionBrief,
 } from '@/src/scopes/global/workProfileContext';
 import { UserProfile } from './sidebarUserProfile';
 
@@ -140,13 +141,15 @@ function SidebarGoal({ id, title, missions }: IGoalBrief) {
   );
 }
 
-function SidebarWorks() {
-  const { state } = useWorkProfileContext();
+const SidebarWorks: React.FC<{
+  goals: IGoalBrief[];
+  missions: IMissionBrief[];
+}> = ({ goals, missions }) => {
   return (
     <ul className={Classes.TREE_NODE_LIST}>
       <SidebarHeader>目标</SidebarHeader>
-      {state.goals.length > 0 ? (
-        state.goals.map(g => (
+      {goals.length > 0 ? (
+        goals.map(g => (
           <SidebarGoal
             key={`goal-${g.id}`}
             id={g.id}
@@ -162,8 +165,8 @@ function SidebarWorks() {
         </li>
       )}
       <SidebarHeader>独立任务</SidebarHeader>
-      {state.missions.length > 0 ? (
-        state.missions.map(m => (
+      {missions.length > 0 ? (
+        missions.map(m => (
           <SidebarMission key={`mission-${m.id}`} title={m.title} id={m.id} />
         ))
       ) : (
@@ -175,7 +178,7 @@ function SidebarWorks() {
       )}
     </ul>
   );
-}
+};
 
 export const WorkSpaceSidebar: React.FC = () => {
   const router = useRouter();
@@ -192,7 +195,7 @@ export const WorkSpaceSidebar: React.FC = () => {
       emoji: '📆',
     },
     {
-      href: '/workspace/success',
+      href: '/workspace/trophy',
       title: '成就',
       emoji: '🏆',
     },
@@ -202,11 +205,30 @@ export const WorkSpaceSidebar: React.FC = () => {
       emoji: '♻️',
     },
   ];
+  const {
+    state,
+  } = useWorkProfileContext();
+  const navEl = React.useRef<HTMLElement>();
+  React.useEffect(() => {
+
+    // scroll side bar to show current active li
+    const active = navEl.current?.querySelector<HTMLElement>(
+      `.${Classes.TREE_NODE_SELECTED}`
+    );
+    const activeTop = active?.offsetTop;
+    // const activeBottom = active?.offsetTop + active?.offsetHeight;
+    // const navTop = navEl?.current.offsetTop;
+    const navBottom = navEl?.current.offsetTop + navEl?.current.offsetHeight;
+
+    if (activeTop > navBottom) {
+      if (active) active.scrollIntoView();
+    }
+  }, [state]);
   return (
     <div className={classnames(Classes.TREE, Classes.ELEVATION_0)} id="sidebar">
       <UserProfile />
       <Divider />
-      <nav>
+      <nav ref={navEl}>
         <ul className={Classes.TREE_NODE_LIST}>
           <SidebarHeader>导航</SidebarHeader>
           {mainNavList.map(nav => (
@@ -219,7 +241,7 @@ export const WorkSpaceSidebar: React.FC = () => {
             />
           ))}
         </ul>
-        <SidebarWorks />
+        <SidebarWorks goals={state.goals} missions={state.missions} />
       </nav>
       <style jsx>
         {`

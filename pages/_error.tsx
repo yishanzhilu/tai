@@ -9,6 +9,7 @@ import Head from 'next/head';
 import { AnchorButton } from '@yishanzhilubp/core';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
+import { useUserContext } from '@/src/scopes/global/userContext';
 
 /* eslint-disable react/no-danger */
 
@@ -25,11 +26,14 @@ const styles: { [k: string]: React.CSSProperties } = {
   },
 };
 
-function TaiError({ code = 500, message = '出错了' }) {
+function TaiError({ code = 500, message = '出错了', url = '' }) {
   const { asPath } = useRouter();
   if (code === 404) {
-    message = `请求的 URL ${asPath} 不存在`;
+    message = url ? `请求的 URL ${url} 不存在` : `请求的页面 ${asPath} 不存在`;
   }
+  const {
+    state: { isLogin },
+  } = useUserContext();
   return (
     <div style={styles.error}>
       <Head>
@@ -47,7 +51,10 @@ function TaiError({ code = 500, message = '出错了' }) {
         >
           {message.toString()}
         </p>
-        <AnchorButton href="/" intent="primary">
+        <AnchorButton
+          href={isLogin ? '/workspace/dashboard' : '/'}
+          intent="primary"
+        >
           返回首页
         </AnchorButton>
         {code === 403 && (

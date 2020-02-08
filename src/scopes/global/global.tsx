@@ -15,14 +15,14 @@ import { ThemeContextPorvider } from './themeContext';
 
 export const GlobalContextsProvider = ({ children }) => {
   return (
-    <TaiErrorBoundary fallback={<TaiError code={500} />}>
-      <ThemeContextPorvider>
-        <UserContextPorvider>
-          <WorkProfileContextPorvider>
+    <ThemeContextPorvider>
+      <UserContextPorvider>
+        <WorkProfileContextPorvider>
+          <TaiErrorBoundary fallback={<TaiError code={500} />}>
             <TopBarContextPorvider>{children}</TopBarContextPorvider>
-          </WorkProfileContextPorvider>
-        </UserContextPorvider>
-      </ThemeContextPorvider>
-    </TaiErrorBoundary>
+          </TaiErrorBoundary>
+        </WorkProfileContextPorvider>
+      </UserContextPorvider>
+    </ThemeContextPorvider>
   );
 };

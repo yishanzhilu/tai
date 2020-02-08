@@ -4,7 +4,25 @@
  * All rights reserved
  */
 
-import { GITHUB_OAUTH_CLIENT_ID } from './env';
+/* eslint-disable prefer-destructuring */
+
+export const AUTHOR = process.env.AUTHOR;
+
+export const API_URL = process.env.API_URL;
+
+export const NODE_ENV = process.env.NODE_ENV;
+
+export const IS_PRODUCTION = NODE_ENV === 'production';
+
+export const SERVER_API_URL = process.env.SERVER_API_URL;
+
+export const VERSION = process.env.VERSION;
+
+export const GITHUB_OAUTH_CLIENT_ID = process.env.GITHUB_OAUTH_CLIENT_ID;
+
+export const IS_SERVER = typeof window === 'undefined';
+
+export const IS_BROWSER = !IS_SERVER;
 
 export const GITHUB_OAUTH_URL = `https://github.com/login/oauth/authorize?client_id=${GITHUB_OAUTH_CLIENT_ID}`;
 

@@ -14,6 +14,7 @@ export interface IProps {
 
 export interface ITaiPageError {
   code: number;
+  url?: string;
   message: string;
 }
 
@@ -30,13 +31,10 @@ export interface IToken {
 }
 
 export const parseJWT = (token: string): IToken => {
-  console.debug('parseJWT', token);
   try {
     const info64 = token.split('.')[1];
     return JSON.parse(base64ToString(info64));
   } catch (e) {
-    console.debug('parseJWT', e);
-
     return null;
   }
 };

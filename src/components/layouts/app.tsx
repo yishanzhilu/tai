@@ -31,10 +31,13 @@ export const AppLayout = ({ content, sidebar }: IProps) => {
         </div>
       </div>
 
+      {/* Todo: width: calc(100vw - 17px) so overlay won't resize in windows
+          need further test on mac os and linux
+      */}
       <style jsx>{`
         #tai-app {
           overflow: hidden;
-          position: relative;
+          width: calc(100vw - 17px);
         }
         .tai-app-inner {
           height: 100%;
@@ -45,9 +48,10 @@ export const AppLayout = ({ content, sidebar }: IProps) => {
         }
         header {
           position: fixed;
-          width: 100%;
+          width: calc(100vw - 17px);
           z-index: 10;
           top: 0;
+          left: 0;
         }
         aside {
           flex-grow: 0;
@@ -68,16 +72,16 @@ export const AppLayout = ({ content, sidebar }: IProps) => {
           flex-shrink: 1;
           display: flex;
           flex-direction: column;
-          padding: 40px 400px 0;
+          padding: 20px 400px 0;
         }
         @media (max-width: 1550px) {
           article {
-            padding: 40px 200px 0 400px;
+            padding: 20px 200px 0 400px;
           }
         }
         @media (max-width: 1440px) {
           article {
-            padding: 40px 100px 0 300px;
+            padding: 20px 100px 0 300px;
           }
         }
         .article-inner {

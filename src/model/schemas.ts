@@ -25,13 +25,15 @@ export interface IGoalMission {
   missionTitle?: string;
 }
 
+export type BasicStatus = 'doing' | 'done' | 'drop' | 'todo';
+
 export interface IGoal {
   id: number;
   title: string;
-  status: 'doing' | 'done' | 'drop' | 'plan';
+  status: BasicStatus;
   description: string;
   minutes: number;
-  missions: IMission[];
+  missions?: IMission[];
   createdAt: string;
   updatedAt: string;
 }
@@ -39,7 +41,7 @@ export interface IGoal {
 export interface IMission {
   id: number;
   title: string;
-  status: 'doing' | 'done' | 'drop' | 'plan';
+  status: BasicStatus;
   description: string;
   minutes: number;
   goalID?: number;
@@ -53,7 +55,6 @@ export interface IRecord extends IGoalMission {
   content: string;
   review: string;
   minutes: number;
-  status: 'done' | 'todo';
   createdAt: string;
   updatedAt: string;
 }
@@ -61,7 +62,7 @@ export interface IRecord extends IGoalMission {
 export interface ITodo extends IGoalMission {
   id: number;
   content: string;
-  status: 'todo';
+  status: 'todo' | 'done';
   createdAt: string;
   updatedAt: string;
 }

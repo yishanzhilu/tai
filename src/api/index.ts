@@ -14,11 +14,32 @@ import {
   API_URL,
   IS_BROWSER,
   VERSION,
-} from '../utils/env';
+  TOKEN_KEY,
+} from '../utils/constants';
 import { TaiToast } from '../utils/toaster';
-import { TOKEN_KEY } from '../utils/constants';
 import { ITaiPageError } from '../model/utils';
 
+const praseHTTPErrorStatusText = (status: number): string => {
+  if (status >= 500) {
+    return '服务器错误，请稍后重试';
+  }
+  if (status >= 400) {
+    return '客户端请求异常，请发送正确的请求';
+  }
+  throw Error('请求未出错，但被要求进行错误处理');
+};
+
+export function HandleError(error: AxiosError, toast = true): ITaiPageError {
+  if (!error.response) {
+    throw error;
+  }
+  const message =
+    error.response.data || praseHTTPErrorStatusText(error.response.status);
+  if (toast && IS_BROWSER) {
+    TaiToast.show({ message, intent: 'warning' });
+  }
+  return { code: error.response.status, message, url: error.config.url };
+}
 const baseURL = IS_SERVER ? SERVER_API_URL : API_URL;
 
 export const f = Axios.create({
@@ -46,7 +67,7 @@ f.interceptors.response.use(
   (response): AxiosResponse => {
     return response;
   },
-  (error: AxiosError): Promise<never> => {
+  (error: AxiosError) => {
     if (IS_SERVER) {
       console.error(
         'f interceptors on error:',
@@ -54,7 +75,7 @@ f.interceptors.response.use(
         error.config.url
       );
     }
-    return Promise.reject(error);
+    throw HandleError(error);
   }
 );
 
@@ -73,26 +94,4 @@ export async function sf<Data>(
   }
   const res = await f.get<Data>(url, config);
   return res.data;
-}
-
-const praseHTTPErrorStatusText = (status: number): string => {
-  if (status >= 500) {
-    return '服务器错误，请稍后重试';
-  }
-  if (status >= 400) {
-    return '客户端请求异常，请发送正确的请求';
-  }
-  throw Error('请求未出错，但被要求进行错误处理');
-};
-
-export function HandleError(error: AxiosError, toast = true): ITaiPageError {
-  if (!error.response) {
-    throw error;
-  }
-  const message =
-    error.response.data || praseHTTPErrorStatusText(error.response.status);
-  if (toast && IS_BROWSER) {
-    TaiToast.show({ message, intent: 'warning' });
-  }
-  return { code: error.response.status, message };
 }

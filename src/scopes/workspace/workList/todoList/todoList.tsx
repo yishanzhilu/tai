@@ -63,7 +63,6 @@ const todosReducer = (
   todosState: ITodosState,
   todosAction: ITodosActions
 ): ITodosState => {
-  console.debug('todosReducer | todosAction', todosAction);
   if (todosAction.type === 'InitTodo') {
     return {
       todos: todosAction.todos,
@@ -147,7 +146,7 @@ export const TodoList = ({ todos = [] }: IProps): React.ReactElement => {
 
   return (
     <TaiList title="事项">
-      <Card className="card" style={{ marginTop: 20 }}>
+      <Card className="card">
         <ul className="bp3-list-unstyled">
           {todosState.todos &&
             todosState.todos.map(t => (

@@ -68,10 +68,6 @@ export const NewRecordEditing = () => {
   });
 
   const handleTimePickerChange = useCallback((newTime: Date) => {
-    console.debug(
-      'handleTimePickerChange',
-      newTime.getHours() * 60 + newTime.getMinutes()
-    );
     const m = newTime.getHours() * 60 + newTime.getMinutes();
     if (m <= 60 * 8) {
       setMinutesError(null);
@@ -81,10 +77,6 @@ export const NewRecordEditing = () => {
 
   const handleSelectGoalMission = useCallback(
     (newGoalMission: IGoalMission) => {
-      console.debug(
-        'NewRecordEditing | handleSelectGoalMission',
-        newGoalMission
-      );
       setGoalMission(newGoalMission);
     },
     []
@@ -101,12 +93,6 @@ export const NewRecordEditing = () => {
 
   const onSubmit = useCallback(
     handleSubmit(async ({ content, review }) => {
-      console.debug('NewRecordEditing | handleSubmit', {
-        content,
-        review,
-        goalMission,
-        minutes,
-      });
       if (minutes > 60 * 8) {
         setMinutesError('不能大于8小时');
         return;

@@ -6,11 +6,12 @@
 import * as React from 'react';
 import { NextPage } from 'next';
 import Head from 'next/head';
+import { Classes, H3 } from '@yishanzhilubp/core';
 
 import { IPageProps } from '@/src/model/utils';
 import { ITodo, IRecord } from '@/src/model/schemas';
 import { withPageGuard } from '@/src/utils/auth';
-import { sf, HandleError } from '@/src/api';
+import { sf } from '@/src/api';
 
 import { WorkSpace } from '@/src/scopes/workspace';
 import { WorkList } from '@/src/scopes/workspace/workList';
@@ -23,6 +24,10 @@ interface IProps extends IPageProps {
 const Dashboard: NextPage<IProps> = ({ todos, records }) => {
   return (
     <WorkSpace>
+      <H3>看板</H3>
+      <p className={Classes.TEXT_MUTED} style={{ marginBottom: 20 }}>
+        所有的事项和记录
+      </p>
       <Head>
         <title>看板 · 移山</title>
       </Head>
@@ -42,11 +47,10 @@ Dashboard.getInitialProps = async ctx => {
       records,
     };
   } catch (error) {
-    const resErr = HandleError(error);
     return {
       todos: [],
       records: [],
-      error: resErr,
+      error,
     };
   }
 };
