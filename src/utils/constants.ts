@@ -10,9 +10,7 @@ export const AUTHOR = process.env.AUTHOR;
 
 export const API_URL = process.env.API_URL;
 
-export const NODE_ENV = process.env.NODE_ENV;
-
-export const IS_PRODUCTION = NODE_ENV === 'production';
+export const IS_PRODUCTION = process.env.IS_PRODUCTION;
 
 export const SERVER_API_URL = process.env.SERVER_API_URL;
 
