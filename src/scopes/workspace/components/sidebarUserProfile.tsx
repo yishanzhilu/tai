@@ -57,14 +57,16 @@ export function UserProfile() {
   return (
     <div className="user-profile">
       <Flex className="row" alignItems="center">
-        <img
-          src={avatarUrl}
-          className={Classes.ELEVATION_1}
-          style={{ borderRadius: 10 }}
-          width="20"
-          height="20"
-          alt="avatar"
-        />
+        {avatarUrl && (
+          <img
+            src={avatarUrl}
+            className={Classes.ELEVATION_1}
+            style={{ borderRadius: 10 }}
+            width="20"
+            height="20"
+            alt="avatar"
+          />
+        )}
         <div
           className={classNames(Classes.TEXT_OVERFLOW_ELLIPSIS)}
           style={{ fontWeight: 600, maxWidth: 125 }}
