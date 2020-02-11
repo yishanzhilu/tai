@@ -16,7 +16,7 @@ import { Flex } from '@/src/components/flex';
 import { useWorkSpaceContext } from '@/src/scopes/workspace';
 import { GoalMissionMenu } from '@/src/scopes/workspace/components/goalMissionMenu';
 
-import { ITodosActions } from './todoList';
+import { ITodosActions } from './todoReducer';
 
 const NewTodoEditing: React.FC<{
   dispatchTodosAction: React.Dispatch<ITodosActions>;
@@ -56,7 +56,7 @@ const NewTodoEditing: React.FC<{
       type: 'Freeze',
     });
     const data = {
-      content: input.value,
+      content: input.value.trim(),
       status: 'todo',
       ...goalMission,
     };
@@ -89,7 +89,10 @@ const NewTodoEditing: React.FC<{
     <>
       <div style={{ marginBottom: 10 }}>
         <H6>添加事项</H6>
-        <FormGroup helperText={errorMsg} intent="primary">
+        <FormGroup
+          helperText={errorMsg || 'Ctrl + Enter 保存'}
+          intent={errorMsg ? 'primary' : 'none'}
+        >
           <TextArea
             fill
             growVertically
@@ -98,6 +101,7 @@ const NewTodoEditing: React.FC<{
             disabled={loading}
             intent={errorMsg ? 'primary' : 'none'}
             placeholder="有什么需要做的吗"
+            onChange={() => setErrorMsg('')}
             rightElement={
               <GoalMissionMenu
                 emptyText="独立事项"
@@ -108,7 +112,7 @@ const NewTodoEditing: React.FC<{
             }
             onKeyDown={e => {
               if (e.which === Keys.ENTER) {
-                handleEnter();
+                if (e.ctrlKey) handleEnter();
               } else if (e.which === Keys.ESCAPE) {
                 onCancel();
               }

@@ -10,7 +10,6 @@ import {
   FormGroup,
   InputGroup,
   TextArea,
-  Switch,
   Button,
   HTMLSelect,
 } from '@yishanzhilubp/core';
@@ -20,6 +19,7 @@ import { f, HandleError } from '@/src/api';
 import { IGoal, IMission } from '@/src/model/schemas';
 import { useWorkProfileContext } from '@/src/scopes/global/workProfileContext';
 import { useTopBarContext } from '../topBarContext';
+import { TaiToast } from '@/src/utils/toaster';
 
 export const NewGoalForm: React.FC = () => {
   interface INewGoalFormValue {
@@ -27,7 +27,6 @@ export const NewGoalForm: React.FC = () => {
     description: string;
   }
   const [loading, setLoading] = useState(false);
-  const [startNow, setStartNow] = useState(true);
   const { register, handleSubmit, errors } = useForm<INewGoalFormValue>({
     defaultValues: {
       title: '',
@@ -42,7 +41,10 @@ export const NewGoalForm: React.FC = () => {
       try {
         const { data: createdGoal } = await f.post<IGoal>('/goals', {
           ...data,
-          status: startNow ? 'doing' : 'todo',
+          status: 'doing',
+        });
+        TaiToast.show({
+          message: '创建成功',
         });
         Router.push(
           `/workspace/goal/[id]`,
@@ -56,7 +58,7 @@ export const NewGoalForm: React.FC = () => {
         setLoading(false);
       }
     }),
-    [startNow]
+    []
   );
   return (
     <form onSubmit={onSubmit}>
@@ -92,6 +94,7 @@ export const NewGoalForm: React.FC = () => {
             autoComplete="off"
             disabled={loading}
             placeholder="目标的具体内容，例如关键指标，时间节点"
+            rows={2}
             growVertically
             inputRef={register({
               maxLength: { value: 255, message: '不能大于255个字符' },
@@ -99,16 +102,6 @@ export const NewGoalForm: React.FC = () => {
             name="description"
           />
         </FormGroup>
-        <Switch
-          label="立刻开始"
-          disabled={loading}
-          alignIndicator="right"
-          large
-          checked={startNow}
-          onChange={e => {
-            setStartNow((e.target as HTMLInputElement).checked);
-          }}
-        />
       </div>
       <div className={Classes.DIALOG_FOOTER}>
         <div className={Classes.DIALOG_FOOTER_ACTIONS}>
@@ -138,7 +131,6 @@ export const NewMissionForm: React.FC = () => {
   }
   const [loading, setLoading] = useState(false);
   const [goalID, setGoalID] = useState(0);
-  const [startNow, setStartNow] = useState(true);
   const { register, handleSubmit, errors } = useForm<INewMissionFormValue>({
     defaultValues: {
       title: '',
@@ -152,21 +144,25 @@ export const NewMissionForm: React.FC = () => {
         const { data: createdMission } = await f.post<IMission>('/missions', {
           ...data,
           goalID,
-          status: startNow ? 'doing' : 'todo',
+          status: 'doing',
         });
         Router.push(
           `/workspace/mission/[id]`,
           `/workspace/mission/${createdMission.id}`
         );
         dispatchTopBar({ type: 'SetNewMissionDialog', isOpen: false });
-        dispatchWorkProfile({ type: 'AddMission', mission: createdMission });
+        dispatchWorkProfile({
+          type: 'AddMission',
+          mission: createdMission,
+          goalID: createdMission.goalID,
+        });
       } catch (error) {
         HandleError(error, true);
       } finally {
         setLoading(false);
       }
     }),
-    [goalID, startNow]
+    [goalID]
   );
   return (
     <form onSubmit={onSubmit}>
@@ -218,16 +214,6 @@ export const NewMissionForm: React.FC = () => {
             options={[{ label: '无，设为独立任务', value: 0 }].concat(
               state.goals.map(g => ({ label: g.title, value: g.id }))
             )}
-          />
-        </FormGroup>
-        <FormGroup label="立刻开始" inline>
-          <Switch
-            disabled={loading}
-            large
-            checked={startNow}
-            onChange={e => {
-              setStartNow((e.target as HTMLInputElement).checked);
-            }}
           />
         </FormGroup>
       </div>

@@ -8,7 +8,7 @@ import React from 'react';
 import { ITodo } from '@/src/model/schemas';
 import { EditingTodo } from './editingTodo';
 import { DefaultTodo } from './defaultTodo';
-import { ITodosActions } from './todoList';
+import { ITodosActions } from './todoReducer';
 
 export interface IUITodo extends ITodo {
   uiState?: undefined | 'default' | 'editing' | 'loading';

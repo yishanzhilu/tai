@@ -13,42 +13,34 @@ import { Classes, H1, Button } from '@yishanzhilubp/core';
 
 import { LandingLayout } from '@/src/components/layouts/landing';
 import { GITHUB_OAUTH_URL, TOKEN_KEY } from '@/src/utils/constants';
-import { redirect } from '@/src/utils/funcs';
 import { IPageProps } from '@/src/model/utils';
 
 const onClick = () => {
-  if (jsCookie.get('token')) {
-    redirect('/workspace/dashboard');
-  } else {
-    window.location.href = GITHUB_OAUTH_URL;
-  }
+  NProgress.start();
+  window.location.href = GITHUB_OAUTH_URL;
 };
 
 export function Banner() {
   return (
     <section>
       <div className="content">
-        <h1>确立目标 & 达成理想</h1>
-        <p>关于长期目标的代办事项</p>
+        <h1>确立目标，达成理想</h1>
+        <p>关于长期的代办事项</p>
         <Button intent="primary" onClick={onClick}>
           内测 Github 账户登录
         </Button>
       </div>
-      <img
-        src="/images/banner.jpg"
-        alt="people using yishan to get keep on their goal"
-      />
       <style jsx>{`
+        section {
+          padding: 120px 0 30px;
+        }
         .content {
-          text-align: center;
           position: relative;
-          font-size: ;
+          text-align: center;
         }
         h1 {
           box-sizing: border-box;
-          margin-top: 104px;
-          margin-bottom: 16px;
-          padding: 0 20px;
+          margin: 0;
           color: #262626;
           line-height: 1.35;
           font-size: 44px;
@@ -60,20 +52,7 @@ export function Banner() {
           box-sizing: border-box;
           margin-top: 0;
           margin-bottom: 16px;
-          text-align: center;
           font-size: 18px;
-          padding: 0 3em;
-        }
-        img {
-          width: 90%;
-          max-width: 1256px;
-          display: block;
-          margin: -140px auto 0;
-        }
-        @media (max-width: 600px) {
-          img {
-            margin-top: 00px;
-          }
         }
       `}</style>
     </section>

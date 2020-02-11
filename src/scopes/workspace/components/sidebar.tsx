@@ -190,11 +190,6 @@ export const WorkSpaceSidebar: React.FC = () => {
       emoji: '📋',
     },
     {
-      href: '/workspace/plan',
-      title: '规划',
-      emoji: '📆',
-    },
-    {
       href: '/workspace/trophy',
       title: '成就',
       emoji: '🏆',

@@ -53,7 +53,9 @@ const WorkProfileGoalReducer = (
       if (goal.id === action.goalID) {
         return {
           ...goal,
-          missions: [...goal.missions, action.mission],
+          missions: [...goal.missions, action.mission].sort(
+            (a, b) => a.id - b.id
+          ),
         };
       }
       return goal;
@@ -61,7 +63,7 @@ const WorkProfileGoalReducer = (
       if (goal.id === action.goalID) {
         return {
           ...goal,
-          missions: goal.missions.filter(m => m.id === action.id),
+          missions: goal.missions.filter(m => m.id !== action.id),
         };
       }
       return goal;
@@ -100,6 +102,9 @@ const WorkProfileContextReducer = (
   state: IWorkProfileContextState,
   action: IWorkProfileContextAction
 ): IWorkProfileContextState => {
+  console.log('TCL: state', state);
+  console.log('TCL: action', action);
+
   switch (action.type) {
     case 'Init':
       return {
@@ -108,7 +113,7 @@ const WorkProfileContextReducer = (
       };
     case 'AddGoal':
       return {
-        goals: [...state.goals, action.goal],
+        goals: [...state.goals, action.goal].sort((a, b) => a.id - b.id),
         missions: state.missions,
       };
     case 'RemoveGoal':
@@ -136,7 +141,7 @@ const WorkProfileContextReducer = (
       }
       return {
         goals: state.goals,
-        missions: state.missions.filter(m => m.id === action.id),
+        missions: state.missions.filter(m => m.id !== action.id),
       };
     case 'UpdateTitle':
       if (action.schema === 'goal') {

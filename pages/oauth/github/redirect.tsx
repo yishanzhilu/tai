@@ -14,7 +14,6 @@ import { LandingLayout } from '@/src/components/layouts/landing';
 import { Flex } from '@/src/components/flex';
 import { IPageProps } from '@/src/model/utils';
 import TaiError from '@/pages/_error';
-import { redirect } from '@/src/utils/funcs';
 import { TOKEN_KEY } from '@/src/utils/constants';
 
 interface IProps extends IPageProps {
@@ -27,7 +26,7 @@ const OauthGithubRedirect: NextPage<IProps> = ({ token, error }) => {
       cookie.set(TOKEN_KEY, `Bearer ${token}`, {
         expires: 365,
       });
-      redirect('/workspace/dashboard');
+      window.location.replace('/workspace/dashboard');
     }
   }, [token]);
   if (error) {

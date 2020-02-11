@@ -24,7 +24,10 @@ interface IProps extends IPageProps {
 const Dashboard: NextPage<IProps> = ({ todos, records }) => {
   return (
     <WorkSpace>
-      <H3>看板</H3>
+      <Head>
+        <title>📋 看板 · 移山</title>
+      </Head>
+      <H3>📋 看板</H3>
       <p className={Classes.TEXT_MUTED} style={{ marginBottom: 20 }}>
         所有的事项和记录
       </p>

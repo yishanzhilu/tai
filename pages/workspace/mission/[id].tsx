@@ -12,8 +12,8 @@ import { IPageProps, ITaiPageError } from '@/src/model/utils';
 import { sf, HandleError } from '@/src/api';
 import { withPageGuard } from '@/src/utils/auth';
 import { WorkList } from '@/src/scopes/workspace/workList';
-import { DetailCard } from '@/src/scopes/workspace/components/detailCard';
 import { WorkSpace } from '@/src/scopes/workspace';
+import { MissionCard } from '@/src/scopes/workspace/components/cards/detailCards';
 
 interface IProps extends IPageProps {
   mission: IMission;
@@ -34,7 +34,7 @@ const MissionDetail: NextPage<IProps> = ({ mission, todos, records }) => {
         },
       }}
     >
-      <DetailCard detail={{ ...mission, type: 'mission' }} />
+      <MissionCard mission={mission} />
       <WorkList todos={todos} records={records} />
     </WorkSpace>
   );

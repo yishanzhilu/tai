@@ -128,6 +128,12 @@ export const Record = ({ record }: IProps): React.ReactElement => {
           <p>{record.review}</p>
         </>
       )}
+      <style jsx>{`
+        p {
+          word-break: break-all;
+          white-space: pre-wrap;
+        }
+      `}</style>
     </Card>
   );
 };

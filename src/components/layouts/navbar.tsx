@@ -15,13 +15,13 @@ import {
   NavbarGroup,
   NavbarHeading,
   Alignment,
-  Icon,
   Position,
   Popover,
   Menu,
   MenuItem,
   AnchorButton,
   MenuDivider,
+  Icon,
 } from '@yishanzhilubp/core';
 
 import { useTopBarContext } from '@/src/scopes/global/topBarContext';
@@ -74,8 +74,9 @@ const ProfileMenu: React.FC = () => {
         icon="log-out"
         text="退出"
         onClick={() => {
-          logout(() => {
-            router.replace('/').then(() => window.scrollTo(0, 0));
+          logout(async () => {
+            await router.replace('/');
+            window.scrollTo(0, 0);
             dispatch({ type: 'LogOut' });
           });
         }}

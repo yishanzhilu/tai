@@ -4,7 +4,7 @@
  * All rights reserved
  */
 
-import React, { useState, Dispatch, SetStateAction } from 'react';
+import React, { useState, Dispatch, SetStateAction, useEffect } from 'react';
 import { AppLayout } from '@/src/components/layouts/app';
 import { WorkSpaceSidebar } from './components/sidebar';
 import { IGoalMission } from '@/src/model/schemas';
@@ -35,7 +35,10 @@ export const WorkSpace: React.FC<{ initialState?: IWorkSpaceContextState }> = ({
   children,
   initialState = defaultState,
 }) => {
-  const [state, dispatch] = useState<IWorkSpaceContextState>(initialState);
+  const [state, dispatch] = useState<IWorkSpaceContextState>(defaultState);
+  useEffect(() => {
+    dispatch(initialState);
+  }, [initialState]);
   return (
     <WorkSpaceContext.Provider value={{ state, dispatch }}>
       <AppLayout sidebar={<WorkSpaceSidebar />} content={children} />

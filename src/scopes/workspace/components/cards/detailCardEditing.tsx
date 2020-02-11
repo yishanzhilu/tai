@@ -6,25 +6,22 @@
 import React, { useState } from 'react';
 import useForm from 'react-hook-form';
 
-import {
-  FormGroup,
-  InputGroup,
-  TextArea,
-  Button,
-} from '@yishanzhilubp/core';
+import { FormGroup, InputGroup, TextArea, Button } from '@yishanzhilubp/core';
 
 import { f, HandleError } from '@/src/api';
 import { TaiCard } from '@/src/components/layouts';
 import { Flex } from '@/src/components/flex';
 import { useWorkProfileContext } from '@/src/scopes/global/workProfileContext';
-import { IDetail } from './detailCard';
-import { detailTypeConfigs } from './detailCardConfigs';
+import { IGoal, IMission } from '@/src/model/schemas';
+import { IDetail } from './detailCards';
+import { detailTypeConfigs } from './configs';
 
 export const DetailCardEditing: React.FC<{
   detail: IDetail;
   onStopEditing: () => void;
-  setDetail: React.Dispatch<React.SetStateAction<IDetail>>;
-}> = ({ detail, onStopEditing, setDetail }) => {
+  setDetail: React.Dispatch<React.SetStateAction<IGoal | IMission>>;
+  type: 'goal' | 'mission';
+}> = ({ detail, onStopEditing, setDetail, type }) => {
   interface IPatchMissionFormValue {
     title: string;
     description: string;
@@ -36,25 +33,25 @@ export const DetailCardEditing: React.FC<{
       description: detail.description,
     },
   });
-  const { labelName, descPlaceholder } = detailTypeConfigs[detail.type];
+  const { labelName, descPlaceholder } = detailTypeConfigs[type];
   const [loading, setLoading] = useState(false);
   const onSubmit = handleSubmit(async data => {
     setLoading(true);
     try {
       const { data: updated } = await f.patch<IDetail>(
-        `/${detail.type}/${detail.id}`,
+        `/${type}/${detail.id}`,
         {
           ...data,
         }
       );
       onStopEditing();
-      setDetail({ ...updated, type: detail.type });
+      setDetail({ ...updated });
       dispatch({
         type: 'UpdateTitle',
         title: updated.title,
         id: detail.id,
         goalID: updated.goalID,
-        schema: detail.type,
+        schema: type,
       });
     } catch (error) {
       HandleError(error, true);

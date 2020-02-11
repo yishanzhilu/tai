@@ -16,10 +16,9 @@ import {
   Position,
 } from '@yishanzhilubp/core';
 
-import { useInputRef } from '@/src/utils/hooks';
 import { ITodo, IGoalMission } from '@/src/model/schemas';
 
-import { ITodosActions } from './todoList';
+import { ITodosActions } from './todoReducer';
 import { f } from '@/src/api';
 import { Flex, FlexPlaceHolder } from '@/src/components/flex';
 import { GoalMissionMenu } from '../../components/goalMissionMenu';
@@ -35,24 +34,20 @@ export const EditingTodo = ({
   dispatchTodosAction,
   onClickCancel,
 }: IProps) => {
-  const [input, ref] = useInputRef<HTMLTextAreaElement>();
+  // const [input, ref] = useInputRef<HTMLTextAreaElement>();
   const [goalMission, onSelectGoalMission] = React.useState(
     originTodo as IGoalMission
   );
+  const [content, setContent] = React.useState(originTodo.content);
   const [loading, setLoading] = React.useState(false);
   const [errorMsg, setErrorMsg] = React.useState('');
-  React.useEffect(() => {
-    if (input) {
-      input.value = originTodo.content;
-    }
-  }, [input]);
 
   const onEditClickSave = async () => {
-    if (input.value.length === 0) {
+    if (content.length === 0) {
       setErrorMsg('必填');
       return;
     }
-    if (input.value.length > 255) {
+    if (content.length > 255) {
       setErrorMsg('不能大于255个字符');
       return;
     }
@@ -63,7 +58,7 @@ export const EditingTodo = ({
     const data = {
       goalID: goalMission.goalID,
       missionID: goalMission.missionID,
-      content: input.value,
+      content: content.trim(),
     };
     try {
       const res = await f.patch<ITodo>(`/todo/${originTodo.id}`, data);
@@ -84,7 +79,7 @@ export const EditingTodo = ({
   const onKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     switch (e.which) {
       case Keys.ENTER:
-        onEditClickSave();
+        if (e.ctrlKey) onEditClickSave();
         break;
       case Keys.ESCAPE:
         onClickCancel();
@@ -117,12 +112,18 @@ export const EditingTodo = ({
     <div>
       <div className="input">
         <H6>更新事项</H6>
-        <FormGroup helperText={errorMsg} intent="primary">
+        <FormGroup
+          helperText={errorMsg || 'Ctrl + Enter 保存'}
+          intent={errorMsg ? 'primary' : 'none'}
+        >
           <TextArea
             fill
-            rows={1}
             disabled={loading}
-            inputRef={ref}
+            value={content}
+            onChange={e => {
+              setContent(e.currentTarget.value);
+              setErrorMsg('');
+            }}
             growVertically
             autoFocus
             onKeyDown={onKeyDown}

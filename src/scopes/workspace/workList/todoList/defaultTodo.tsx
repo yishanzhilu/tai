@@ -10,7 +10,7 @@ import classNames from 'classnames';
 
 import { ITodo } from '@/src/model/schemas';
 import { f } from '@/src/api';
-import { ITodosActions } from './todoList';
+import { ITodosActions } from './todoReducer';
 import { Flex } from '@/src/components/flex';
 import { GoalMission } from '@/src/components/goalMission';
 import { useWorkListContext } from '../workList';
@@ -135,7 +135,9 @@ export const DefaultTodo = ({ todo, dispatchTodosAction }: IProps) => {
         >
           {todo.content}
         </span>
-        <GoalMission emptyText="独立事项" goalMission={todo} isLink />
+        <div>
+          <GoalMission emptyText="独立事项" goalMission={todo} isLink />
+        </div>
       </div>
       <style jsx>
         {`
@@ -151,6 +153,9 @@ export const DefaultTodo = ({ todo, dispatchTodosAction }: IProps) => {
           .content {
             flex: 1 1;
             cursor: text;
+            word-break: break-all;
+            white-space: pre-wrap;
+            margin-right: 10px;
           }
           .content.done {
             text-decoration: line-through;

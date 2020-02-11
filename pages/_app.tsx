@@ -36,7 +36,7 @@ Router.events.on('routeChangeError', () => NProgress.done());
 const TaiApp = ({ Component, pageProps }) => (
   <>
     <Head>
-      <title>移山 · 为你所爱</title>
+      <title>移山 · 确立目标，达成理想</title>
       <meta charSet="UTF-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       <meta httpEquiv="X-UA-Compatible" content="ie=edge" />
@@ -45,8 +45,8 @@ const TaiApp = ({ Component, pageProps }) => (
         href="https://cdn.jsdelivr.net/npm/normalizecss@3.0.0/normalize.css"
         rel="stylesheet"
       />
-      <link rel="icon" type="image/x-icon" href="/static/logo.ico" />
-      <link
+      <link rel="icon" type="image/x-icon" href="/static/favicon.ico" />
+      {/* <link
         rel="apple-touch-icon"
         sizes="180x180"
         href="/static/apple-touch-icon.png"
@@ -62,7 +62,7 @@ const TaiApp = ({ Component, pageProps }) => (
         type="image/png"
         sizes="16x16"
         href="/static/favicon-16x16.png"
-      />
+      /> */}
     </Head>
     <GlobalContextsProvider>
       <Component {...pageProps} />

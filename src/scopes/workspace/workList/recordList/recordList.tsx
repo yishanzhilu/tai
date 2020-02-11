@@ -16,7 +16,7 @@ import { NewRecord } from './newRecord';
 import { recordListReducer, RecordsContext } from './recordListReduceContext';
 import { f } from '@/src/api';
 import { TaiToast } from '@/src/utils/toaster';
-import { TaiList } from '@/src/components/layouts/taiList';
+import { TaiListSimple } from '@/src/components/layouts/taiList';
 import { getDateDiffFromNow } from '@/src/utils/funcs';
 import { useWorkListContext } from '../workList';
 import { useUserContext } from '@/src/scopes/global/userContext';
@@ -98,7 +98,7 @@ export const RecordList = ({ records }: IProps): React.ReactElement => {
 
   return (
     <RecordsContext.Provider value={{ state, dispatch }}>
-      <TaiList title="历程">
+      <TaiListSimple title="历程">
         <li>
           <NewRecord />
         </li>
@@ -120,7 +120,7 @@ export const RecordList = ({ records }: IProps): React.ReactElement => {
             />
           </Card>
         </li>
-      </TaiList>
+      </TaiListSimple>
       <style jsx>{`
         .item-enter {
           opacity: 0;
@@ -131,10 +131,12 @@ export const RecordList = ({ records }: IProps): React.ReactElement => {
         }
         .item-exit {
           height: 132px;
+          opacity: 1;
           padding: 1px;
           overflow: hidden;
         }
         .item-exit-active {
+          opacity: 0;
           height: 0;
           transition: height 500ms ease-in;
         }

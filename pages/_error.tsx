@@ -8,7 +8,6 @@ import * as React from 'react';
 import Head from 'next/head';
 import { AnchorButton } from '@yishanzhilubp/core';
 import { useRouter } from 'next/router';
-import Link from 'next/link';
 import { useUserContext } from '@/src/scopes/global/userContext';
 
 /* eslint-disable react/no-danger */
@@ -57,14 +56,14 @@ function TaiError({ code = 500, message = '出错了', url = '' }) {
         >
           返回首页
         </AnchorButton>
-        {code === 403 && (
+        {/* {code === 403 && (
           <Link
             href={{ pathname: '/login', query: { 'redirect-from': asPath } }}
             passHref
           >
             <AnchorButton style={{ marginLeft: 20 }}>登录访问</AnchorButton>
           </Link>
-        )}
+        )} */}
       </div>
       <img
         style={{ width: 150, height: 150, marginLeft: 100 }}

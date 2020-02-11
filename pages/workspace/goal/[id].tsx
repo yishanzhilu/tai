@@ -12,8 +12,8 @@ import { IPageProps, ITaiPageError } from '@/src/model/utils';
 import { sf, HandleError } from '@/src/api';
 import { withPageGuard } from '@/src/utils/auth';
 import { WorkSpace } from '@/src/scopes/workspace';
-import { DetailCard } from '@/src/scopes/workspace/components/detailCard';
 import { WorkList } from '@/src/scopes/workspace/workList';
+import { GoalCard } from '@/src/scopes/workspace/components/cards/detailCards';
 
 interface IProps extends IPageProps {
   goal: IGoal;
@@ -32,7 +32,7 @@ const GoalDetail: NextPage<IProps> = ({ goal, todos, records }) => {
         },
       }}
     >
-      <DetailCard detail={{ ...goal, type: 'goal' }} />
+      <GoalCard goal={goal} />
       <WorkList todos={todos} records={records} />
     </WorkSpace>
   );

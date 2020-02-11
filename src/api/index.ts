@@ -44,7 +44,7 @@ const baseURL = IS_SERVER ? SERVER_API_URL : API_URL;
 
 export const f = Axios.create({
   baseURL,
-  timeout: 3000,
+  timeout: 6000,
 });
 
 f.interceptors.request.use(async config => {

@@ -12,7 +12,7 @@ export const TaiCard: React.FC<{
   title?: string;
 }> = ({ children, title }) => {
   return (
-    <div style={{ marginBottom: 20 }}>
+    <div style={{ marginBottom: 10 }}>
       {title && <H3>{title}</H3>}
       <Card style={{ marginTop: 20 }}>{children}</Card>
     </div>
