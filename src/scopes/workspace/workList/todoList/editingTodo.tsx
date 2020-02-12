@@ -18,9 +18,10 @@ import {
 
 import { ITodo, IGoalMission } from '@/src/model/schemas';
 
-import { ITodosActions } from './todoReducer';
 import { f } from '@/src/api';
 import { Flex, FlexPlaceHolder } from '@/src/components/flex';
+
+import { ITodosActions } from './todoReducer';
 import { GoalMissionMenu } from '../../components/goalMissionMenu';
 
 interface IProps {

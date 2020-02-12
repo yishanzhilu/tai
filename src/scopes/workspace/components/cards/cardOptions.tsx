@@ -17,8 +17,9 @@ import {
 
 import { BasicStatus } from '@/src/model/schemas';
 import { f } from '@/src/api';
-import { detailTypeConfigs } from './configs';
 import { useWorkProfileContext } from '@/src/scopes/global/workProfileContext';
+
+import { detailTypeConfigs } from './configs';
 
 const status2Action = (status: BasicStatus | 'delete') => {
   switch (status) {

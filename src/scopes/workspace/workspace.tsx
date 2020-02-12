@@ -6,9 +6,9 @@
 
 import React, { useState, Dispatch, SetStateAction, useEffect } from 'react';
 import { AppLayout } from '@/src/components/layouts/app';
-import { WorkSpaceSidebar } from './components/sidebar';
 import { IGoalMission } from '@/src/model/schemas';
 import { noop } from '@/src/utils/funcs';
+import { WorkSpaceSidebar } from './components/sidebar';
 
 interface IWorkSpaceContextState {
   goalMission: IGoalMission;

@@ -6,10 +6,11 @@
 import React, { useEffect } from 'react';
 import { Divider, Card } from '@yishanzhilubp/core';
 
-import { Todo, IUITodo } from './todo';
-import { NewTodo } from './newTodo';
 import { ITodo, IGoalMission } from '@/src/model/schemas';
 import { TaiList } from '@/src/components/layouts/taiList';
+
+import { Todo, IUITodo } from './todo';
+import { NewTodo } from './newTodo';
 import { todosReducer } from './todoReducer';
 
 interface IProps {

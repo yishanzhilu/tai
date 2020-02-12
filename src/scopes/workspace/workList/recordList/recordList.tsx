@@ -10,16 +10,16 @@ import classNames from 'classnames';
 import { TransitionGroup, CSSTransition } from 'react-transition-group';
 
 import { IRecord } from '@/src/model/schemas';
-
-import { Record } from './record';
-import { NewRecord } from './newRecord';
-import { recordListReducer, RecordsContext } from './recordListReduceContext';
 import { f } from '@/src/api';
 import { TaiToast } from '@/src/utils/toaster';
 import { TaiListSimple } from '@/src/components/layouts/taiList';
 import { getDateDiffFromNow } from '@/src/utils/funcs';
-import { useWorkListContext } from '../workList';
 import { useUserContext } from '@/src/scopes/global/userContext';
+
+import { Record } from './record';
+import { NewRecord } from './newRecord';
+import { recordListReducer, RecordsContext } from './recordListReduceContext';
+import { useWorkListContext } from '../workList';
 import { useWorkSpaceContext } from '../../workspace';
 
 interface IProps {

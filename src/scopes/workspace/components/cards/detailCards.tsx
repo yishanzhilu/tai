@@ -12,9 +12,10 @@ import { InfoBlock } from '@/src/components/infoBlock';
 import { Flex } from '@/src/components/flex';
 import { formatMinutes, formatDate } from '@/src/utils/funcs';
 import { useWorkSpaceContext } from '@/src/scopes/workspace';
+import { BasicStatus, IGoal, IMission } from '@/src/model/schemas';
+
 import { BaseCard } from './baseCard';
 import { CardOptions } from './cardOptions';
-import { BasicStatus, IGoal, IMission } from '@/src/model/schemas';
 import { DetailCardEditing } from './detailCardEditing';
 import { detailTypeConfigs } from './configs';
 

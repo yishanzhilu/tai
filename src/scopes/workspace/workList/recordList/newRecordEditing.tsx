@@ -25,11 +25,11 @@ import { TaiToast } from '@/src/utils/toaster';
 import { useWorkListContext } from '@/src/scopes/workspace/workList';
 
 import { IGoalMission, IRecord } from '@/src/model/schemas';
+import { useUserContext } from '@/src/scopes/global/userContext';
 
 import { RecordsContext } from './recordListReduceContext';
 import { useWorkSpaceContext } from '../../workspace';
 import { GoalMissionMenu } from '../../components/goalMissionMenu';
-import { useUserContext } from '@/src/scopes/global/userContext';
 
 export const NewRecordEditing = () => {
   const [{ finishedTodo }, setWorkList] = useWorkListContext();

@@ -18,8 +18,9 @@ import Router from 'next/router';
 import { f, HandleError } from '@/src/api';
 import { IGoal, IMission } from '@/src/model/schemas';
 import { useWorkProfileContext } from '@/src/scopes/global/workProfileContext';
-import { useTopBarContext } from '../topBarContext';
 import { TaiToast } from '@/src/utils/toaster';
+
+import { useTopBarContext } from '../topBarContext';
 
 export const NewGoalForm: React.FC = () => {
   interface INewGoalFormValue {

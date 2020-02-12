@@ -7,8 +7,9 @@ import React from 'react';
 import { Classes, Card, Text } from '@yishanzhilubp/core';
 
 import { IGoal, IMission } from '@/src/model/schemas';
-import { CardOptions } from './cardOptions';
 import { Flex } from '@/src/components/flex';
+
+import { CardOptions } from './cardOptions';
 import { BaseCard } from './baseCard';
 
 const MiniGoalCardMissions: React.FC<{ missions: IMission[] }> = ({

@@ -10,9 +10,9 @@ import classNames from 'classnames';
 
 import { ITodo } from '@/src/model/schemas';
 import { f } from '@/src/api';
-import { ITodosActions } from './todoReducer';
 import { Flex } from '@/src/components/flex';
 import { GoalMission } from '@/src/components/goalMission';
+import { ITodosActions } from './todoReducer';
 import { useWorkListContext } from '../workList';
 
 interface IProps {

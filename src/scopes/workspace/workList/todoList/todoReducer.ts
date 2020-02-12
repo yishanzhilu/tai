@@ -4,8 +4,8 @@
  * All rights reserved
  */
 
-import { IUITodo } from './todo';
 import { ITodo } from '@/src/model/schemas';
+import { IUITodo } from './todo';
 
 export type ITodosActions =
   | { type: 'InitTodo'; todos: ITodo[] }

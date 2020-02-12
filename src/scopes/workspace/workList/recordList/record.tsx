@@ -20,10 +20,11 @@ import {
 import { IRecord } from '@/src/model/schemas';
 import { getDateDiffFromNow, formatMinutes } from '@/src/utils/funcs';
 import { f, HandleError } from '@/src/api';
-import { RecordsContext } from './recordListReduceContext';
 import { Flex } from '@/src/components/flex';
 import { GoalMission } from '@/src/components/goalMission';
 import { useUserContext } from '@/src/scopes/global/userContext';
+
+import { RecordsContext } from './recordListReduceContext';
 import { useWorkSpaceContext } from '../../workspace';
 
 interface IProps {
