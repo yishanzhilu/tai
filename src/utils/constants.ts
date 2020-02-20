@@ -5,18 +5,23 @@
  */
 
 /* eslint-disable prefer-destructuring */
+import getConfig from 'next/config';
 
-export const AUTHOR = process.env.AUTHOR;
+// Only holds serverRuntimeConfig and publicRuntimeConfig
+const { publicRuntimeConfig } = getConfig();
 
-export const API_URL = process.env.API_URL;
+export const AUTHOR = publicRuntimeConfig.AUTHOR;
 
-export const IS_PRODUCTION = process.env.IS_PRODUCTION;
+export const API_URL = publicRuntimeConfig.API_URL;
 
-export const SERVER_API_URL = process.env.SERVER_API_URL;
+export const IS_PRODUCTION = publicRuntimeConfig.IS_PRODUCTION;
 
-export const VERSION = process.env.VERSION;
+export const SERVER_API_URL = publicRuntimeConfig.SERVER_API_URL;
 
-export const GITHUB_OAUTH_CLIENT_ID = process.env.GITHUB_OAUTH_CLIENT_ID;
+export const VERSION = publicRuntimeConfig.VERSION;
+
+export const GITHUB_OAUTH_CLIENT_ID =
+  publicRuntimeConfig.GITHUB_OAUTH_CLIENT_ID;
 
 export const IS_SERVER = typeof window === 'undefined';
 

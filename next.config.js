@@ -23,7 +23,7 @@ module.exports = withCSS(
       };
       return config;
     },
-    env: {
+    publicRuntimeConfig: {
       TEST_VAR: process.env.TEST_VAR,
       API_URL: process.env.API_URL,
       SERVER_API_URL: process.env.SERVER_API_URL,

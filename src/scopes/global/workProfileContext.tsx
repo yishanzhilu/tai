@@ -102,8 +102,6 @@ const WorkProfileContextReducer = (
   state: IWorkProfileContextState,
   action: IWorkProfileContextAction
 ): IWorkProfileContextState => {
-  console.log('TCL: state', state);
-  console.log('TCL: action', action);
 
   switch (action.type) {
     case 'Init':
