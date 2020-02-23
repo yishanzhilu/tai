@@ -138,7 +138,7 @@ export function getDateDiffFromNow(dateTimeStamp: string) {
 }
 
 export function formatMinutes(mintues: number) {
-  const hours = (mintues / 60).toFixed();
+  const hours = Math.floor(mintues / 60);
   return `${hours} : ${(mintues % 60).toString().padStart(2, '0')}`;
 }
 

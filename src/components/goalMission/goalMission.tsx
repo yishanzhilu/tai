@@ -36,7 +36,10 @@ export const GoalMission = ({
     );
     if (isLink) {
       goalElement = (
-        <Link href={`/workspace/goal/${goalMission.goalID}`}>
+        <Link
+          as={`/workspace/goal/${goalMission.goalID}`}
+          href="/workspace/goal/[id]"
+        >
           <a>{goalElement}</a>
         </Link>
       );
@@ -52,7 +55,10 @@ export const GoalMission = ({
     );
     if (isLink) {
       missionElement = (
-        <Link href={`/workspace/mission/${goalMission.missionID}`}>
+        <Link
+          as={`/workspace/mission/${goalMission.missionID}`}
+          href="/workspace/mission/[id]"
+        >
           <a>{missionElement}</a>
         </Link>
       );
