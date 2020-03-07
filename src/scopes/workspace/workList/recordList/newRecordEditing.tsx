@@ -26,18 +26,18 @@ import { useWorkListContext } from '@/src/scopes/workspace/workList';
 
 import { IGoalMission, IRecord } from '@/src/model/schemas';
 import { useUserContext } from '@/src/scopes/global/userContext';
+import { useWorkProfileContext } from '@/src/scopes/global/workProfileContext';
 
 import { RecordsContext } from './recordListReduceContext';
-import { useWorkSpaceContext } from '../../workspace';
 import { GoalMissionMenu } from '../../components/goalMissionMenu';
 
 export const NewRecordEditing = () => {
   const [{ finishedTodo }, setWorkList] = useWorkListContext();
   const {
-    state: { goalMission: initialGoalMission },
-  } = useWorkSpaceContext();
+    state: { currentDetail: initialGoalMission },
+    dispatch: dispatchWorkProfile,
+  } = useWorkProfileContext();
   const { dispatch: dispatchUser } = useUserContext();
-  const { dispatch: dispatchWorkSpace } = useWorkSpaceContext();
   const defaultGoalMission = finishedTodo || initialGoalMission;
   const [goalMission, setGoalMission] = React.useState<IGoalMission>({
     goalID: defaultGoalMission.goalID,
@@ -110,7 +110,7 @@ export const NewRecordEditing = () => {
         setLoading(false);
         dispatch({ type: 'AddRecordDone', record: res.data });
         dispatchUser({ type: 'UpdateMinutes', minutes });
-        dispatchWorkSpace(pre => ({ ...pre, minutes: pre.minutes + minutes }));
+        dispatchWorkProfile({ type: 'UpdateCurrentDetailMinutes', minutes });
       } catch (error) {
         TaiToast.show({
           message: error.message,

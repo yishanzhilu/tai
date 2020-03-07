@@ -5,7 +5,7 @@
  */
 
 import React from 'react';
-import { IGoal, IMission } from '@/src/model/schemas';
+import { IGoal, IMission, IGoalMission } from '@/src/model/schemas';
 import { noop } from '@/src/utils/funcs';
 
 /**
@@ -20,16 +20,19 @@ export interface IGoalBrief extends Pick<IGoal, 'title' | 'id'> {
   missions?: IMissionBrief[];
 }
 
+export type IWorkProfileDetail = IGoalMission & { missions: IMission[] };
+
 interface IWorkProfileContextState {
   goals: IGoalBrief[];
   missions: IMissionBrief[];
+  currentDetail: IWorkProfileDetail;
 }
 
 type IWorkProfileContextAction =
   | { type: 'Init'; goals: IGoalBrief[]; missions: IMissionBrief[] }
   | { type: 'AddGoal'; goal: IGoalBrief }
   | { type: 'RemoveGoal'; id: number }
-  | { type: 'AddMission'; mission: IMissionBrief; goalID?: number }
+  | { type: 'AddMission'; mission: IMission; goalID?: number }
   | { type: 'RemoveMission'; id: number; goalID?: number }
   | {
       type: 'UpdateTitle';
@@ -37,11 +40,22 @@ type IWorkProfileContextAction =
       schema: 'goal' | 'mission';
       goalID?: number;
       title: string;
+    }
+  | {
+      type: 'SetCurrentDetail';
+      newDetail: IWorkProfileDetail;
+    }
+  | {
+      type: 'UpdateCurrentDetailMinutes';
+      minutes: number;
     };
 
 const defaultState: IWorkProfileContextState = {
   goals: [],
   missions: [],
+  currentDetail: {
+    missions: [],
+  },
 };
 
 const WorkProfileGoalReducer = (
@@ -49,16 +63,6 @@ const WorkProfileGoalReducer = (
   action: IWorkProfileContextAction
 ): IGoalBrief => {
   switch (action.type) {
-    case 'AddMission':
-      if (goal.id === action.goalID) {
-        return {
-          ...goal,
-          missions: [...goal.missions, action.mission].sort(
-            (a, b) => a.id - b.id
-          ),
-        };
-      }
-      return goal;
     case 'RemoveMission':
       if (goal.id === action.goalID) {
         return {
@@ -102,48 +106,59 @@ const WorkProfileContextReducer = (
   state: IWorkProfileContextState,
   action: IWorkProfileContextAction
 ): IWorkProfileContextState => {
-
   switch (action.type) {
     case 'Init':
       return {
+        ...state,
         goals: action.goals,
         missions: action.missions,
       };
     case 'AddGoal':
       return {
+        ...state,
         goals: [...state.goals, action.goal].sort((a, b) => a.id - b.id),
         missions: state.missions,
       };
     case 'RemoveGoal':
       return {
+        ...state,
         goals: state.goals.filter(g => g.id !== action.id),
         missions: state.missions,
       };
     case 'AddMission':
       if (action.goalID) {
-        return {
-          goals: state.goals.map(g => WorkProfileGoalReducer(g, action)),
-          missions: state.missions,
-        };
+        if (action.goalID === state.currentDetail.goalID) {
+          return {
+            ...state,
+            currentDetail: {
+              ...state.currentDetail,
+              missions: [...state.currentDetail.missions, action.mission],
+            },
+          };
+        }
       }
       return {
+        ...state,
         goals: state.goals,
         missions: [...state.missions, action.mission],
       };
     case 'RemoveMission':
       if (action.goalID) {
         return {
+          ...state,
           goals: state.goals.map(g => WorkProfileGoalReducer(g, action)),
           missions: state.missions,
         };
       }
       return {
+        ...state,
         goals: state.goals,
         missions: state.missions.filter(m => m.id !== action.id),
       };
     case 'UpdateTitle':
       if (action.schema === 'goal') {
         return {
+          ...state,
           goals: state.goals.map(g => WorkProfileGoalReducer(g, action)),
           missions: state.missions,
         };
@@ -152,12 +167,14 @@ const WorkProfileContextReducer = (
       if (action.goalID) {
         // goal sub-mission
         return {
+          ...state,
           goals: state.goals.map(g => WorkProfileGoalReducer(g, action)),
           missions: state.missions,
         };
       }
       // independent mission
       return {
+        ...state,
         goals: state.goals,
         missions: state.missions.map(m => {
           if (m.id === action.id) {
@@ -168,6 +185,19 @@ const WorkProfileContextReducer = (
           }
           return m;
         }),
+      };
+    case 'SetCurrentDetail':
+      return {
+        ...state,
+        currentDetail: action.newDetail,
+      };
+    case 'UpdateCurrentDetailMinutes':
+      return {
+        ...state,
+        currentDetail: {
+          ...state.currentDetail,
+          minutes: action.minutes,
+        },
       };
     default:
       return defaultState;

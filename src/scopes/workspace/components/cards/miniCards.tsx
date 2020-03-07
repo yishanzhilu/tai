@@ -40,9 +40,7 @@ const MiniGoalCardMissions: React.FC<{ missions: IMission[] }> = ({
 export const MiniGoalCard: React.FC<{ goal: IGoal }> = ({ goal }) => {
   return (
     <BaseCard
-      title={goal.title}
-      status={goal.status}
-      description={goal.description}
+      goalMissin={goal}
       options={
         <CardOptions type="goal" id={goal.id} status={goal.status} mini />
       }
@@ -57,9 +55,7 @@ export const MiniMissionCard: React.FC<{ mission: IMission }> = ({
 }) => {
   return (
     <BaseCard
-      title={mission.title}
-      status={mission.status}
-      description={mission.description}
+      goalMissin={mission}
       options={
         <CardOptions
           type="mission"

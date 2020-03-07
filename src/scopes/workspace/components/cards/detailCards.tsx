@@ -5,13 +5,18 @@
  */
 import React, { useState, useEffect } from 'react';
 
+import Link, { LinkProps } from 'next/link';
 import Head from 'next/head';
-import { Divider, H3 } from '@yishanzhilubp/core';
+import {
+  H3,
+  Breadcrumbs,
+  IBreadcrumbProps,
+  Classes,
+  Icon,
+} from '@yishanzhilubp/core';
+import classNames from 'classnames';
 
-import { InfoBlock } from '@/src/components/infoBlock';
-import { Flex } from '@/src/components/flex';
-import { formatMinutes, formatDate } from '@/src/utils/funcs';
-import { useWorkSpaceContext } from '@/src/scopes/workspace';
+import { useWorkProfileContext } from '@/src/scopes/global/workProfileContext';
 import { BasicStatus, IGoal, IMission } from '@/src/model/schemas';
 
 import { BaseCard } from './baseCard';
@@ -30,16 +35,61 @@ export interface IDetail {
   updatedAt: string;
 }
 
+export const Breadcrumb: React.SFC<IBreadcrumbProps &
+  LinkProps> = breadcrumbProps => {
+  const classes = classNames(
+    Classes.BREADCRUMB,
+    {
+      [Classes.BREADCRUMB_CURRENT]: breadcrumbProps.current,
+      [Classes.DISABLED]: breadcrumbProps.disabled,
+    },
+    breadcrumbProps.className
+  );
+
+  const icon =
+    breadcrumbProps.icon != null ? (
+      <Icon icon={breadcrumbProps.icon} />
+    ) : (
+      undefined
+    );
+
+  if (breadcrumbProps.href == null && breadcrumbProps.onClick == null) {
+    return (
+      <span className={classes}>
+        {icon}
+        {breadcrumbProps.text}
+        {breadcrumbProps.children}
+      </span>
+    );
+  }
+  return (
+    <Link href={breadcrumbProps.href} as={breadcrumbProps.as}>
+      <a
+        className={classes}
+        onClick={breadcrumbProps.disabled ? null : breadcrumbProps.onClick}
+        tabIndex={breadcrumbProps.disabled ? null : 0}
+        target={breadcrumbProps.target}
+      >
+        {icon}
+        {breadcrumbProps.text}
+        {breadcrumbProps.children}
+      </a>
+    </Link>
+  );
+};
+
 const DetailCard: React.FC<{
   detail: IDetail;
   type: 'mission' | 'goal';
 }> = ({ detail: initDetail, type }) => {
   const {
-    state: { minutes },
-  } = useWorkSpaceContext();
+    state: {
+      currentDetail: { minutes, goalTitle, missionTitle, goalID },
+    },
+  } = useWorkProfileContext();
   const [isEditing, setIsEditing] = useState(false);
   const [detail, setDetail] = useState(initDetail);
-  const { labelName, emoji } = detailTypeConfigs[type];
+  const { labelName } = detailTypeConfigs[type];
   useEffect(() => {
     setDetail(initDetail);
   }, [initDetail.id]);
@@ -53,18 +103,48 @@ const DetailCard: React.FC<{
       />
     );
   }
+
+  let breadcrumbsItems = [];
+  if (missionTitle) {
+    if (goalTitle) {
+      breadcrumbsItems = [
+        {
+          icon: <span style={{ marginRight: 5 }}>🎯</span>,
+          href: `/workspace/goal/[id]`,
+          as: `/workspace/goal/${goalID}`,
+          text: goalTitle,
+        },
+        {
+          icon: <span style={{ marginRight: 5 }}>📜</span>,
+          text: missionTitle,
+        },
+      ];
+    } else {
+      breadcrumbsItems = [
+        {
+          icon: <span style={{ marginRight: 5 }}>📜</span>,
+          text: missionTitle,
+        },
+      ];
+    }
+  } else {
+    breadcrumbsItems = [
+      {
+        icon: <span style={{ marginRight: 5 }}>🎯</span>,
+        text: goalTitle,
+      },
+    ];
+  }
   return (
     <div>
       <Head>
         <title>{detail.title} · 移山</title>
       </Head>
-      <H3>
-        {emoji} {labelName}详情
-      </H3>
+      <H3>{labelName}详情</H3>
+      <Breadcrumbs breadcrumbRenderer={Breadcrumb} items={breadcrumbsItems} />
       <BaseCard
-        title={detail.title}
-        status={detail.status}
-        description={detail.description}
+        goalMissin={detail}
+        minutes={minutes}
         options={
           <CardOptions
             type={type}
@@ -73,14 +153,7 @@ const DetailCard: React.FC<{
             onEditClick={() => setIsEditing(true)}
           />
         }
-      >
-        <Divider style={{ margin: '15px 0' }} />
-        <Flex justifyContent="space-between">
-          <InfoBlock label="累计时长" value={formatMinutes(minutes)} />
-          <InfoBlock label="创建于" value={formatDate(detail.createdAt)} />
-          <InfoBlock label="更新于" value={formatDate(detail.updatedAt)} />
-        </Flex>
-      </BaseCard>
+      />
     </div>
   );
 };

@@ -110,12 +110,17 @@ function SidebarMission({ id, title, level = 0 }) {
   );
 }
 
-function SidebarGoal({ id, title, missions }: IGoalBrief) {
+function SidebarGoal({ id, title }: IGoalBrief) {
   const router = useRouter();
   const {
     pathname,
     query: { id: qid },
   } = router;
+  const {
+    state: {
+      currentDetail: { goalID },
+    },
+  } = useWorkProfileContext();
 
   return (
     <NavLabel
@@ -123,19 +128,9 @@ function SidebarGoal({ id, title, missions }: IGoalBrief) {
       href="/workspace/goal/[id]"
       title={title}
       emoji="🎯"
-      active={pathname === '/workspace/goal/[id]' && id === Number(qid)}
-      expended={
-        <ul className={Classes.TREE_NODE_LIST}>
-          {missions &&
-            missions.map(m => (
-              <SidebarMission
-                level={1}
-                key={`mission-${m.id}`}
-                title={m.title}
-                id={m.id}
-              />
-            ))}
-        </ul>
+      active={
+        (pathname === '/workspace/goal/[id]' && id === Number(qid)) ||
+        goalID === id
       }
     />
   );
@@ -150,12 +145,7 @@ const SidebarWorks: React.FC<{
       <SidebarHeader>目标</SidebarHeader>
       {goals.length > 0 ? (
         goals.map(g => (
-          <SidebarGoal
-            key={`goal-${g.id}`}
-            id={g.id}
-            missions={g.missions}
-            title={g.title}
-          />
+          <SidebarGoal key={`goal-${g.id}`} id={g.id} title={g.title} />
         ))
       ) : (
         <li className={Classes.TREE_NODE}>
@@ -200,12 +190,9 @@ export const WorkSpaceSidebar: React.FC = () => {
       emoji: '♻️',
     },
   ];
-  const {
-    state,
-  } = useWorkProfileContext();
+  const { state } = useWorkProfileContext();
   const navEl = React.useRef<HTMLElement>();
   React.useEffect(() => {
-
     // scroll side bar to show current active li
     const active = navEl.current?.querySelector<HTMLElement>(
       `.${Classes.TREE_NODE_SELECTED}`

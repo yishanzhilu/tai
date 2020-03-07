@@ -15,12 +15,12 @@ import { TaiToast } from '@/src/utils/toaster';
 import { TaiListSimple } from '@/src/components/layouts/taiList';
 import { getDateDiffFromNow } from '@/src/utils/funcs';
 import { useUserContext } from '@/src/scopes/global/userContext';
+import { useWorkProfileContext } from '@/src/scopes/global/workProfileContext';
 
 import { Record } from './record';
 import { NewRecord } from './newRecord';
 import { recordListReducer, RecordsContext } from './recordListReduceContext';
 import { useWorkListContext } from '../workList';
-import { useWorkSpaceContext } from '../../workspace';
 
 interface IProps {
   records: IRecord[];
@@ -59,9 +59,9 @@ export const RecordList = ({ records }: IProps): React.ReactElement => {
 
   const {
     state: {
-      goalMission: { goalID, missionID },
+      currentDetail: { goalID, missionID },
     },
-  } = useWorkSpaceContext();
+  } = useWorkProfileContext();
   const {
     state: {
       user: { createdAt },

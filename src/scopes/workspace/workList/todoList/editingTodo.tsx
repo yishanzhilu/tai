@@ -114,7 +114,7 @@ export const EditingTodo = ({
       <div className="input">
         <H6>更新事项</H6>
         <FormGroup
-          helperText={errorMsg || 'Ctrl + Enter 保存'}
+          helperText={errorMsg || 'Ctrl + Enter 提交'}
           intent={errorMsg ? 'primary' : 'none'}
         >
           <TextArea

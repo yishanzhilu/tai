@@ -12,7 +12,7 @@ export interface IProps {
   className?: string;
 }
 
-export interface ITaiPageError {
+export interface ITaiPageError extends Error {
   code: number;
   url?: string;
   message: string;

@@ -12,6 +12,7 @@ import {
   TextArea,
   Button,
   HTMLSelect,
+  Switch,
 } from '@yishanzhilubp/core';
 import useForm from 'react-hook-form';
 import Router from 'next/router';
@@ -124,46 +125,47 @@ export const NewGoalForm: React.FC = () => {
 };
 
 export const NewMissionForm: React.FC = () => {
-  const { state, dispatch: dispatchWorkProfile } = useWorkProfileContext();
-  const { dispatch: dispatchTopBar } = useTopBarContext();
+  const { state, dispatch } = useWorkProfileContext();
+  const {
+    state: { startNow: startNowInital },
+    dispatch: dispatchTopBar,
+  } = useTopBarContext();
   interface INewMissionFormValue {
     title: string;
     description: string;
   }
   const [loading, setLoading] = useState(false);
-  const [goalID, setGoalID] = useState(0);
+  const [goalID, setGoalID] = useState(state.currentDetail.goalID || 0);
   const { register, handleSubmit, errors } = useForm<INewMissionFormValue>({
     defaultValues: {
       title: '',
       description: '',
     },
   });
+  const [startNow, setStartNow] = useState(startNowInital);
   const onSubmit = useCallback(
     handleSubmit(async data => {
       setLoading(true);
       try {
-        const { data: createdMission } = await f.post<IMission>('/missions', {
+        const { data: mission } = await f.post<IMission>('/missions', {
           ...data,
           goalID,
-          status: 'doing',
+          status: startNow ? 'doing' : 'todo',
         });
-        Router.push(
-          `/workspace/mission/[id]`,
-          `/workspace/mission/${createdMission.id}`
-        );
         dispatchTopBar({ type: 'SetNewMissionDialog', isOpen: false });
-        dispatchWorkProfile({
-          type: 'AddMission',
-          mission: createdMission,
-          goalID: createdMission.goalID,
-        });
+        dispatch({ type: 'AddMission', mission, goalID: mission.goalID });
+        if (state.currentDetail.goalID !== mission.goalID)
+          Router.push(
+            `/workspace/mission/[id]`,
+            `/workspace/mission/${mission.id}`
+          );
       } catch (error) {
         HandleError(error, true);
       } finally {
         setLoading(false);
       }
     }),
-    [goalID]
+    [goalID, startNow]
   );
   return (
     <form onSubmit={onSubmit}>
@@ -215,6 +217,16 @@ export const NewMissionForm: React.FC = () => {
             options={[{ label: '无，设为独立任务', value: 0 }].concat(
               state.goals.map(g => ({ label: g.title, value: g.id }))
             )}
+          />
+        </FormGroup>
+        <FormGroup label="立刻开始" inline>
+          <Switch
+            disabled={loading}
+            large
+            checked={startNow}
+            onChange={e => {
+              setStartNow((e.target as HTMLInputElement).checked);
+            }}
           />
         </FormGroup>
       </div>

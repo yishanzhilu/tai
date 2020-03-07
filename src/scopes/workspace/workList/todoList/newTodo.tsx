@@ -13,7 +13,7 @@ import { IGoalMission } from '@/src/model/schemas';
 import { TaiToast } from '@/src/utils/toaster';
 
 import { Flex } from '@/src/components/flex';
-import { useWorkSpaceContext } from '@/src/scopes/workspace';
+import { useWorkProfileContext } from '@/src/scopes/global/workProfileContext';
 import { GoalMissionMenu } from '@/src/scopes/workspace/components/goalMissionMenu';
 
 import { ITodosActions } from './todoReducer';
@@ -24,8 +24,8 @@ const NewTodoEditing: React.FC<{
   const [input, ref] = useInputRef<HTMLTextAreaElement>();
   const [loading, setLoading] = React.useState(false);
   const {
-    state: { goalMission: initialGoalMission },
-  } = useWorkSpaceContext();
+    state: { currentDetail: initialGoalMission },
+  } = useWorkProfileContext();
 
   const [goalMission, onSelectGoalMission] = React.useState<IGoalMission>(
     initialGoalMission
@@ -90,7 +90,7 @@ const NewTodoEditing: React.FC<{
       <div style={{ marginBottom: 10 }}>
         <H6>添加事项</H6>
         <FormGroup
-          helperText={errorMsg || 'Ctrl + Enter 保存'}
+          helperText={errorMsg || 'Ctrl + Enter 提交'}
           intent={errorMsg ? 'primary' : 'none'}
         >
           <TextArea

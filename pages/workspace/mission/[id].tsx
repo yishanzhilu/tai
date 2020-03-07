@@ -8,8 +8,8 @@ import React from 'react';
 import { NextPage } from 'next';
 
 import { ITodo, IRecord, IMission } from '@/src/model/schemas';
-import { IPageProps, ITaiPageError } from '@/src/model/utils';
-import { sf, HandleError } from '@/src/api';
+import { IPageProps } from '@/src/model/utils';
+import { sf } from '@/src/api';
 import { withPageGuard } from '@/src/utils/auth';
 import { WorkList } from '@/src/scopes/workspace/workList';
 import { WorkSpace } from '@/src/scopes/workspace';
@@ -24,14 +24,13 @@ interface IProps extends IPageProps {
 const MissionDetail: NextPage<IProps> = ({ mission, todos, records }) => {
   return (
     <WorkSpace
-      initialState={{
+      newDetail={{
         minutes: mission.minutes,
-        goalMission: {
-          goalID: mission.goalID,
-          goalTitle: mission.goalTitle,
-          missionID: mission.id,
-          missionTitle: mission.title,
-        },
+        goalID: mission.goalID,
+        goalTitle: mission.goalTitle,
+        missionID: mission.id,
+        missionTitle: mission.title,
+        missions: [],
       }}
     >
       <MissionCard mission={mission} />
@@ -44,7 +43,6 @@ MissionDetail.getInitialProps = async ctx => {
   let mission: IMission = null;
   let todos: ITodo[] = [];
   let records: IRecord[] = [];
-  let err: ITaiPageError = null;
   try {
     [mission, todos, records] = await Promise.all([
       sf<IMission>(`/mission/${ctx.query.id}`, {}, ctx),
@@ -52,9 +50,9 @@ MissionDetail.getInitialProps = async ctx => {
       sf<IRecord[]>(`/records`, { params: { missionID: ctx.query.id } }, ctx),
     ]);
   } catch (error) {
-    err = HandleError(error);
+    return { mission, todos, records, error };
   }
-  return { mission, todos, records, err };
+  return { mission, todos, records };
 };
 
 export default withPageGuard(MissionDetail);

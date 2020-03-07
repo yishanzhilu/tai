@@ -18,15 +18,17 @@ import { NewMissionForm, NewGoalForm } from './components/topBarNewDialogs';
 interface ITopBarContextState {
   newGoalOpen: boolean;
   newMissionOpen: boolean;
+  startNow: boolean;
 }
 
 type ITopBarContextAction =
   | { type: 'SetNewGoalDialog'; isOpen: boolean }
-  | { type: 'SetNewMissionDialog'; isOpen: boolean };
+  | { type: 'SetNewMissionDialog'; isOpen: boolean; startNow?: boolean };
 
 const defaultState: ITopBarContextState = {
   newGoalOpen: false,
   newMissionOpen: false,
+  startNow: false,
 };
 
 const userContextReducer = (
@@ -42,6 +44,7 @@ const userContextReducer = (
     case 'SetNewMissionDialog':
       return {
         ...state,
+        startNow: action.startNow,
         newMissionOpen: action.isOpen,
       };
     default:
@@ -74,7 +77,13 @@ export const TopBarContextPorvider: React.FC = ({ children }) => {
       <Dialog
         title="📜 创建任务"
         isOpen={state.newMissionOpen}
-        onClose={() => dispatch({ type: 'SetNewMissionDialog', isOpen: false })}
+        onClose={() =>
+          dispatch({
+            type: 'SetNewMissionDialog',
+            isOpen: false,
+            startNow: false,
+          })
+        }
       >
         <NewMissionForm />
       </Dialog>
