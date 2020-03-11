@@ -20,17 +20,25 @@ import { TaiToastError } from '@/src/utils/toaster';
 
 import { Column } from './column';
 
-// const reorder = <T extends unknown>(
-//   list: T[],
-//   startIndex: number,
-//   endIndex: number
-// ) => {
-//   const result = Array.from(list);
-//   const [removed] = result.splice(startIndex, 1);
-//   result.splice(endIndex, 0, removed);
 
-//   return result;
-// };
+function getOrderArr(goalID: number): number[] {
+  const arr = localStorage.getItem(`${goalID}-kanban-mission-order`);
+  // console.log('getOrderArr', arr);
+
+  return JSON.parse(arr) || [];
+}
+
+function setOrderArr(goalID: number, map: MissionMap) {
+  const arr = JSON.stringify(
+    map.todo
+      .concat(map.doing)
+      .concat(map.done)
+      .map(m => m.id)
+  );
+  // console.log('setOrderArr', arr);
+
+  localStorage.setItem(`${goalID}-kanban-mission-order`, arr);
+}
 
 type MissionMap = {
   todo: IMission[];
@@ -104,8 +112,7 @@ export const KanBan: React.FC = () => {
   const { dispatch: dispatchTopBar } = useTopBarContext();
   useEffect(() => {
     if (!goalID) return;
-    const missionOrder: number[] =
-      JSON.parse(localStorage.getItem(`${goalID}-kanban-mission-order`)) || [];
+    const missionOrder: number[] = getOrderArr(goalID);
 
     const sortedMissions = missions.sort((a, b) => {
       const o1 = missionOrder.indexOf(a.id);
@@ -126,15 +133,7 @@ export const KanBan: React.FC = () => {
         done: [],
       }
     );
-    localStorage.setItem(
-      `${goalID}-kanban-mission-order`,
-      JSON.stringify(
-        map.todo
-          .concat(map.doing)
-          .concat(map.done)
-          .map(m => m.id)
-      )
-    );
+    setOrderArr(goalID, map);
     setMissionMap(map);
   }, [missions]);
 
@@ -150,15 +149,7 @@ export const KanBan: React.FC = () => {
       return;
     }
     const ordered = reorderMissionMap(missionMap, source, destination);
-    localStorage.setItem(
-      `${goalID}-kanban-mission-order`,
-      JSON.stringify(
-        ordered.todo
-          .concat(ordered.doing)
-          .concat(ordered.done)
-          .map(m => m.id)
-      )
-    );
+    setOrderArr(goalID, ordered);
     setMissionMap(ordered);
     // 更新状态
     if (destination.droppableId === source.droppableId) {
@@ -171,7 +162,7 @@ export const KanBan: React.FC = () => {
           status: destination.droppableId,
         }
       );
-      // dispatchWorkProfile({ type: 'UpdateDetailMission', mission });
+      dispatchWorkProfile({ type: 'UpdateDetailMission', mission });
       if (destination.droppableId === 'doing') {
         dispatchWorkProfile({
           type: 'AddMission',
@@ -188,15 +179,7 @@ export const KanBan: React.FC = () => {
     } catch (error) {
       TaiToastError('更新任务状态失败', error);
       // 复原顺序
-      localStorage.setItem(
-        `${goalID}-kanban-mission-order`,
-        JSON.stringify(
-          missionMap.doing
-            .concat(missionMap.done)
-            .concat(missionMap.todo)
-            .map(m => m.id)
-        )
-      );
+      setOrderArr(goalID, missionMap);
       setMissionMap(missionMap);
     }
   };
