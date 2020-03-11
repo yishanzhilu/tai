@@ -9,7 +9,7 @@ import { NextPage } from 'next';
 import { Spinner, Classes } from '@yishanzhilubp/core';
 import cookie from 'js-cookie';
 
-import { f, HandleError } from '@/src/api';
+import { f, HandleError, newTaiError } from '@/src/api';
 import { LandingLayout } from '@/src/components/layouts/landing';
 import { Flex } from '@/src/components/flex';
 import { IPageProps } from '@/src/model/utils';
@@ -75,7 +75,7 @@ OauthGithubRedirect.getInitialProps = async ctx => {
     }
   } else {
     return {
-      error: { code: 400, message: '链接错误', url: '' },
+      error: newTaiError('链接错误', 400, ''),
     };
   }
 };
