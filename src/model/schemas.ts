@@ -22,6 +22,7 @@ export interface IGoalMission {
   goalID?: number;
   goalTitle?: string;
   missionID?: number;
+  minutes?: number;
   missionTitle?: string;
 }
 
@@ -46,6 +47,7 @@ export interface IMission {
   minutes: number;
   goalID?: number;
   goalTitle?: string;
+  goalStatus?: BasicStatus;
   createdAt: string;
   updatedAt: string;
 }

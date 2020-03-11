@@ -38,7 +38,21 @@ export function HandleError(error: AxiosError, toast = true): ITaiPageError {
   if (toast && IS_BROWSER) {
     TaiToast.show({ message, intent: 'warning' });
   }
-  return { code: error.response.status, message, url: error.config.url };
+  const taiError: ITaiPageError = new Error(message) as ITaiPageError;
+  taiError.code = error.response.status;
+  taiError.url = error.config.url;
+  return taiError;
+}
+
+export function newTaiError(
+  message: string,
+  code = 500,
+  url = ''
+): ITaiPageError {
+  const taiError: ITaiPageError = new Error(message) as ITaiPageError;
+  taiError.code = code;
+  taiError.url = url;
+  return taiError;
 }
 const baseURL = IS_SERVER ? SERVER_API_URL : API_URL;
 
@@ -75,7 +89,7 @@ f.interceptors.response.use(
         error.config.url
       );
     }
-    throw HandleError(error);
+    return Promise.reject(HandleError(error, false));
   }
 );
 

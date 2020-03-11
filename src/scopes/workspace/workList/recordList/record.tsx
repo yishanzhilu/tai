@@ -23,9 +23,10 @@ import { f, HandleError } from '@/src/api';
 import { Flex } from '@/src/components/flex';
 import { GoalMission } from '@/src/components/goalMission';
 import { useUserContext } from '@/src/scopes/global/userContext';
+import { P } from '@/src/components/layouts/p';
+import { useWorkProfileContext } from '@/src/scopes/global/workProfileContext';
 
 import { RecordsContext } from './recordListReduceContext';
-import { useWorkSpaceContext } from '../../workspace';
 
 interface IProps {
   record: IRecord;
@@ -36,7 +37,7 @@ export const Record = ({ record }: IProps): React.ReactElement => {
   const [loading, setLoading] = React.useState(false);
   const { dispatch } = React.useContext(RecordsContext);
   const { dispatch: dispatchUser } = useUserContext();
-  const { dispatch: dispatchWorkSpace } = useWorkSpaceContext();
+  const { dispatch: dispatchWork } = useWorkProfileContext();
 
   const deleteCurrentRecord = React.useCallback(async () => {
     try {
@@ -46,10 +47,10 @@ export const Record = ({ record }: IProps): React.ReactElement => {
       setDialogOpen(false);
       dispatch({ type: 'DeleteRecordDone', id: record.id });
       dispatchUser({ type: 'UpdateMinutes', minutes: -record.minutes });
-      dispatchWorkSpace(pre => ({
-        ...pre,
-        minutes: pre.minutes - record.minutes,
-      }));
+      dispatchWork({
+        type: 'UpdateCurrentDetailMinutes',
+        minutes: record.minutes,
+      });
     } catch (error) {
       HandleError(error, true);
     } finally {
@@ -94,7 +95,7 @@ export const Record = ({ record }: IProps): React.ReactElement => {
             <Button small icon="caret-down" minimal />
           </Popover>
           <Dialog
-            title="删除历程？"
+            title="删除历程"
             isOpen={dialogOpen}
             onClose={closeDeleteDialog}
           >
@@ -104,7 +105,7 @@ export const Record = ({ record }: IProps): React.ReactElement => {
                 <>
                   <br />
                   <br />
-                  个人累计历程、父级目标和任务的累计历程时长会减少{duration}。
+                  个人累计历程、父级目标和任务的累计历程时长会减少 {duration}。
                 </>
               )}
             </div>
@@ -122,19 +123,13 @@ export const Record = ({ record }: IProps): React.ReactElement => {
       <H6 className={Classes.TEXT_MUTED} style={{ marginTop: 10 }}>
         历程
       </H6>
-      <p>{record.content}</p>
+      <P>{record.content}</P>
       {record.review && (
         <>
           <H6 className={Classes.TEXT_MUTED}>想法</H6>
-          <p>{record.review}</p>
+          <P>{record.review}</P>
         </>
       )}
-      <style jsx>{`
-        p {
-          word-break: break-all;
-          white-space: pre-wrap;
-        }
-      `}</style>
     </Card>
   );
 };

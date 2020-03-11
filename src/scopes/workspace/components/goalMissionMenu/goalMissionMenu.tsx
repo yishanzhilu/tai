@@ -18,7 +18,7 @@ import { IGoalMission } from '@/src/model/schemas';
 
 import { GoalMission } from '@/src/components/goalMission/goalMission';
 import { eventHandlerWarning } from '@/src/utils/funcs';
-import { useWorkSpaceContext } from '@/src/scopes/workspace';
+import { useWorkProfileContext } from '@/src/scopes/global/workProfileContext';
 
 import { GoalMenuItems } from './goalMenuItems';
 import { MissionMenuItems } from './missionMenuItems';
@@ -36,8 +36,8 @@ export const GoalMissionMenu = ({
   onSelectGoalMission?: (goalMission: IGoalMission) => void;
 }) => {
   const {
-    state: { goalMission: initailGoalMission },
-  } = useWorkSpaceContext();
+    state: { currentDetail: initailGoalMission },
+  } = useWorkProfileContext();
   const isSpecificMission = !!initailGoalMission.missionID;
   const onCross = React.useCallback(() => {
     if (initailGoalMission.goalID || initailGoalMission.missionID) {
@@ -55,7 +55,7 @@ export const GoalMissionMenu = ({
         disabled={isSpecificMission}
         autoFocus={false}
         content={
-          <Menu>
+          <Menu style={{ maxWidth: 250 }}>
             {goals.length ? (
               <GoalMenuItems
                 memoGoals={goals}

@@ -9,17 +9,15 @@ import {
   IGoalBrief,
   IMissionBrief,
 } from '@/src/scopes/global/workProfileContext';
-import { useWorkSpaceContext } from '@/src/scopes/workspace';
 
 export function useWorkProfileGoalsMissions(): [IGoalBrief[], IMissionBrief[]] {
   const {
-    state: { goals, missions },
-  } = useWorkProfileContext();
-  const {
     state: {
-      goalMission: { goalID, missionID },
+      goals,
+      missions,
+      currentDetail: { goalID, missionID },
     },
-  } = useWorkSpaceContext();
+  } = useWorkProfileContext();
 
   // fitler goals and missions based on current goal/mission
   if (goalID && missionID) {

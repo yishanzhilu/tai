@@ -4,44 +4,21 @@
  * All rights reserved
  */
 
-import React, { useState, Dispatch, SetStateAction, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { AppLayout } from '@/src/components/layouts/app';
-import { IGoalMission } from '@/src/model/schemas';
-import { noop } from '@/src/utils/funcs';
+
 import { WorkSpaceSidebar } from './components/sidebar';
+import {
+  useWorkProfileContext,
+  IWorkProfileDetail,
+} from '../global/workProfileContext';
 
-interface IWorkSpaceContextState {
-  goalMission: IGoalMission;
-  minutes: number;
-}
-
-const defaultState: IWorkSpaceContextState = {
-  goalMission: {},
-  minutes: 0,
-};
-interface IWorkSpaceContext {
-  state: IWorkSpaceContextState;
-  dispatch: Dispatch<SetStateAction<IWorkSpaceContextState>>;
-}
-
-const WorkSpaceContext = React.createContext<IWorkSpaceContext>({
-  state: defaultState,
-  dispatch: noop,
-});
-
-export const useWorkSpaceContext = () => React.useContext(WorkSpaceContext);
-
-export const WorkSpace: React.FC<{ initialState?: IWorkSpaceContextState }> = ({
-  children,
-  initialState = defaultState,
-}) => {
-  const [state, dispatch] = useState<IWorkSpaceContextState>(defaultState);
+export const WorkSpace: React.FC<{
+  newDetail?: IWorkProfileDetail;
+}> = ({ children, newDetail = { missions: [] } }) => {
+  const { dispatch } = useWorkProfileContext();
   useEffect(() => {
-    dispatch(initialState);
-  }, [initialState]);
-  return (
-    <WorkSpaceContext.Provider value={{ state, dispatch }}>
-      <AppLayout sidebar={<WorkSpaceSidebar />} content={children} />
-    </WorkSpaceContext.Provider>
-  );
+    dispatch({ type: 'SetCurrentDetail', newDetail });
+  }, [newDetail.goalID, newDetail.missionID]);
+  return <AppLayout sidebar={<WorkSpaceSidebar />} content={children} />;
 };

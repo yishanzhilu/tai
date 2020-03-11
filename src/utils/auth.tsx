@@ -11,7 +11,7 @@ import cookie from 'js-cookie';
 
 import TaiError from '@/pages/_error';
 import { ITaiPageError, IPageProps } from '@/src/model/utils';
-import { sf, HandleError } from '@/src/api';
+import { sf, HandleError, newTaiError } from '@/src/api';
 import { IUserProfile, IWorkProfile } from '@/src/model/schemas';
 import { useWorkProfileContext } from '@/src/scopes/global/workProfileContext';
 import { useUserContext } from '@/src/scopes/global/userContext';
@@ -31,7 +31,7 @@ async function useGetInitialPropsGuard(ctx: NextPageContext) {
   const cookies = nextCookie(ctx);
   const token = cookies[TOKEN_KEY];
   if (!token) {
-    error = { code: 403, message: '您尚未登录', url: ctx.asPath };
+    error = newTaiError('您尚未登录', 401, ctx.asPath);
   } else if (IS_SERVER) {
     try {
       [user, work] = await Promise.all([

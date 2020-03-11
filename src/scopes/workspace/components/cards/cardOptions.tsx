@@ -45,7 +45,7 @@ const status2ActionDesc = (
 ) => {
   switch (newStatus) {
     case 'delete':
-      return `❌ 删除${itemTypeLabel}后不可恢复`;
+      return `❌ 永久删除${itemTypeLabel}后不可恢复`;
     case 'todo':
       return `⏸️ 暂停后${itemTypeLabel}将进入规划`;
     case 'done':
@@ -65,9 +65,9 @@ export const CardOptions: React.FC<{
   type: 'goal' | 'mission';
   id: number;
   status: BasicStatus;
-  mini?: boolean;
   onEditClick?: () => void;
-}> = ({ onEditClick, type, id, status: oldStatus, mini = false }) => {
+  disabled?: boolean;
+}> = ({ onEditClick, type, id, status: oldStatus, disabled }) => {
   const { labelName } = detailTypeConfigs[type];
   const [dialogConfig, setDialogCOnfig] = useState<{
     newStatus?: BasicStatus | 'delete';
@@ -97,6 +97,7 @@ export const CardOptions: React.FC<{
         newStatus: null,
         isOpen: false,
       });
+      Router.replace('/workspace/recycle');
       return;
     }
     const { data } = await f.patch(`/${type}/${id}`, {
@@ -106,8 +107,14 @@ export const CardOptions: React.FC<{
       newStatus: null,
       isOpen: false,
     });
+    dispatchWorkProfile({
+      type: 'UpdateCurrentDetailStatus',
+      status: dialogConfig.newStatus,
+      schema: type,
+    });
+
+    // update sidebar
     if (dialogConfig.newStatus === 'doing') {
-      Router.push(`/workspace/${type}/[id]`, `/workspace/${type}/${id}`);
       if (type === 'goal') {
         dispatchWorkProfile({ type: 'AddGoal', goal: data });
       } else {
@@ -117,30 +124,26 @@ export const CardOptions: React.FC<{
           goalID: data.goalID,
         });
       }
+      return;
+    }
+    if (type === 'goal') {
+      dispatchWorkProfile({ type: 'RemoveGoal', id });
     } else {
-      if (type === 'goal') {
-        dispatchWorkProfile({ type: 'RemoveGoal', id });
-      } else {
-        dispatchWorkProfile({
-          type: 'RemoveMission',
-          id: data.id,
-          goalID: data.goalID,
-        });
-      }
-      const routerMap = {
-        done: '/workspace/trophy',
-        drop: '/workspace/recycle',
-      };
-      Router.push(routerMap[dialogConfig.newStatus]);
+      dispatchWorkProfile({
+        type: 'RemoveMission',
+        id: data.id,
+        goalID: data.goalID,
+      });
     }
   }, [dialogConfig]);
   return (
     <div>
       <Popover
         position="bottom-right"
+        disabled={disabled}
         content={
           <Menu>
-            {!mini && (
+            {oldStatus === 'doing' && (
               <>
                 <MenuItem
                   icon={<span>📝</span>}
@@ -159,7 +162,16 @@ export const CardOptions: React.FC<{
                 />
               </>
             )}
-            {mini && (
+            {oldStatus === 'todo' && (
+              <>
+                <MenuItem
+                  icon={<span>📝</span>}
+                  text={`更新${labelName}`}
+                  onClick={onEditClick}
+                />
+              </>
+            )}
+            {oldStatus !== 'doing' && (
               <MenuItem
                 icon={<span>✨</span>}
                 text={`继续${labelName}`}
@@ -169,14 +181,20 @@ export const CardOptions: React.FC<{
             {oldStatus === 'drop' && (
               <MenuItem
                 icon={<span>❌</span>}
-                text={`删除${labelName}`}
+                text={`永久删除${labelName}`}
                 onClick={() => onSetStatus('delete')}
               />
             )}
           </Menu>
         }
       >
-        <Button minimal small icon="more" />
+        <Button
+          minimal
+          small
+          icon="more"
+          disabled={disabled}
+          title={disabled ? '非进行中的目标下任务无法更新状态' : null}
+        />
       </Popover>
       <Dialog
         title={`${status2Action(dialogConfig.newStatus)}${labelName}`}

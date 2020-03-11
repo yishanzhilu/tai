@@ -12,14 +12,13 @@ import { f, HandleError } from '@/src/api';
 import { TaiCard } from '@/src/components/layouts';
 import { Flex } from '@/src/components/flex';
 import { useWorkProfileContext } from '@/src/scopes/global/workProfileContext';
-import { IGoal, IMission } from '@/src/model/schemas';
 import { IDetail } from './detailCards';
 import { detailTypeConfigs } from './configs';
 
 export const DetailCardEditing: React.FC<{
   detail: IDetail;
   onStopEditing: () => void;
-  setDetail: React.Dispatch<React.SetStateAction<IGoal | IMission>>;
+  setDetail: React.Dispatch<React.SetStateAction<IDetail>>;
   type: 'goal' | 'mission';
 }> = ({ detail, onStopEditing, setDetail, type }) => {
   interface IPatchMissionFormValue {
@@ -27,12 +26,16 @@ export const DetailCardEditing: React.FC<{
     description: string;
   }
   const { dispatch } = useWorkProfileContext();
-  const { register, handleSubmit, errors } = useForm<IPatchMissionFormValue>({
+  const { register, handleSubmit, errors, watch } = useForm<
+    IPatchMissionFormValue
+  >({
     defaultValues: {
       title: detail.title,
       description: detail.description,
     },
   });
+  const titleLength = watch('title').length;
+  const descriptionLength = watch('description').length;
   const { labelName, descPlaceholder } = detailTypeConfigs[type];
   const [loading, setLoading] = useState(false);
   const onSubmit = handleSubmit(async data => {
@@ -64,9 +67,11 @@ export const DetailCardEditing: React.FC<{
       <form onSubmit={onSubmit}>
         <FormGroup
           disabled={loading}
-          intent="primary"
+          intent={errors.title || titleLength > 80 ? 'primary' : 'none'}
           label={`${labelName}名`}
-          helperText={errors.title && errors.title.message}
+          helperText={
+            errors.title ? errors.title.message : `${titleLength} / 80`
+          }
         >
           <InputGroup
             fill
@@ -76,17 +81,23 @@ export const DetailCardEditing: React.FC<{
             autoFocus
             inputRef={register({
               required: '必填',
-              maxLength: { value: 255, message: '不能大于255个字符' },
+              maxLength: { value: 80, message: '不能大于80个字符' },
             })}
             name="title"
           />
         </FormGroup>
         <FormGroup
           disabled={loading}
-          intent="primary"
+          intent={
+            errors.description || descriptionLength > 255 ? 'primary' : 'none'
+          }
           label={`${labelName}描述`}
           labelInfo="（可选）"
-          helperText={errors.description && errors.description.message}
+          helperText={
+            errors.description
+              ? errors.description.message
+              : `${descriptionLength} / 255`
+          }
         >
           <TextArea
             fill

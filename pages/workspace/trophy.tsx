@@ -11,7 +11,6 @@ import { Classes, H3 } from '@yishanzhilubp/core';
 
 import { WorkSpace } from '@/src/scopes/workspace';
 import { withPageGuard } from '@/src/utils/auth';
-import { TaiList } from '@/src/components/layouts/taiList';
 import { IGoal, IMission } from '@/src/model/schemas';
 import { sf, HandleError } from '@/src/api';
 import { IPageProps } from '@/src/model/utils';
@@ -19,6 +18,7 @@ import {
   MiniGoalCard,
   MiniMissionCard,
 } from '@/src/scopes/workspace/components/cards/miniCards';
+import { TaiGrid } from '@/src/components/layouts/taiGrid';
 
 interface IPlan extends IPageProps {
   goals: IGoal[];
@@ -33,18 +33,16 @@ const Trophy: NextPage<IPlan> = ({ goals, missions }) => {
       </Head>
       <H3>🏆 成就</H3>
       <p className={Classes.TEXT_MUTED}>完成了的目标和任务</p>
-      <TaiList<IGoal>
-        title="目标"
-        showEmptyPlaceholder
-        items={goals}
-        render={item => <MiniGoalCard goal={item} />}
-      />
-      <TaiList<IMission>
-        title="独立任务"
-        showEmptyPlaceholder
-        items={missions}
-        render={item => <MiniMissionCard mission={item} />}
-      />
+      <TaiGrid title="目标" isEmpty={goals.length === 0}>
+        {goals.map(item => (
+          <MiniGoalCard key={item.id} goal={item} />
+        ))}
+      </TaiGrid>
+      <TaiGrid title="独立任务" isEmpty={missions.length === 0}>
+        {missions.map(item => (
+          <MiniMissionCard key={item.id} mission={item} />
+        ))}
+      </TaiGrid>
     </WorkSpace>
   );
 };

@@ -26,18 +26,18 @@ import { useWorkListContext } from '@/src/scopes/workspace/workList';
 
 import { IGoalMission, IRecord } from '@/src/model/schemas';
 import { useUserContext } from '@/src/scopes/global/userContext';
+import { useWorkProfileContext } from '@/src/scopes/global/workProfileContext';
 
 import { RecordsContext } from './recordListReduceContext';
-import { useWorkSpaceContext } from '../../workspace';
 import { GoalMissionMenu } from '../../components/goalMissionMenu';
 
 export const NewRecordEditing = () => {
   const [{ finishedTodo }, setWorkList] = useWorkListContext();
   const {
-    state: { goalMission: initialGoalMission },
-  } = useWorkSpaceContext();
+    state: { currentDetail: initialGoalMission },
+    dispatch: dispatchWorkProfile,
+  } = useWorkProfileContext();
   const { dispatch: dispatchUser } = useUserContext();
-  const { dispatch: dispatchWorkSpace } = useWorkSpaceContext();
   const defaultGoalMission = finishedTodo || initialGoalMission;
   const [goalMission, setGoalMission] = React.useState<IGoalMission>({
     goalID: defaultGoalMission.goalID,
@@ -54,18 +54,20 @@ export const NewRecordEditing = () => {
 
   const [loading, setLoading] = React.useState(false);
   const [minutes, setMinutes] = React.useState(0);
-  const [minutesError, setMinutesError] = React.useState();
+  const [minutesError, setMinutesError] = React.useState('');
 
   interface IFromValue {
     content: string;
     review: string;
   }
-  const { register, handleSubmit, errors } = useForm<IFromValue>({
+  const { register, handleSubmit, errors, watch } = useForm<IFromValue>({
     defaultValues: {
       content: finishedTodo ? `完成了${finishedTodo.content}` : '',
       review: '',
     },
   });
+  const contentLength = watch('content').length;
+  const reviewLength = watch('review').length;
 
   const handleTimePickerChange = useCallback((newTime: Date) => {
     const m = newTime.getHours() * 60 + newTime.getMinutes();
@@ -110,7 +112,7 @@ export const NewRecordEditing = () => {
         setLoading(false);
         dispatch({ type: 'AddRecordDone', record: res.data });
         dispatchUser({ type: 'UpdateMinutes', minutes });
-        dispatchWorkSpace(pre => ({ ...pre, minutes: pre.minutes + minutes }));
+        dispatchWorkProfile({ type: 'UpdateCurrentDetailMinutes', minutes });
       } catch (error) {
         TaiToast.show({
           message: error.message,
@@ -129,8 +131,10 @@ export const NewRecordEditing = () => {
           <H6>记录历程</H6>
           <FormGroup
             disabled={loading}
-            intent="primary"
-            helperText={errors.content && errors.content.message}
+            intent={errors.content || contentLength > 255 ? 'primary' : 'none'}
+            helperText={
+              errors.content ? errors.content.message : `${contentLength} / 255 `
+            }
           >
             <TextArea
               fill
@@ -149,8 +153,10 @@ export const NewRecordEditing = () => {
             label="此刻的想法"
             labelInfo="（可选）"
             disabled={loading}
-            intent="primary"
-            helperText={errors.review && errors.review.message}
+            intent={errors.review || reviewLength > 255 ? 'primary' : 'none'}
+            helperText={
+              errors.review ? errors.review.message : `${reviewLength} / 255`
+            }
           >
             <TextArea
               fill

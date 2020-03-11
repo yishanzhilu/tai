@@ -35,9 +35,10 @@ export function GoalMenuItems({
                 <MenuDivider title="子任务" />
                 {g.missions.map(m => (
                   <MenuItem
-                    icon={<span>📜</span>}
+                    icon={<span>📌</span>}
                     text={m.title}
                     key={m.id}
+                    style={{ maxWidth: 250 }}
                     onClick={() =>
                       onSelectGoalMission({
                         missionID: m.id,
