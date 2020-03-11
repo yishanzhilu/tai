@@ -22,7 +22,6 @@ import { Column } from './column';
 
 function getOrderArr(goalID: number): number[] {
   const arr = localStorage.getItem(`${goalID}-kanban-mission-order`);
-  console.info('getOrderArr', arr);
 
   return JSON.parse(arr) || [];
 }
@@ -34,7 +33,6 @@ function setOrderArr(goalID: number, map: MissionMap) {
       .concat(map.done)
       .map(m => m.id)
   );
-  console.info('setOrderArr', arr);
 
   localStorage.setItem(`${goalID}-kanban-mission-order`, arr);
 }
@@ -113,15 +111,18 @@ export const KanBan: React.FC = () => {
     if (!goalID) return;
     const missionOrder: number[] = getOrderArr(goalID);
 
-    const sortedMissions = missions.sort((a, b) => {
-      const o1 = missionOrder.indexOf(a.id);
-      const o2 = missionOrder.indexOf(b.id);
-      if (o1 >= 0 && o2 >= 0) {
-        return o1 - o2;
-      }
-      return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
-    });
-    console.info(sortedMissions.filter(m => m.status !== 'drop').map(m => m.id));
+    const sortedMissions = missions
+      .filter(m => m.status !== 'drop')
+      .sort((a, b) => {
+        const o1 = missionOrder.indexOf(a.id);
+        const o2 = missionOrder.indexOf(b.id);
+        if (o1 >= 0 && o2 >= 0) {
+          return o1 - o2;
+        }
+        return (
+          new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+        );
+      });
 
     const map = {
       todo: [],
@@ -129,7 +130,7 @@ export const KanBan: React.FC = () => {
       done: [],
     };
     sortedMissions.forEach((mission: IMission) => {
-      if (mission.status !== 'drop') map[mission.status].push(mission);
+      map[mission.status].push(mission);
     });
     setOrderArr(goalID, map);
     setMissionMap(map);

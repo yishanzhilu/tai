@@ -25,6 +25,7 @@ const OauthGithubRedirect: NextPage<IProps> = ({ token, error }) => {
     if (token) {
       cookie.set(TOKEN_KEY, `Bearer ${token}`, {
         expires: 365,
+        sameSite: 'strict',
       });
       window.location.replace('/workspace/dashboard');
     }
