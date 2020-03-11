@@ -1,6 +1,6 @@
 {
   "name": "@yishanzhilu/tai",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "author": "Yishan Authors",
   "license": "MIT",
   "private": true,
@@ -15,11 +15,12 @@
     "test": "jest --onlyChanged",
     "test:full": "jest --coverage",
     "test:updateSnapshot": "jest --onlyChanged --updateSnapshot",
-    "verify": "npm-run-all -p test:full lint"
+    "verify": "npm-run-all -p test:full lint",
+    "updatePkgCache": "node ./scripts/updatePkgCache && git add ./package.cache.json"
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm-run-all -p test lint",
+      "pre-commit": "npm-run-all updatePkgCache -p test lint",
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
     }
   },
