@@ -26,9 +26,9 @@ export const GoalMission = ({
   emptyText?: string;
   inline?: boolean;
 }) => {
-  const goalTitle = <Span>{goalMission.goalTitle}</Span>;
   let goalElement: React.ReactNode;
-  if (goalMission.goalID) {
+  if (goalMission.goalTitle) {
+    const goalTitle = <Span>{goalMission.goalTitle}</Span>;
     goalElement = isTag ? (
       <Tag icon={<span>🎯</span>} interactive>
         {goalTitle}
@@ -49,10 +49,10 @@ export const GoalMission = ({
   }
 
   let missionElement: React.ReactNode;
-  const missionTitle = <Span>{goalMission.missionTitle}</Span>;
-  if (goalMission.missionID) {
+  if (goalMission.missionTitle) {
+    const missionTitle = <Span>{goalMission.missionTitle}</Span>;
     missionElement = isTag ? (
-      <Tag icon={<span>📜</span>} interactive>
+      <Tag icon={<span>📌</span>} interactive>
         {missionTitle}
       </Tag>
     ) : (

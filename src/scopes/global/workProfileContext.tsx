@@ -207,7 +207,6 @@ const WorkProfileContextReducer = (
       }
       return {
         ...state,
-        goals: state.goals,
         missions: [...state.missions, action.mission],
       };
     case 'RemoveMission':
@@ -219,7 +218,6 @@ const WorkProfileContextReducer = (
       }
       return {
         ...state,
-        goals: state.goals,
         missions: state.missions.filter(m => m.id !== action.id),
       };
     case 'UpdateTitle':

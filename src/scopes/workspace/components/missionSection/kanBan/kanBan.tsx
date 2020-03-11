@@ -20,10 +20,9 @@ import { TaiToastError } from '@/src/utils/toaster';
 
 import { Column } from './column';
 
-
 function getOrderArr(goalID: number): number[] {
   const arr = localStorage.getItem(`${goalID}-kanban-mission-order`);
-  // console.log('getOrderArr', arr);
+  console.info('getOrderArr', arr);
 
   return JSON.parse(arr) || [];
 }
@@ -35,7 +34,7 @@ function setOrderArr(goalID: number, map: MissionMap) {
       .concat(map.done)
       .map(m => m.id)
   );
-  // console.log('setOrderArr', arr);
+  console.info('setOrderArr', arr);
 
   localStorage.setItem(`${goalID}-kanban-mission-order`, arr);
 }
@@ -122,17 +121,16 @@ export const KanBan: React.FC = () => {
       }
       return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
     });
-    const map = sortedMissions.reduce(
-      (previous: MissionMap, mission: IMission) => {
-        if (mission.status !== 'drop') previous[mission.status].push(mission);
-        return previous;
-      },
-      {
-        todo: [],
-        doing: [],
-        done: [],
-      }
-    );
+    console.info(sortedMissions.filter(m => m.status !== 'drop').map(m => m.id));
+
+    const map = {
+      todo: [],
+      doing: [],
+      done: [],
+    };
+    sortedMissions.forEach((mission: IMission) => {
+      if (mission.status !== 'drop') map[mission.status].push(mission);
+    });
     setOrderArr(goalID, map);
     setMissionMap(map);
   }, [missions]);

@@ -32,7 +32,7 @@ export const Span: React.FC<{
   ellipsize?: boolean;
 }> = ({ children }) => {
   if (typeof children !== 'string') {
-    throw Error('<P /> children has to be string');
+    throw Error(`<P /> children has to be string${children}`);
   }
   const text = children.toString();
   return (

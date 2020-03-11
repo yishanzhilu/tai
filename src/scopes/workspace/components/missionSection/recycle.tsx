@@ -154,7 +154,7 @@ const MissionCard: React.FC<{ mission: IMission }> = ({ mission }) => {
           border-radius: 3px;
           margin-right: 50px;
           margin-bottom: 8px;
-          width: 240px;
+          width: 220px;
           background: white;
           padding: 10px 12px;
           line-height: 1.5;
