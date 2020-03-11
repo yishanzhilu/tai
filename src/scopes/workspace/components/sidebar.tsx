@@ -103,14 +103,14 @@ function SidebarMission({ id, title, level = 0 }) {
       asHref={`/workspace/mission/${id}`}
       href="/workspace/mission/[id]"
       title={title}
-      emoji="📜"
+      emoji="📌"
       level={level}
       active={pathname === '/workspace/mission/[id]' && id === Number(qid)}
     />
   );
 }
 
-function SidebarGoal({ id, title }: IGoalBrief) {
+function SidebarGoal({ id, title, missions }: IGoalBrief) {
   const router = useRouter();
   const {
     pathname,
@@ -118,7 +118,7 @@ function SidebarGoal({ id, title }: IGoalBrief) {
   } = router;
   const {
     state: {
-      currentDetail: { goalID },
+      currentDetail: { goalID, missionStatus },
     },
   } = useWorkProfileContext();
 
@@ -130,7 +130,20 @@ function SidebarGoal({ id, title }: IGoalBrief) {
       emoji="🎯"
       active={
         (pathname === '/workspace/goal/[id]' && id === Number(qid)) ||
-        goalID === id
+        (goalID === id && missionStatus !== 'doing')
+      }
+      expended={
+        <ul className={Classes.TREE_NODE_LIST}>
+          {missions &&
+            missions.map(m => (
+              <SidebarMission
+                level={1}
+                key={`mission-${m.id}`}
+                title={m.title}
+                id={m.id}
+              />
+            ))}
+        </ul>
       }
     />
   );
@@ -145,7 +158,12 @@ const SidebarWorks: React.FC<{
       <SidebarHeader>目标</SidebarHeader>
       {goals.length > 0 ? (
         goals.map(g => (
-          <SidebarGoal key={`goal-${g.id}`} id={g.id} title={g.title} />
+          <SidebarGoal
+            key={`goal-${g.id}`}
+            id={g.id}
+            title={g.title}
+            missions={g.missions}
+          />
         ))
       ) : (
         <li className={Classes.TREE_NODE}>
@@ -178,19 +196,25 @@ export const WorkSpaceSidebar: React.FC = () => {
       href: '/workspace/dashboard',
       title: '看板',
       emoji: '📋',
+      status: '',
     },
     {
       href: '/workspace/trophy',
       title: '成就',
       emoji: '🏆',
+      status: 'done',
     },
     {
       href: '/workspace/recycle',
       title: '回收站',
       emoji: '♻️',
+      status: 'drop',
     },
   ];
-  const { state } = useWorkProfileContext();
+  const {
+    state: { goals, missions },
+    computed: { currentNavStatus },
+  } = useWorkProfileContext();
   const navEl = React.useRef<HTMLElement>();
   React.useEffect(() => {
     // scroll side bar to show current active li
@@ -205,7 +229,7 @@ export const WorkSpaceSidebar: React.FC = () => {
     if (activeTop > navBottom) {
       if (active) active.scrollIntoView();
     }
-  }, [state]);
+  }, [goals, missions]);
   return (
     <div className={classnames(Classes.TREE, Classes.ELEVATION_0)} id="sidebar">
       <UserProfile />
@@ -219,11 +243,11 @@ export const WorkSpaceSidebar: React.FC = () => {
               href={nav.href}
               title={nav.title}
               emoji={nav.emoji}
-              active={pathname === nav.href}
+              active={pathname === nav.href || currentNavStatus === nav.status}
             />
           ))}
         </ul>
-        <SidebarWorks goals={state.goals} missions={state.missions} />
+        <SidebarWorks goals={goals} missions={missions} />
       </nav>
       <style jsx>
         {`

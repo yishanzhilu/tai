@@ -5,7 +5,12 @@
  */
 
 import React from 'react';
-import { IGoal, IMission, IGoalMission } from '@/src/model/schemas';
+import {
+  IGoal,
+  IMission,
+  IGoalMission,
+  BasicStatus,
+} from '@/src/model/schemas';
 import { noop } from '@/src/utils/funcs';
 
 /**
@@ -20,7 +25,11 @@ export interface IGoalBrief extends Pick<IGoal, 'title' | 'id'> {
   missions?: IMissionBrief[];
 }
 
-export type IWorkProfileDetail = IGoalMission & { missions: IMission[] };
+export type IWorkProfileDetail = IGoalMission & {
+  missions: IMission[];
+  missionStatus?: BasicStatus;
+  goalStatus?: BasicStatus;
+};
 
 interface IWorkProfileContextState {
   goals: IGoalBrief[];
@@ -33,6 +42,9 @@ type IWorkProfileContextAction =
   | { type: 'AddGoal'; goal: IGoalBrief }
   | { type: 'RemoveGoal'; id: number }
   | { type: 'AddMission'; mission: IMission; goalID?: number }
+  | { type: 'AddDetailMission'; mission: IMission }
+  | { type: 'RemoveDetailMission'; id: number; goalID?: number }
+  | { type: 'UpdateDetailMission'; mission: IMission }
   | { type: 'RemoveMission'; id: number; goalID?: number }
   | {
       type: 'UpdateTitle';
@@ -48,6 +60,11 @@ type IWorkProfileContextAction =
   | {
       type: 'UpdateCurrentDetailMinutes';
       minutes: number;
+    }
+  | {
+      type: 'UpdateCurrentDetailStatus';
+      status: BasicStatus;
+      schema: 'goal' | 'mission';
     };
 
 const defaultState: IWorkProfileContextState = {
@@ -63,6 +80,16 @@ const WorkProfileGoalReducer = (
   action: IWorkProfileContextAction
 ): IGoalBrief => {
   switch (action.type) {
+    case 'AddMission':
+      if (goal.id === action.goalID) {
+        return {
+          ...goal,
+          missions: [...goal.missions, action.mission].sort(
+            (a, b) => a.id - b.id
+          ),
+        };
+      }
+      return goal;
     case 'RemoveMission':
       if (goal.id === action.goalID) {
         return {
@@ -125,17 +152,58 @@ const WorkProfileContextReducer = (
         goals: state.goals.filter(g => g.id !== action.id),
         missions: state.missions,
       };
+    case 'AddDetailMission':
+      if (
+        action.mission.goalID &&
+        action.mission.goalID === state.currentDetail.goalID
+      ) {
+        return {
+          ...state,
+          currentDetail: {
+            ...state.currentDetail,
+            missions: [...state.currentDetail.missions, action.mission],
+          },
+        };
+      }
+      return state;
+    case 'RemoveDetailMission':
+      if (action.goalID && action.goalID === state.currentDetail.goalID) {
+        return {
+          ...state,
+          currentDetail: {
+            ...state.currentDetail,
+            missions: state.currentDetail.missions.filter(
+              m => m.id !== action.id
+            ),
+          },
+        };
+      }
+      return state;
+    case 'UpdateDetailMission':
+      if (
+        action.mission.goalID &&
+        action.mission.goalID === state.currentDetail.goalID
+      ) {
+        return {
+          ...state,
+          currentDetail: {
+            ...state.currentDetail,
+            missions: state.currentDetail.missions.map(m => {
+              if (m.id === action.mission.id) {
+                return action.mission;
+              }
+              return m;
+            }),
+          },
+        };
+      }
+      return state;
     case 'AddMission':
       if (action.goalID) {
-        if (action.goalID === state.currentDetail.goalID) {
-          return {
-            ...state,
-            currentDetail: {
-              ...state.currentDetail,
-              missions: [...state.currentDetail.missions, action.mission],
-            },
-          };
-        }
+        return {
+          ...state,
+          goals: state.goals.map(g => WorkProfileGoalReducer(g, action)),
+        };
       }
       return {
         ...state,
@@ -147,7 +215,6 @@ const WorkProfileContextReducer = (
         return {
           ...state,
           goals: state.goals.map(g => WorkProfileGoalReducer(g, action)),
-          missions: state.missions,
         };
       }
       return {
@@ -199,6 +266,20 @@ const WorkProfileContextReducer = (
           minutes: action.minutes,
         },
       };
+    case 'UpdateCurrentDetailStatus':
+      return {
+        ...state,
+        currentDetail:
+          action.schema === 'goal'
+            ? {
+                ...state.currentDetail,
+                goalStatus: action.status,
+              }
+            : {
+                ...state.currentDetail,
+                missionStatus: action.status,
+              },
+      };
     default:
       return defaultState;
   }
@@ -209,7 +290,36 @@ const WorkProfileContext = React.createContext<{
   dispatch: React.Dispatch<IWorkProfileContextAction>;
 }>({ state: defaultState, dispatch: noop });
 
-export const useWorkProfileContext = () => React.useContext(WorkProfileContext);
+export const useWorkProfileContext = () => {
+  const { state, dispatch } = React.useContext(WorkProfileContext);
+  const isDashboard = Boolean(
+    !state.currentDetail.goalID && !state.currentDetail.missionID
+  );
+  const isSubMission = Boolean(
+    state.currentDetail.goalID && state.currentDetail.missionID
+  );
+  const currentNavStatus =
+    state.currentDetail.goalStatus || state.currentDetail.missionStatus;
+
+  const currentDetailStatus =
+    state.currentDetail.missionStatus || state.currentDetail.goalStatus;
+  const freezed =
+    (currentNavStatus !== 'doing' || currentDetailStatus !== 'doing') &&
+    !isDashboard;
+  const statusChangeable = !(isSubMission && currentNavStatus !== 'doing');
+  return {
+    state,
+    dispatch,
+    computed: {
+      isSubMission,
+      currentNavStatus,
+      currentDetailStatus,
+      freezed,
+      statusChangeable,
+      isDashboard,
+    },
+  };
+};
 
 export const WorkProfileContextPorvider: React.FC = ({ children }) => {
   const [state, dispatch] = React.useReducer(

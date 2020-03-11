@@ -101,7 +101,7 @@ export const MissionCard: React.FC<{
 
 const FrontEndRoadMap = [
   {
-    mission: '🚩 开始',
+    mission: '📌 开始',
   },
   {
     mission: '了解互联网和浏览器',

@@ -7,7 +7,7 @@ import React, { useEffect } from 'react';
 
 import { Button, Keys, FormGroup, TextArea, H6 } from '@yishanzhilubp/core';
 
-import { useInputRef } from '@/src/utils/hooks';
+// import { useInputRef } from '@/src/utils/hooks';
 import { f } from '@/src/api';
 import { IGoalMission } from '@/src/model/schemas';
 import { TaiToast } from '@/src/utils/toaster';
@@ -15,14 +15,16 @@ import { TaiToast } from '@/src/utils/toaster';
 import { Flex } from '@/src/components/flex';
 import { useWorkProfileContext } from '@/src/scopes/global/workProfileContext';
 import { GoalMissionMenu } from '@/src/scopes/workspace/components/goalMissionMenu';
+import { useInputRef } from '@/src/utils/hooks';
 
 import { ITodosActions } from './todoReducer';
 
 const NewTodoEditing: React.FC<{
   dispatchTodosAction: React.Dispatch<ITodosActions>;
 }> = ({ dispatchTodosAction }) => {
-  const [input, ref] = useInputRef<HTMLTextAreaElement>();
   const [loading, setLoading] = React.useState(false);
+  const [input, ref] = useInputRef<HTMLTextAreaElement>();
+  const [todo, setTodo] = React.useState('');
   const {
     state: { currentDetail: initialGoalMission },
   } = useWorkProfileContext();
@@ -43,11 +45,11 @@ const NewTodoEditing: React.FC<{
   };
 
   const handleSubmit = async () => {
-    if (input.value.length === 0) {
+    if (todo.length === 0) {
       setErrorMsg('必填');
       return;
     }
-    if (input.value.length > 255) {
+    if (todo.length > 255) {
       setErrorMsg('不能大于255个字符');
       return;
     }
@@ -56,7 +58,7 @@ const NewTodoEditing: React.FC<{
       type: 'Freeze',
     });
     const data = {
-      content: input.value.trim(),
+      content: todo.trim(),
       status: 'todo',
       ...goalMission,
     };
@@ -66,7 +68,7 @@ const NewTodoEditing: React.FC<{
         type: 'NewTodoSubmit',
         todo: res.data,
       });
-      input.value = '';
+      setTodo('');
     } catch (error) {
       TaiToast.show({ message: error.message, intent: 'primary' });
     } finally {
@@ -79,10 +81,6 @@ const NewTodoEditing: React.FC<{
   };
 
   const handleEnter = () => {
-    if (input.value.length === 0) {
-      onCancel();
-      return;
-    }
     handleSubmit();
   };
   return (
@@ -90,8 +88,15 @@ const NewTodoEditing: React.FC<{
       <div style={{ marginBottom: 10 }}>
         <H6>添加事项</H6>
         <FormGroup
-          helperText={errorMsg || 'Ctrl + Enter 提交'}
-          intent={errorMsg ? 'primary' : 'none'}
+          helperText={
+            errorMsg || (
+              <div>
+                <span style={{ marginRight: 10 }}>{todo.length} /255</span>
+                Ctrl + Enter 提交
+              </div>
+            )
+          }
+          intent={errorMsg || todo.length > 255 ? 'primary' : 'none'}
         >
           <TextArea
             fill
@@ -99,9 +104,13 @@ const NewTodoEditing: React.FC<{
             inputRef={ref}
             autoFocus
             disabled={loading}
+            value={todo}
             intent={errorMsg ? 'primary' : 'none'}
             placeholder="有什么需要做的吗"
-            onChange={() => setErrorMsg('')}
+            onChange={e => {
+              setTodo(e.target.value);
+              setErrorMsg('');
+            }}
             rightElement={
               <GoalMissionMenu
                 emptyText="独立事项"

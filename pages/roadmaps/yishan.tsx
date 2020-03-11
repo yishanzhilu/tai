@@ -101,7 +101,7 @@ export const MissionCard: React.FC<{
 
 const YishanRoadMap = [
   {
-    mission: '🚩 开始',
+    mission: '📌 开始',
   },
   {
     mission: 'Web 应用泰山开发',

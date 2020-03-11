@@ -12,7 +12,7 @@ export const detailTypeConfigs = {
   },
   mission: {
     labelName: '任务',
-    emoji: '📜',
+    emoji: '📌',
     descPlaceholder: '任务的具体内容，和执行的步骤',
   },
 };

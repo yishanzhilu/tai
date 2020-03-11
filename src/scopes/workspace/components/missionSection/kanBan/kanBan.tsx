@@ -16,7 +16,7 @@ import { IMission } from '@/src/model/schemas';
 import { useWorkProfileContext } from '@/src/scopes/global/workProfileContext';
 import { useTopBarContext } from '@/src/scopes/global/topBarContext';
 import { f } from '@/src/api';
-import { TaiToast } from '@/src/utils/toaster';
+import { TaiToastError } from '@/src/utils/toaster';
 
 import { Column } from './column';
 
@@ -94,6 +94,7 @@ export const KanBan: React.FC = () => {
     state: {
       currentDetail: { missions = [], goalID },
     },
+    dispatch: dispatchWorkProfile,
   } = useWorkProfileContext();
   const [missionMap, setMissionMap] = useState({
     todo: [],
@@ -112,13 +113,8 @@ export const KanBan: React.FC = () => {
       if (o1 >= 0 && o2 >= 0) {
         return o1 - o2;
       }
-      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
     });
-
-    localStorage.setItem(
-      `${goalID}-kanban-mission-order`,
-      JSON.stringify(sortedMissions.map(m => m.id))
-    );
     const map = sortedMissions.reduce(
       (previous: MissionMap, mission: IMission) => {
         if (mission.status !== 'drop') previous[mission.status].push(mission);
@@ -130,10 +126,19 @@ export const KanBan: React.FC = () => {
         done: [],
       }
     );
+    localStorage.setItem(
+      `${goalID}-kanban-mission-order`,
+      JSON.stringify(
+        map.todo
+          .concat(map.doing)
+          .concat(map.done)
+          .map(m => m.id)
+      )
+    );
     setMissionMap(map);
   }, [missions]);
 
-  const onDragEnd = (result: DropResult) => {
+  const onDragEnd = async (result: DropResult) => {
     if (!result.destination) {
       return;
     }
@@ -148,31 +153,40 @@ export const KanBan: React.FC = () => {
     localStorage.setItem(
       `${goalID}-kanban-mission-order`,
       JSON.stringify(
-        ordered.doing
+        ordered.todo
+          .concat(ordered.doing)
           .concat(ordered.done)
-          .concat(ordered.todo)
           .map(m => m.id)
       )
     );
     setMissionMap(ordered);
-
     // 更新状态
     if (destination.droppableId === source.droppableId) {
       return;
     }
-    f.patch(`/mission/${result.draggableId}`, {
-      status: destination.droppableId,
-    }).catch(error => {
-      TaiToast.show({
-        message: (
-          <div style={{ textAlign: 'center' }}>
-            更新任务状态失败
-            <br />
-            {error.message}
-          </div>
-        ),
-        intent: 'primary',
-      });
+    try {
+      const { data: mission } = await f.patch<IMission>(
+        `/mission/${result.draggableId}`,
+        {
+          status: destination.droppableId,
+        }
+      );
+      // dispatchWorkProfile({ type: 'UpdateDetailMission', mission });
+      if (destination.droppableId === 'doing') {
+        dispatchWorkProfile({
+          type: 'AddMission',
+          mission,
+          goalID: mission.goalID,
+        });
+      } else {
+        dispatchWorkProfile({
+          type: 'RemoveMission',
+          id: mission.id,
+          goalID: mission.goalID,
+        });
+      }
+    } catch (error) {
+      TaiToastError('更新任务状态失败', error);
       // 复原顺序
       localStorage.setItem(
         `${goalID}-kanban-mission-order`,
@@ -184,7 +198,7 @@ export const KanBan: React.FC = () => {
         )
       );
       setMissionMap(missionMap);
-    });
+    }
   };
 
   return (
@@ -212,6 +226,7 @@ export const KanBan: React.FC = () => {
                   type: 'SetNewMissionDialog',
                   isOpen: true,
                   startNow: false,
+                  goalID,
                 })
               }
             />
@@ -233,6 +248,7 @@ export const KanBan: React.FC = () => {
                   type: 'SetNewMissionDialog',
                   isOpen: true,
                   startNow: true,
+                  goalID,
                 })
               }
             />

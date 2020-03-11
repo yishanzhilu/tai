@@ -10,6 +10,8 @@ import Link from 'next/link';
 import { Tag } from '@yishanzhilubp/core';
 
 import { IGoalMission } from '@/src/model/schemas';
+import { Span } from '../layouts/p';
+// import { P } from '../layouts/p';
 
 export const GoalMission = ({
   goalMission,
@@ -24,15 +26,15 @@ export const GoalMission = ({
   emptyText?: string;
   inline?: boolean;
 }) => {
+  const goalTitle = <Span>{goalMission.goalTitle}</Span>;
   let goalElement: React.ReactNode;
-  let missionElement: React.ReactNode;
   if (goalMission.goalID) {
     goalElement = isTag ? (
       <Tag icon={<span>🎯</span>} interactive>
-        {goalMission.goalTitle}
+        {goalTitle}
       </Tag>
     ) : (
-      goalMission.goalTitle
+      goalTitle
     );
     if (isLink) {
       goalElement = (
@@ -45,13 +47,16 @@ export const GoalMission = ({
       );
     }
   }
+
+  let missionElement: React.ReactNode;
+  const missionTitle = <Span>{goalMission.missionTitle}</Span>;
   if (goalMission.missionID) {
     missionElement = isTag ? (
       <Tag icon={<span>📜</span>} interactive>
-        {goalMission.missionTitle}
+        {missionTitle}
       </Tag>
     ) : (
-      goalMission.missionTitle
+      missionTitle
     );
     if (isLink) {
       missionElement = (

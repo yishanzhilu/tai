@@ -108,9 +108,10 @@ export const DefaultTodo = ({ todo, dispatchTodosAction }: IProps) => {
             {renderIcon()}
           </span>
           <div className="popover">
-            <p>
-              恭喜你完成了{todo.content}，<br />
-              是否记录历程？
+            <p style={{ maxWidth: 500 }}>
+              恭喜你完成了{' '}
+              <span style={{ fontWeight: 600 }}>{todo.content}</span>
+              ，是否记录历程？
             </p>
             <Flex justifyContent="flex-end">
               <Button small intent="primary" onClick={handlePopoverOK}>

@@ -39,7 +39,7 @@ const CreateMenu: React.FC = () => {
         onClick={() => dispatch({ type: 'SetNewGoalDialog', isOpen: true })}
       />
       <MenuItem
-        icon={<span>📜</span>}
+        icon={<span>📌</span>}
         text="创建任务"
         onClick={() => dispatch({ type: 'SetNewMissionDialog', isOpen: true })}
       />

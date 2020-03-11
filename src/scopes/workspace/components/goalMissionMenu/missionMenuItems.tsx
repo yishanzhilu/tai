@@ -21,7 +21,7 @@ export function MissionMenuItems({
       <MenuDivider title="独立任务" />
       {memoMissions.map(m => (
         <MenuItem
-          icon={<span>📜</span>}
+          icon={<span>📌</span>}
           text={m.title}
           onClick={() =>
             onSelectGoalMission({ missionID: m.id, missionTitle: m.title })

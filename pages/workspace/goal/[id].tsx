@@ -10,7 +10,7 @@ import { resetServerContext } from 'react-beautiful-dnd';
 
 import { IGoal, ITodo, IRecord, IMission } from '@/src/model/schemas';
 import { IPageProps, ITaiPageError } from '@/src/model/utils';
-import { sf, newTaiError } from '@/src/api';
+import { sf } from '@/src/api';
 import { withPageGuard } from '@/src/utils/auth';
 import { WorkSpace } from '@/src/scopes/workspace';
 import { WorkList } from '@/src/scopes/workspace/workList';
@@ -30,6 +30,7 @@ const GoalDetail: NextPage<IProps> = ({ goal, todos, records, missions }) => {
       newDetail={{
         goalID: goal.id,
         goalTitle: goal.title,
+        goalStatus: goal.status,
         minutes: goal.minutes,
         missions,
       }}
@@ -55,9 +56,6 @@ GoalDetail.getInitialProps = async ctx => {
       sf<IRecord[]>(`/records`, { params: { goalID: ctx.query.id } }, ctx),
       sf<IMission[]>(`/missions`, { params: { goalID: ctx.query.id } }, ctx),
     ]);
-    if (goal.status !== 'doing') {
-      err = newTaiError('错误的请求，目标无法查看详情', 400);
-    }
   } catch (error) {
     err = error;
     console.log('GoalDetail.getInitialProps', error, err);

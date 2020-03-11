@@ -5,28 +5,48 @@
  */
 
 import React from 'react';
-import Highlighter from 'react-highlight-words';
+import { Text } from '@yishanzhilubp/core';
 
-export const P: React.FC = ({ children }) => {
+export const P: React.FC<{
+  ellipsize?: boolean;
+}> = ({ children, ellipsize }) => {
   if (typeof children !== 'string') {
     throw Error('<P /> children has to be string');
   }
   const text = children.toString();
   return (
-    <p>
-      <Highlighter
-        highlightClassName="YourHighlightClass"
-        searchWords={['学习']}
-        autoEscape
-        textToHighlight={text}
-      />
+    <div>
+      <Text ellipsize={ellipsize}>{text}</Text>
       <style jsx>{`
-        p {
+        div {
           word-break: break-all;
           white-space: pre-wrap;
           line-height: 1.5;
         }
       `}</style>
-    </p>
+    </div>
+  );
+};
+
+export const Span: React.FC<{
+  ellipsize?: boolean;
+}> = ({ children }) => {
+  if (typeof children !== 'string') {
+    throw Error('<P /> children has to be string');
+  }
+  const text = children.toString();
+  return (
+    <span
+      style={{
+        wordBreak: 'break-all',
+        whiteSpace: 'nowrap',
+        maxWidth: 100,
+        display: 'inline-block',
+        verticalAlign: 'bottom',
+        lineHeight: 1.5,
+      }}
+    >
+      <Text ellipsize>{text}</Text>
+    </span>
   );
 };

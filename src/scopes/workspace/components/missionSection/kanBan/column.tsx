@@ -5,6 +5,7 @@
  */
 
 import React from 'react';
+import { useWorkProfileContext } from '@/src/scopes/global/workProfileContext';
 import { IMission } from '@/src/model/schemas';
 // TODO: add mission button from column
 // import { Button } from '@yishanzhilubp/core';
@@ -18,6 +19,9 @@ export const Column: React.FC<{
   missions: IMission[];
   index: number;
 }> = ({ missions, title, id, addButton }) => {
+  const {
+    computed: { freezed },
+  } = useWorkProfileContext();
   return (
     <div style={{ width: 250 }}>
       <div
@@ -26,12 +30,13 @@ export const Column: React.FC<{
           margin: 5,
           fontWeight: 600,
           display: 'flex',
-          justifyContent: 'space-between',
+          justifyContent: 'flex-start',
+          alignItems: 'center',
           height: 24,
         }}
       >
-        {title}
-        {addButton}
+        <div style={{ marginRight: 5 }}>{title}</div>
+        {!freezed && addButton}
       </div>
       <MissionList
         listId={id}

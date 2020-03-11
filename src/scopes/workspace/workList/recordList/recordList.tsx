@@ -41,26 +41,34 @@ const MoreRecordText = ({ loadingMore, cursor, userCreatedAt }) => {
 
 export const RecordList = ({ records }: IProps): React.ReactElement => {
   const [state, dispatch] = React.useReducer(recordListReducer, {
-    records: [],
+    records,
     addNew: false,
     isFreeze: false,
   });
+  const [loadingMore, setLoadingMore] = React.useState(false);
+  const [pageMounted, setPageMounted] = React.useState(true);
+
   const [{ finishedTodo }] = useWorkListContext();
   React.useEffect(() => {
     if (finishedTodo) {
       dispatch({ type: 'AddRecord' });
     }
   }, [finishedTodo]);
-  const [cursor, setCursor] = React.useState(null);
+  const [cursor, setCursor] = React.useState<number>(0);
+  React.useEffect(() => {
+    setPageMounted(true);
+  }, [records]);
   React.useEffect(() => {
     dispatch({ type: 'Reset', records });
-    setCursor(records.length > 0 ? records[records.length - 1].id : null);
-  }, [records]);
+    setCursor(records.length > 0 ? records[records.length - 1].id : 0);
+    setPageMounted(false);
+  }, [pageMounted]);
 
   const {
     state: {
       currentDetail: { goalID, missionID },
     },
+    computed: { freezed },
   } = useWorkProfileContext();
   const {
     state: {
@@ -68,7 +76,6 @@ export const RecordList = ({ records }: IProps): React.ReactElement => {
     },
   } = useUserContext();
 
-  const [loadingMore, setLoadingMore] = React.useState(false);
   const handleMoreClick = async () => {
     if (!cursor) {
       return;
@@ -99,12 +106,18 @@ export const RecordList = ({ records }: IProps): React.ReactElement => {
   return (
     <RecordsContext.Provider value={{ state, dispatch }}>
       <TaiListSimple title="历程">
-        <li>
-          <NewRecord />
-        </li>
-        <TransitionGroup className="record-list">
+        {!freezed && (
+          <li>
+            <NewRecord />
+          </li>
+        )}
+        <TransitionGroup
+          className="record-list"
+          appear={false}
+          exit={!pageMounted}
+        >
           {state.records.map(record => (
-            <CSSTransition key={record.id} timeout={500} classNames="item">
+            <CSSTransition key={record.id} timeout={500} classNames="item" in>
               <li>
                 <Record record={record} />
               </li>
@@ -130,15 +143,15 @@ export const RecordList = ({ records }: IProps): React.ReactElement => {
           transition: opacity 500ms ease-in;
         }
         .item-exit {
-          height: 132px;
+          max-height: 200px;
           opacity: 1;
           padding: 1px;
           overflow: hidden;
         }
         .item-exit-active {
           opacity: 0;
-          height: 0;
-          transition: height 500ms ease-in;
+          max-height: 0;
+          transition: max-height 500ms ease-in, opacity 500ms ease-in;
         }
       `}</style>
     </RecordsContext.Provider>

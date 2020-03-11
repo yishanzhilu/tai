@@ -28,6 +28,8 @@ const MissionDetail: NextPage<IProps> = ({ mission, todos, records }) => {
         minutes: mission.minutes,
         goalID: mission.goalID,
         goalTitle: mission.goalTitle,
+        goalStatus: mission.goalStatus,
+        missionStatus: mission.status,
         missionID: mission.id,
         missionTitle: mission.title,
         missions: [],

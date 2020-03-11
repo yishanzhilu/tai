@@ -41,5 +41,5 @@ export const STATUS_CONFIG_MAP = {
   doing: { color: '#db3737', text: '进行中' },
   todo: { color: '#4A90E2', text: '规划中' },
   done: { color: '#F5A623', text: '已完成' },
-  drop: { color: '#D8D8D8', text: '已终止' },
+  drop: { color: '#D8D8D8', text: '已放弃' },
 };

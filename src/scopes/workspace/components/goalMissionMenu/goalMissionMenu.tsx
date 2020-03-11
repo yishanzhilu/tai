@@ -55,7 +55,7 @@ export const GoalMissionMenu = ({
         disabled={isSpecificMission}
         autoFocus={false}
         content={
-          <Menu>
+          <Menu style={{ maxWidth: 250 }}>
             {goals.length ? (
               <GoalMenuItems
                 memoGoals={goals}

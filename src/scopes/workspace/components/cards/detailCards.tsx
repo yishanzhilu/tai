@@ -8,21 +8,22 @@ import React, { useState, useEffect } from 'react';
 import Link, { LinkProps } from 'next/link';
 import Head from 'next/head';
 import {
-  H3,
   Breadcrumbs,
   IBreadcrumbProps,
   Classes,
   Icon,
+  Tag,
 } from '@yishanzhilubp/core';
 import classNames from 'classnames';
 
 import { useWorkProfileContext } from '@/src/scopes/global/workProfileContext';
-import { BasicStatus, IGoal, IMission } from '@/src/model/schemas';
+import { IGoal, IMission, BasicStatus } from '@/src/model/schemas';
+import { TaiCard } from '@/src/components/layouts';
+import { STATUS_CONFIG_MAP } from '@/src/utils/constants';
 
-import { BaseCard } from './baseCard';
+import { CardBase } from './cardBase';
 import { CardOptions } from './cardOptions';
 import { DetailCardEditing } from './detailCardEditing';
-import { detailTypeConfigs } from './configs';
 
 export interface IDetail {
   id: number;
@@ -35,8 +36,7 @@ export interface IDetail {
   updatedAt: string;
 }
 
-export const Breadcrumb: React.SFC<IBreadcrumbProps &
-  LinkProps> = breadcrumbProps => {
+const Breadcrumb: React.SFC<IBreadcrumbProps & LinkProps> = breadcrumbProps => {
   const classes = classNames(
     Classes.BREADCRUMB,
     {
@@ -78,18 +78,94 @@ export const Breadcrumb: React.SFC<IBreadcrumbProps &
   );
 };
 
+const StatusTag: React.FC<{ status: BasicStatus }> = ({ status }) => {
+  const statusConfig = STATUS_CONFIG_MAP[status || 'doing'];
+  return (
+    <Tag
+      style={{
+        backgroundColor: statusConfig.color,
+        color: 'white',
+        fontSize: 10,
+        height: 18,
+        minHeight: 18,
+      }}
+    >
+      {statusConfig.text}
+    </Tag>
+  );
+};
+
+const TaiBreadcrumb: React.FC = () => {
+  const {
+    state: {
+      currentDetail: { goalTitle, missionTitle, goalID },
+    },
+    computed: { freezed, currentNavStatus },
+  } = useWorkProfileContext();
+  let breadcrumbsItems = [];
+  if (missionTitle) {
+    if (goalTitle) {
+      breadcrumbsItems = [
+        {
+          icon: <span style={{ marginRight: 5 }}>🎯</span>,
+          href: `/workspace/goal/[id]`,
+          as: `/workspace/goal/${goalID}`,
+          text: goalTitle,
+        },
+        {
+          icon: <span style={{ marginRight: 5 }}>📌</span>,
+          text: '任务详情',
+        },
+      ];
+    } else {
+      breadcrumbsItems = [
+        {
+          icon: <span style={{ marginRight: 5 }}>📌</span>,
+          text: '任务详情',
+        },
+      ];
+    }
+  } else {
+    breadcrumbsItems = [
+      {
+        icon: <span style={{ marginRight: 5 }}>🎯</span>,
+        text: '目标详情',
+      },
+    ];
+  }
+  if (freezed) {
+    if (currentNavStatus === 'done') {
+      breadcrumbsItems.unshift({
+        icon: <span style={{ marginRight: 5 }}>🏆</span>,
+        text: '成就',
+        href: `/workspace/trophy`,
+      });
+    } else if (currentNavStatus === 'drop') {
+      breadcrumbsItems.unshift({
+        icon: <span style={{ marginRight: 5 }}>♻️</span>,
+        text: '回收站',
+        href: `/workspace/recycle`,
+      });
+    }
+  }
+
+  return (
+    <Breadcrumbs breadcrumbRenderer={Breadcrumb} items={breadcrumbsItems} />
+  );
+};
+
 const DetailCard: React.FC<{
   detail: IDetail;
   type: 'mission' | 'goal';
 }> = ({ detail: initDetail, type }) => {
   const {
     state: {
-      currentDetail: { minutes, goalTitle, missionTitle, goalID },
+      currentDetail: { minutes },
     },
+    computed: { currentDetailStatus, statusChangeable },
   } = useWorkProfileContext();
   const [isEditing, setIsEditing] = useState(false);
   const [detail, setDetail] = useState(initDetail);
-  const { labelName } = detailTypeConfigs[type];
   useEffect(() => {
     setDetail(initDetail);
   }, [initDetail.id]);
@@ -104,56 +180,26 @@ const DetailCard: React.FC<{
     );
   }
 
-  let breadcrumbsItems = [];
-  if (missionTitle) {
-    if (goalTitle) {
-      breadcrumbsItems = [
-        {
-          icon: <span style={{ marginRight: 5 }}>🎯</span>,
-          href: `/workspace/goal/[id]`,
-          as: `/workspace/goal/${goalID}`,
-          text: goalTitle,
-        },
-        {
-          icon: <span style={{ marginRight: 5 }}>📜</span>,
-          text: missionTitle,
-        },
-      ];
-    } else {
-      breadcrumbsItems = [
-        {
-          icon: <span style={{ marginRight: 5 }}>📜</span>,
-          text: missionTitle,
-        },
-      ];
-    }
-  } else {
-    breadcrumbsItems = [
-      {
-        icon: <span style={{ marginRight: 5 }}>🎯</span>,
-        text: goalTitle,
-      },
-    ];
-  }
   return (
     <div>
       <Head>
         <title>{detail.title} · 移山</title>
       </Head>
-      <H3>{labelName}详情</H3>
-      <Breadcrumbs breadcrumbRenderer={Breadcrumb} items={breadcrumbsItems} />
-      <BaseCard
-        goalMissin={detail}
-        minutes={minutes}
-        options={
-          <CardOptions
-            type={type}
-            id={detail.id}
-            status={detail.status}
-            onEditClick={() => setIsEditing(true)}
-          />
-        }
-      />
+      <TaiBreadcrumb />
+      <TaiCard>
+        {statusChangeable && (
+          <div style={{ float: 'right' }}>
+            <CardOptions
+              type={type}
+              id={detail.id}
+              status={currentDetailStatus}
+              onEditClick={() => setIsEditing(true)}
+            />
+          </div>
+        )}
+        <StatusTag status={currentDetailStatus} />
+        <CardBase goalMissin={detail} minutes={minutes} />
+      </TaiCard>
     </div>
   );
 };

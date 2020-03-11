@@ -95,7 +95,7 @@ export const Record = ({ record }: IProps): React.ReactElement => {
             <Button small icon="caret-down" minimal />
           </Popover>
           <Dialog
-            title="删除历程？"
+            title="删除历程"
             isOpen={dialogOpen}
             onClose={closeDeleteDialog}
           >
@@ -105,7 +105,7 @@ export const Record = ({ record }: IProps): React.ReactElement => {
                 <>
                   <br />
                   <br />
-                  个人累计历程、父级目标和任务的累计历程时长会减少{duration}。
+                  个人累计历程、父级目标和任务的累计历程时长会减少 {duration}。
                 </>
               )}
             </div>

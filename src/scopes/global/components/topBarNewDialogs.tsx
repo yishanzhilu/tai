@@ -12,14 +12,13 @@ import {
   TextArea,
   Button,
   HTMLSelect,
-  Switch,
+  // Switch,
 } from '@yishanzhilubp/core';
 import useForm from 'react-hook-form';
 import Router from 'next/router';
 import { f, HandleError } from '@/src/api';
 import { IGoal, IMission } from '@/src/model/schemas';
 import { useWorkProfileContext } from '@/src/scopes/global/workProfileContext';
-import { TaiToast } from '@/src/utils/toaster';
 
 import { useTopBarContext } from '../topBarContext';
 
@@ -29,12 +28,14 @@ export const NewGoalForm: React.FC = () => {
     description: string;
   }
   const [loading, setLoading] = useState(false);
-  const { register, handleSubmit, errors } = useForm<INewGoalFormValue>({
+  const { register, handleSubmit, errors, watch } = useForm<INewGoalFormValue>({
     defaultValues: {
       title: '',
       description: '',
     },
   });
+  const titleLength = watch('title').length;
+  const descriptionLength = watch('description').length;
   const { dispatch: dispatchTopBar } = useTopBarContext();
   const { dispatch: dispatchWorkProfile } = useWorkProfileContext();
   const onSubmit = useCallback(
@@ -45,9 +46,7 @@ export const NewGoalForm: React.FC = () => {
           ...data,
           status: 'doing',
         });
-        TaiToast.show({
-          message: '创建成功',
-        });
+
         Router.push(
           `/workspace/goal/[id]`,
           `/workspace/goal/${createdGoal.id}`
@@ -67,9 +66,11 @@ export const NewGoalForm: React.FC = () => {
       <div className={Classes.DIALOG_BODY}>
         <FormGroup
           disabled={loading}
-          intent="primary"
           label="目标名"
-          helperText={errors.title && errors.title.message}
+          intent={errors.title || titleLength > 80 ? 'primary' : 'none'}
+          helperText={
+            errors.title ? errors.title.message : `${titleLength} / 80`
+          }
         >
           <InputGroup
             fill
@@ -86,10 +87,16 @@ export const NewGoalForm: React.FC = () => {
         </FormGroup>
         <FormGroup
           disabled={loading}
-          intent="primary"
+          intent={
+            errors.description || descriptionLength > 255 ? 'primary' : 'none'
+          }
           label="目标描述"
           labelInfo="（可选）"
-          helperText={errors.description && errors.description.message}
+          helperText={
+            errors.description
+              ? errors.description.message
+              : `${descriptionLength} / 255`
+          }
         >
           <TextArea
             fill
@@ -127,7 +134,7 @@ export const NewGoalForm: React.FC = () => {
 export const NewMissionForm: React.FC = () => {
   const { state, dispatch } = useWorkProfileContext();
   const {
-    state: { startNow: startNowInital },
+    state: { startNow: startNowInital, goalID: goalIDInital },
     dispatch: dispatchTopBar,
   } = useTopBarContext();
   interface INewMissionFormValue {
@@ -135,14 +142,18 @@ export const NewMissionForm: React.FC = () => {
     description: string;
   }
   const [loading, setLoading] = useState(false);
-  const [goalID, setGoalID] = useState(state.currentDetail.goalID || 0);
-  const { register, handleSubmit, errors } = useForm<INewMissionFormValue>({
+  const [goalID, setGoalID] = useState(goalIDInital);
+  const { register, handleSubmit, errors, watch } = useForm<
+    INewMissionFormValue
+  >({
     defaultValues: {
       title: '',
       description: '',
     },
   });
-  const [startNow, setStartNow] = useState(startNowInital);
+  const titleLength = watch('title').length;
+  const descriptionLength = watch('description').length;
+  // const [startNow] = useState(startNowInital);
   const onSubmit = useCallback(
     handleSubmit(async data => {
       setLoading(true);
@@ -150,10 +161,10 @@ export const NewMissionForm: React.FC = () => {
         const { data: mission } = await f.post<IMission>('/missions', {
           ...data,
           goalID,
-          status: startNow ? 'doing' : 'todo',
+          status: startNowInital ? 'doing' : 'todo',
         });
         dispatchTopBar({ type: 'SetNewMissionDialog', isOpen: false });
-        dispatch({ type: 'AddMission', mission, goalID: mission.goalID });
+        dispatch({ type: 'AddDetailMission', mission });
         if (state.currentDetail.goalID !== mission.goalID)
           Router.push(
             `/workspace/mission/[id]`,
@@ -165,16 +176,18 @@ export const NewMissionForm: React.FC = () => {
         setLoading(false);
       }
     }),
-    [goalID, startNow]
+    [goalID]
   );
   return (
     <form onSubmit={onSubmit}>
       <div className={Classes.DIALOG_BODY}>
         <FormGroup
           disabled={loading}
-          intent="primary"
+          intent={errors.title || titleLength > 80 ? 'primary' : 'none'}
           label="任务名"
-          helperText={errors.title && errors.title.message}
+          helperText={
+            errors.title ? errors.title.message : `${titleLength} / 80`
+          }
         >
           <InputGroup
             fill
@@ -184,17 +197,23 @@ export const NewMissionForm: React.FC = () => {
             autoFocus
             inputRef={register({
               required: '必填',
-              maxLength: { value: 255, message: '不能大于255个字符' },
+              maxLength: { value: 80, message: '字数不能大于80个' },
             })}
             name="title"
           />
         </FormGroup>
         <FormGroup
           disabled={loading}
-          intent="primary"
+          intent={
+            errors.description || descriptionLength > 255 ? 'primary' : 'none'
+          }
           label="任务描述"
           labelInfo="（可选）"
-          helperText={errors.description && errors.description.message}
+          helperText={
+            errors.description
+              ? errors.description.message
+              : `${descriptionLength} / 255`
+          }
         >
           <TextArea
             fill
@@ -204,7 +223,7 @@ export const NewMissionForm: React.FC = () => {
             growVertically
             rows={2}
             inputRef={register({
-              maxLength: { value: 255, message: '不能大于255个字符' },
+              maxLength: { value: 255, message: '字数不能大于255个' },
             })}
             name="description"
           />
@@ -219,16 +238,18 @@ export const NewMissionForm: React.FC = () => {
             )}
           />
         </FormGroup>
-        <FormGroup label="立刻开始" inline>
-          <Switch
-            disabled={loading}
-            large
-            checked={startNow}
-            onChange={e => {
-              setStartNow((e.target as HTMLInputElement).checked);
-            }}
-          />
-        </FormGroup>
+        {/* {!!goalID && (
+          <FormGroup label="立刻开始" inline>
+            <Switch
+              disabled={loading}
+              large
+              checked={startNow}
+              onChange={e => {
+                setStartNow((e.target as HTMLInputElement).checked);
+              }}
+            />
+          </FormGroup>
+        )} */}
       </div>
       <div className={Classes.DIALOG_FOOTER}>
         <div className={Classes.DIALOG_FOOTER_ACTIONS}>

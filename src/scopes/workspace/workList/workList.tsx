@@ -11,6 +11,7 @@ import { noop } from '@/src/utils/funcs';
 
 import { TodoList } from './todoList';
 import { RecordList } from './recordList';
+import { useWorkProfileContext } from '../../global/workProfileContext';
 
 interface IWorkListState {
   // when finish todo, user can easily create a record
@@ -48,9 +49,12 @@ export const WorkList: React.FC<{ todos: ITodo[]; records: IRecord[] }> = ({
   const [workListState, setWorkListState] = useState<IWorkListState>({
     finishedTodo: null,
   });
+  const {
+    computed: { freezed },
+  } = useWorkProfileContext();
   return (
     <WorkListContext.Provider value={[workListState, setWorkListState]}>
-      <TodoList todos={todos} />
+      {!freezed && <TodoList todos={todos} />}
       <RecordList records={records} />
     </WorkListContext.Provider>
   );

@@ -36,6 +36,20 @@ const InnerList: React.FC<InnerListProps> = ({
   dropProvided,
   empty,
 }) => {
+  let emptyPlaceHolder: string;
+  switch (dropProvided.droppableProps['data-rbd-droppable-id']) {
+    case 'doing':
+      emptyPlaceHolder = '没有进行的任务';
+      break;
+    case 'todo':
+      emptyPlaceHolder = '没有计划的任务';
+      break;
+    case 'done':
+      emptyPlaceHolder = '没有完成的任务';
+      break;
+    default:
+      break;
+  }
   return (
     <div
       ref={dropProvided.innerRef}
@@ -48,7 +62,7 @@ const InnerList: React.FC<InnerListProps> = ({
       }}
     >
       <MissionListMemo missions={missions} />
-      {empty && <span className={Classes.TEXT_MUTED}>尚无任务</span>}
+      {empty && <span className={Classes.TEXT_MUTED}>{emptyPlaceHolder}</span>}
       {dropProvided.placeholder}
     </div>
   );
@@ -59,6 +73,7 @@ interface IMissionList {
   listType?: string;
   missions: IMission[];
   title?: string;
+  disabled?: boolean;
 }
 
 export const getBackgroundColor = (

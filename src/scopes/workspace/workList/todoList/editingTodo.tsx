@@ -114,8 +114,15 @@ export const EditingTodo = ({
       <div className="input">
         <H6>更新事项</H6>
         <FormGroup
-          helperText={errorMsg || 'Ctrl + Enter 提交'}
-          intent={errorMsg ? 'primary' : 'none'}
+          helperText={
+            errorMsg || (
+              <div>
+                <span style={{ marginRight: 10 }}>{content.length} /255</span>
+                Ctrl + Enter 提交
+              </div>
+            )
+          }
+          intent={errorMsg || content.length > 255 ? 'primary' : 'none'}
         >
           <TextArea
             fill
