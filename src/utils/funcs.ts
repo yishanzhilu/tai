@@ -122,7 +122,7 @@ export function getDateDiffFromNow(dateTimeStamp: string) {
   const minC = diffValue / minute;
   let result: string;
   if (monthC >= 12) {
-    result = old.toLocaleDateString();
+    result = `${old.getFullYear()}-${old.getMonth() + 1}-${old.getDate()}`;
   } else if (monthC >= 1) {
     result = `${Math.floor(monthC).toString()}个月前`;
   } else if (weekC >= 1) {

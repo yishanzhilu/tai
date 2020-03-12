@@ -75,7 +75,7 @@ export const Record = ({ record }: IProps): React.ReactElement => {
             emptyText="独立历程"
           />{' '}
           @{getDateDiffFromNow(record.createdAt)}
-          {record.minutes > 0 && <span> - 时长 {duration}</span>}
+          {record.minutes > 0 && <span> ⏳ 时长 {duration}</span>}
         </span>
         <span>
           <Popover
