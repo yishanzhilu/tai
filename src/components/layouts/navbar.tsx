@@ -21,7 +21,7 @@ import {
   MenuItem,
   AnchorButton,
   MenuDivider,
-  Icon,
+  // Icon,
 } from '@yishanzhilubp/core';
 
 import { useTopBarContext } from '@/src/scopes/global/topBarContext';
@@ -49,7 +49,12 @@ const CreateMenu: React.FC = () => {
 
 const ProfileMenu: React.FC = () => {
   const router = useRouter();
-  const { dispatch } = useUserContext();
+  const {
+    dispatch,
+    state: {
+      user: { name },
+    },
+  } = useUserContext();
   return (
     <Menu>
       <MenuDivider
@@ -62,7 +67,7 @@ const ProfileMenu: React.FC = () => {
               marginTop: 5,
             }}
           >
-            qy
+            {name || '您好'}
           </div>
         }
       />
@@ -102,10 +107,10 @@ export const Navbar = () => {
             </a>
           </Link>
         </NavbarHeading>
-        <div className="bp3-input-group">
+        {/* <div className="bp3-input-group">
           <Icon icon="search" />
           <input className="bp3-input" placeholder="搜索移山" dir="auto" />
-        </div>
+        </div> */}
       </NavbarGroup>
       <NavbarGroup align={Alignment.RIGHT}>
         {state.isLogin ? (
