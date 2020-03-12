@@ -19,45 +19,41 @@ export function GoalMenuItems({
   return (
     <>
       <MenuDivider title="目标" />
-      {memoGoals.length ? (
-        memoGoals.map(g => {
-          return (
-            <MenuItem
-              icon={<span>🎯</span>}
-              text={g.title}
-              onClick={() =>
-                onSelectGoalMission({ goalID: g.id, goalTitle: g.title })
-              }
-              className={Classes.POPOVER_DISMISS}
-              key={`goal-${g.id}`}
-            >
-              {g.missions && (
-                <>
-                  <MenuDivider title="子任务" />
-                  {g.missions.map(m => (
-                    <MenuItem
-                      icon={<span>📌</span>}
-                      text={m.title}
-                      key={m.id}
-                      style={{ maxWidth: 250 }}
-                      onClick={() =>
-                        onSelectGoalMission({
-                          missionID: m.id,
-                          missionTitle: m.title,
-                          goalID: g.id,
-                          goalTitle: g.title,
-                        })
-                      }
-                    />
-                  ))}
-                </>
-              )}
-            </MenuItem>
-          );
-        })
-      ) : (
-        <MenuItem text="未设立" />
-      )}
+      {memoGoals.map(g => {
+        return (
+          <MenuItem
+            icon={<span>🎯</span>}
+            text={g.title}
+            onClick={() =>
+              onSelectGoalMission({ goalID: g.id, goalTitle: g.title })
+            }
+            className={Classes.POPOVER_DISMISS}
+            key={`goal-${g.id}`}
+          >
+            {g.missions && (
+              <>
+                <MenuDivider title="子任务" />
+                {g.missions.map(m => (
+                  <MenuItem
+                    icon={<span>📌</span>}
+                    text={m.title}
+                    key={m.id}
+                    style={{ maxWidth: 250 }}
+                    onClick={() =>
+                      onSelectGoalMission({
+                        missionID: m.id,
+                        missionTitle: m.title,
+                        goalID: g.id,
+                        goalTitle: g.title,
+                      })
+                    }
+                  />
+                ))}
+              </>
+            )}
+          </MenuItem>
+        );
+      })}
     </>
   );
 }

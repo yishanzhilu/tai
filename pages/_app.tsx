@@ -38,7 +38,9 @@ const TaiApp = ({ Component, pageProps }) => (
     <Head>
       <title>移山 · 确立目标，达成理想</title>
       <meta charSet="UTF-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <meta name="viewport" content="width=1440, initial-scale=1" />
+      {/* <meta name="viewport"
+      content="width=device-width, initial-scale=1.0" /> */}
       <meta httpEquiv="X-UA-Compatible" content="ie=edge" />
       <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       <link
@@ -70,6 +72,11 @@ const TaiApp = ({ Component, pageProps }) => (
     <style jsx global>{`
       .bp3-card {
         padding: 20px 40px;
+      }
+      @media (max-width: 1024px) {
+        .bp3-card {
+          padding: 10px 15px;
+        }
       }
       /* Make clicks pass-through */
       #nprogress {

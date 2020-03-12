@@ -160,9 +160,7 @@ const MissionCard: React.FC<{ mission: IMission }> = ({ mission }) => {
           line-height: 1.5;
           // shrink size for windows scroll bar
         }
-        .card:nth-child(3n) {
-          margin-right: 0;
-        }
+
         .row {
           display: flex;
           justify-content: space-between;
