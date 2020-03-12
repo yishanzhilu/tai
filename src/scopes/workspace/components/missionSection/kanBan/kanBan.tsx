@@ -184,61 +184,63 @@ export const KanBan: React.FC = () => {
   };
 
   return (
-    <DragDropContext onDragEnd={onDragEnd}>
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          width: '100%',
-          height: 277,
-        }}
-      >
-        <Column
-          missions={missionMap.todo}
-          index={0}
-          title="计划"
-          id="todo"
-          addButton={
-            <Button
-              small
-              minimal
-              icon="plus"
-              onClick={() =>
-                dispatchTopBar({
-                  type: 'SetNewMissionDialog',
-                  isOpen: true,
-                  startNow: false,
-                  goalID,
-                })
-              }
-            />
-          }
-        />
-        <Divider style={{ marginTop: 30 }} />
-        <Column
-          missions={missionMap.doing}
-          index={1}
-          title="进行"
-          id="doing"
-          addButton={
-            <Button
-              small
-              minimal
-              icon="plus"
-              onClick={() =>
-                dispatchTopBar({
-                  type: 'SetNewMissionDialog',
-                  isOpen: true,
-                  startNow: true,
-                  goalID,
-                })
-              }
-            />
-          }
-        />
-        <Divider style={{ marginTop: 30 }} />
-        <Column missions={missionMap.done} index={2} title="完成" id="done" />
-      </div>
-    </DragDropContext>
+    <div style={{ overflowX: 'auto' }}>
+      <DragDropContext onDragEnd={onDragEnd}>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            width: '840px',
+            height: 277,
+          }}
+        >
+          <Column
+            missions={missionMap.todo}
+            index={0}
+            title="计划"
+            id="todo"
+            addButton={
+              <Button
+                small
+                minimal
+                icon="plus"
+                onClick={() =>
+                  dispatchTopBar({
+                    type: 'SetNewMissionDialog',
+                    isOpen: true,
+                    startNow: false,
+                    goalID,
+                  })
+                }
+              />
+            }
+          />
+          <Divider style={{ marginTop: 30 }} />
+          <Column
+            missions={missionMap.doing}
+            index={1}
+            title="进行"
+            id="doing"
+            addButton={
+              <Button
+                small
+                minimal
+                icon="plus"
+                onClick={() =>
+                  dispatchTopBar({
+                    type: 'SetNewMissionDialog',
+                    isOpen: true,
+                    startNow: true,
+                    goalID,
+                  })
+                }
+              />
+            }
+          />
+          <Divider style={{ marginTop: 30 }} />
+          <Column missions={missionMap.done} index={2} title="完成" id="done" />
+        </div>
+      </DragDropContext>
+    </div>
   );
 };

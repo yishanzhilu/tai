@@ -36,7 +36,9 @@ export interface IDetail {
   updatedAt: string;
 }
 
-const Breadcrumb: React.SFC<IBreadcrumbProps & LinkProps> = breadcrumbProps => {
+type ITaiBreadcrumbProps = IBreadcrumbProps & LinkProps;
+
+const Breadcrumb: React.FC<ITaiBreadcrumbProps> = breadcrumbProps => {
   const classes = classNames(
     Classes.BREADCRUMB,
     {
@@ -102,7 +104,7 @@ const TaiBreadcrumb: React.FC = () => {
     },
     computed: { freezed, currentNavStatus },
   } = useWorkProfileContext();
-  let breadcrumbsItems = [];
+  let breadcrumbsItems: ITaiBreadcrumbProps[] = [];
   if (missionTitle) {
     if (goalTitle) {
       breadcrumbsItems = [
@@ -115,12 +117,14 @@ const TaiBreadcrumb: React.FC = () => {
         {
           icon: <span style={{ marginRight: 5 }}>📌</span>,
           text: '任务详情',
+          href: null,
         },
       ];
     } else {
       breadcrumbsItems = [
         {
           icon: <span style={{ marginRight: 5 }}>📌</span>,
+          href: null,
           text: '任务详情',
         },
       ];
@@ -129,6 +133,7 @@ const TaiBreadcrumb: React.FC = () => {
     breadcrumbsItems = [
       {
         icon: <span style={{ marginRight: 5 }}>🎯</span>,
+        href: null,
         text: '目标详情',
       },
     ];
@@ -150,7 +155,13 @@ const TaiBreadcrumb: React.FC = () => {
   }
 
   return (
-    <Breadcrumbs breadcrumbRenderer={Breadcrumb} items={breadcrumbsItems} />
+    <div style={{ whiteSpace: 'nowrap' }}>
+      <Breadcrumbs
+        breadcrumbRenderer={Breadcrumb}
+        items={breadcrumbsItems}
+        collapseFrom="start"
+      />
+    </div>
   );
 };
 

@@ -52,18 +52,22 @@ export const GoalMissionMenu = ({
     <ButtonGroup>
       <Popover
         minimal
-        disabled={isSpecificMission}
+        disabled={isSpecificMission || (!missions.length && !goals.length)}
         autoFocus={false}
         content={
           <Menu style={{ maxWidth: 250 }}>
-            <GoalMenuItems
-              memoGoals={goals}
-              onSelectGoalMission={onSelectGoalMission}
-            />
-            <MissionMenuItems
-              memoMissions={missions}
-              onSelectGoalMission={onSelectGoalMission}
-            />
+            {goals.length ? (
+              <GoalMenuItems
+                memoGoals={goals}
+                onSelectGoalMission={onSelectGoalMission}
+              />
+            ) : null}
+            {missions.length ? (
+              <MissionMenuItems
+                memoMissions={missions}
+                onSelectGoalMission={onSelectGoalMission}
+              />
+            ) : null}
           </Menu>
         }
         position={Position.BOTTOM_LEFT}

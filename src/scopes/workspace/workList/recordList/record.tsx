@@ -15,6 +15,7 @@ import {
   Menu,
   MenuItem,
   Dialog,
+  Divider,
 } from '@yishanzhilubp/core';
 
 import { IRecord } from '@/src/model/schemas';
@@ -126,6 +127,7 @@ export const Record = ({ record }: IProps): React.ReactElement => {
       <P>{record.content}</P>
       {record.review && (
         <>
+          <Divider style={{ margin: 20 }} />
           <H6 className={Classes.TEXT_MUTED}>想法</H6>
           <P>{record.review}</P>
         </>
