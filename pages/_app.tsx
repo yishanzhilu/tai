@@ -38,9 +38,8 @@ const TaiApp = ({ Component, pageProps }) => (
     <Head>
       <title>移山 · 确立目标，达成理想</title>
       <meta charSet="UTF-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <meta name="viewport" content="width=1440, initial-scale=1.0" />
       <meta httpEquiv="X-UA-Compatible" content="ie=edge" />
-      <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       <link
         href="https://cdn.jsdelivr.net/npm/normalizecss@3.0.0/normalize.css"
         rel="stylesheet"
