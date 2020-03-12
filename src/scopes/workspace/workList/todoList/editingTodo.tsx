@@ -148,7 +148,7 @@ export const EditingTodo = ({
       </div>
       <Flex>
         <Button onClick={onEditClickSave} intent="primary" loading={loading}>
-          保存
+          提交
         </Button>
         <Button onClick={onClickCancel} disabled={loading}>
           取消

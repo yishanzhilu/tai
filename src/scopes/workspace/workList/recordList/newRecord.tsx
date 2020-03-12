@@ -41,9 +41,9 @@ export const NewRecord = () => {
             icon={<span>📝</span>}
             onClick={() => dispatch({ type: 'AddRecord' })}
           >
-            记录历程
+            添加记录
           </Button>
-          <div>完成了什么？</div>
+          <div>记录点什么？</div>
         </Flex>
       </Card>
       <div className="back-drop" onClick={handleCancel} />

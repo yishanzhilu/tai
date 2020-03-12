@@ -8,7 +8,7 @@ import * as React from 'react';
 import classnames from 'classnames';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import { Classes, Divider, Text } from '@yishanzhilubp/core';
+import { Classes, Divider, Text, Button } from '@yishanzhilubp/core';
 
 import {
   useWorkProfileContext,
@@ -16,11 +16,16 @@ import {
   IMissionBrief,
 } from '@/src/scopes/global/workProfileContext';
 import { UserProfile } from './sidebarUserProfile';
+import { useTopBarContext } from '../../global/topBarContext';
 
-function SidebarHeader({ children }) {
+const SidebarHeader: React.FC<{ action?: React.ReactNode }> = ({
+  children,
+  action,
+}) => {
   return (
     <h6 className="sidebar-heading">
-      {children}
+      <span>{children}</span>
+      {action}
       <style jsx>
         {`
           h6 {
@@ -29,15 +34,22 @@ function SidebarHeader({ children }) {
             text-overflow: ellipsis;
             white-space: nowrap;
             word-wrap: normal;
-            margin: 15px 20px 10px;
-            line-height: 17px;
+            margin: 8px 20px 8px;
+            line-height: 18px;
             font-size: 14px;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            height: 24px;
+          }
+          span{
+            margin-right: 5px;
           }
         `}
       </style>
     </h6>
   );
-}
+};
 
 function SidebarAnchor({ children, href, asHref }) {
   return (
@@ -153,9 +165,28 @@ const SidebarWorks: React.FC<{
   goals: IGoalBrief[];
   missions: IMissionBrief[];
 }> = ({ goals, missions }) => {
+  const { dispatch } = useTopBarContext();
   return (
     <ul className={Classes.TREE_NODE_LIST}>
-      <SidebarHeader>目标</SidebarHeader>
+      <SidebarHeader
+        action={
+          <Button
+            icon="plus"
+            minimal
+            small
+            onClick={() =>
+              dispatch({
+                type: 'SetNewGoalDialog',
+                isOpen: true,
+                startNow: true,
+              })
+            }
+          />
+        }
+      >
+        目标
+      </SidebarHeader>
+
       {goals.length > 0 ? (
         goals.map(g => (
           <SidebarGoal
@@ -172,7 +203,24 @@ const SidebarWorks: React.FC<{
           </div>
         </li>
       )}
-      <SidebarHeader>独立任务</SidebarHeader>
+      <SidebarHeader
+        action={
+          <Button
+            icon="plus"
+            minimal
+            small
+            onClick={() =>
+              dispatch({
+                type: 'SetNewMissionDialog',
+                isOpen: true,
+                startNow: true,
+              })
+            }
+          />
+        }
+      >
+        独立任务
+      </SidebarHeader>
       {missions.length > 0 ? (
         missions.map(m => (
           <SidebarMission key={`mission-${m.id}`} title={m.title} id={m.id} />

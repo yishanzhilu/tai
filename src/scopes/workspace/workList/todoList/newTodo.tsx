@@ -137,7 +137,7 @@ const NewTodoEditing: React.FC<{
             handleSubmit();
           }}
         >
-          保存
+          提交
         </Button>
         <Button disabled={loading} onClick={onCancel}>
           取消

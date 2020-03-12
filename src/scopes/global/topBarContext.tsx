@@ -23,7 +23,7 @@ interface ITopBarContextState {
 }
 
 type ITopBarContextAction =
-  | { type: 'SetNewGoalDialog'; isOpen: boolean }
+  | { type: 'SetNewGoalDialog'; isOpen: boolean; startNow?: boolean }
   | {
       type: 'SetNewMissionDialog';
       isOpen: boolean;
@@ -34,7 +34,7 @@ type ITopBarContextAction =
 const defaultState: ITopBarContextState = {
   newGoalOpen: false,
   newMissionOpen: false,
-  startNow: false,
+  startNow: true,
   goalID: 0,
 };
 
@@ -46,6 +46,7 @@ const userContextReducer = (
     case 'SetNewGoalDialog':
       return {
         ...state,
+        startNow: action.startNow,
         newGoalOpen: action.isOpen,
       };
     case 'SetNewMissionDialog':
@@ -78,7 +79,9 @@ export const TopBarContextPorvider: React.FC = ({ children }) => {
       <Dialog
         title="🎯 设立目标"
         isOpen={state.newGoalOpen}
-        onClose={() => dispatch({ type: 'SetNewGoalDialog', isOpen: false })}
+        onClose={() =>
+          dispatch({ type: 'SetNewGoalDialog', isOpen: false, startNow: true })
+        }
       >
         <NewGoalForm />
       </Dialog>
@@ -89,7 +92,7 @@ export const TopBarContextPorvider: React.FC = ({ children }) => {
           dispatch({
             type: 'SetNewMissionDialog',
             isOpen: false,
-            startNow: false,
+            startNow: true,
           })
         }
       >

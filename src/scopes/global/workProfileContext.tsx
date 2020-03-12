@@ -84,7 +84,7 @@ const WorkProfileGoalReducer = (
       if (goal.id === action.goalID) {
         return {
           ...goal,
-          missions: [...goal.missions, action.mission].sort(
+          missions: [...(goal.missions || []), action.mission].sort(
             (a, b) => a.id - b.id
           ),
         };
@@ -94,7 +94,7 @@ const WorkProfileGoalReducer = (
       if (goal.id === action.goalID) {
         return {
           ...goal,
-          missions: goal.missions.filter(m => m.id !== action.id),
+          missions: (goal.missions || []).filter(m => m.id !== action.id),
         };
       }
       return goal;
@@ -112,7 +112,7 @@ const WorkProfileGoalReducer = (
       if (goal.id === action.goalID) {
         return {
           ...goal,
-          missions: goal.missions.map(m => {
+          missions: (goal.missions || []).map(m => {
             if (m.id === action.id) {
               return {
                 ...m,

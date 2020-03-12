@@ -105,7 +105,7 @@ export const RecordList = ({ records }: IProps): React.ReactElement => {
 
   return (
     <RecordsContext.Provider value={{ state, dispatch }}>
-      <TaiListSimple title="历程">
+      <TaiListSimple title="记录">
         {!freezed && (
           <li>
             <NewRecord />

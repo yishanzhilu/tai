@@ -56,6 +56,7 @@ export interface IRecord extends IGoalMission {
   id: number;
   content: string;
   review: string;
+  mood: string;
   minutes: number;
   createdAt: string;
   updatedAt: string;

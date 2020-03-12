@@ -11,7 +11,7 @@ import {
   InputGroup,
   TextArea,
   Button,
-  HTMLSelect,
+  // HTMLSelect,
   // Switch,
 } from '@yishanzhilubp/core';
 import useForm from 'react-hook-form';
@@ -51,7 +51,11 @@ export const NewGoalForm: React.FC = () => {
           `/workspace/goal/[id]`,
           `/workspace/goal/${createdGoal.id}`
         );
-        dispatchTopBar({ type: 'SetNewGoalDialog', isOpen: false });
+        dispatchTopBar({
+          type: 'SetNewGoalDialog',
+          isOpen: false,
+          startNow: true,
+        });
         dispatchWorkProfile({ type: 'AddGoal', goal: createdGoal });
       } catch (error) {
         HandleError(error, true);
@@ -134,7 +138,7 @@ export const NewGoalForm: React.FC = () => {
 export const NewMissionForm: React.FC = () => {
   const { state, dispatch } = useWorkProfileContext();
   const {
-    state: { startNow: startNowInital, goalID: goalIDInital },
+    state: { startNow, goalID },
     dispatch: dispatchTopBar,
   } = useTopBarContext();
   interface INewMissionFormValue {
@@ -142,7 +146,6 @@ export const NewMissionForm: React.FC = () => {
     description: string;
   }
   const [loading, setLoading] = useState(false);
-  const [goalID, setGoalID] = useState(goalIDInital);
   const { register, handleSubmit, errors, watch } = useForm<
     INewMissionFormValue
   >({
@@ -153,7 +156,6 @@ export const NewMissionForm: React.FC = () => {
   });
   const titleLength = watch('title').length;
   const descriptionLength = watch('description').length;
-  // const [startNow] = useState(startNowInital);
   const onSubmit = useCallback(
     handleSubmit(async data => {
       setLoading(true);
@@ -161,11 +163,17 @@ export const NewMissionForm: React.FC = () => {
         const { data: mission } = await f.post<IMission>('/missions', {
           ...data,
           goalID,
-          status: startNowInital ? 'doing' : 'todo',
+          status: startNow ? 'doing' : 'todo',
         });
         dispatchTopBar({ type: 'SetNewMissionDialog', isOpen: false });
         dispatch({ type: 'AddDetailMission', mission });
-        if (state.currentDetail.goalID !== mission.goalID)
+        if (mission.status === 'doing') {
+          dispatch({ type: 'AddMission', mission, goalID: mission.goalID });
+        }
+        if (
+          !state.currentDetail.goalID ||
+          state.currentDetail.goalID !== mission.goalID
+        )
           Router.push(
             `/workspace/mission/[id]`,
             `/workspace/mission/${mission.id}`
@@ -228,7 +236,7 @@ export const NewMissionForm: React.FC = () => {
             name="description"
           />
         </FormGroup>
-        <FormGroup label="父级目标">
+        {/* <FormGroup label="父级目标">
           <HTMLSelect
             fill
             value={goalID}
@@ -237,7 +245,7 @@ export const NewMissionForm: React.FC = () => {
               state.goals.map(g => ({ label: g.title, value: g.id }))
             )}
           />
-        </FormGroup>
+        </FormGroup> */}
         {/* {!!goalID && (
           <FormGroup label="立刻开始" inline>
             <Switch
@@ -258,7 +266,11 @@ export const NewMissionForm: React.FC = () => {
           </Button>
           <Button
             onClick={() =>
-              dispatchTopBar({ type: 'SetNewMissionDialog', isOpen: false })
+              dispatchTopBar({
+                type: 'SetNewMissionDialog',
+                isOpen: false,
+                startNow: true,
+              })
             }
             loading={loading}
           >

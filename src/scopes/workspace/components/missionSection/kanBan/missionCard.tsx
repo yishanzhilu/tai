@@ -88,7 +88,7 @@ export const MissionCard: React.FC<{
           {...provided.dragHandleProps}
         >
           <div className="row">
-            <div style={{ marginRight: 10, width: 150 }}>
+            <div style={{ marginRight: 10, maxWidth: 150 }}>
               <Link
                 href="/workspace/mission/[id]"
                 as={`/workspace/mission/${mission.id}`}

@@ -24,28 +24,28 @@ import {
   // Icon,
 } from '@yishanzhilubp/core';
 
-import { useTopBarContext } from '@/src/scopes/global/topBarContext';
+// import { useTopBarContext } from '@/src/scopes/global/topBarContext';
 import { GITHUB_OAUTH_URL } from '@/src/utils/constants';
 import { logout } from '@/src/utils/auth';
 import { useUserContext } from '@/src/scopes/global/userContext';
 
-const CreateMenu: React.FC = () => {
-  const { dispatch } = useTopBarContext();
-  return (
-    <Menu>
-      <MenuItem
-        icon={<span>🎯</span>}
-        text="设立目标"
-        onClick={() => dispatch({ type: 'SetNewGoalDialog', isOpen: true })}
-      />
-      <MenuItem
-        icon={<span>📌</span>}
-        text="创建任务"
-        onClick={() => dispatch({ type: 'SetNewMissionDialog', isOpen: true })}
-      />
-    </Menu>
-  );
-};
+// const CreateMenu: React.FC = () => {
+//   const { dispatch } = useTopBarContext();
+//   return (
+//     <Menu>
+//       <MenuItem
+//         icon={<span>🎯</span>}
+//         text="设立目标"
+//         onClick={() => dispatch({ type: 'SetNewGoalDialog', isOpen: true })}
+//       />
+//       <MenuItem
+//         icon={<span>📌</span>}
+//         text="创建任务"
+//       onClick={() => dispatch({ type: 'SetNewMissionDialog', isOpen: true })}
+//       />
+//     </Menu>
+//   );
+// };
 
 const ProfileMenu: React.FC = () => {
   const router = useRouter();
@@ -123,9 +123,10 @@ export const Navbar = () => {
               style={{ marginBottom: 0 }}
             />
             <NavbarDivider /> */}
+            {/*
             <Popover content={<CreateMenu />} position={Position.BOTTOM_RIGHT}>
               <Button className={Classes.MINIMAL} icon="add" />
-            </Popover>
+            </Popover> */}
             <Popover content={<ProfileMenu />} position={Position.BOTTOM_RIGHT}>
               <Button
                 className={Classes.MINIMAL}
