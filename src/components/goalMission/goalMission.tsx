@@ -73,7 +73,7 @@ export const GoalMission = ({
     const content = (
       <>
         {goalElement}
-        {goalMission.goalID && goalMission.missionID ? ' / ' : ''}
+        {goalMission.goalTitle && goalMission.missionTitle ? ' / ' : ''}
         {missionElement}
       </>
     );
