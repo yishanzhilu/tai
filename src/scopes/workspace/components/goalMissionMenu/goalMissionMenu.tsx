@@ -56,18 +56,14 @@ export const GoalMissionMenu = ({
         autoFocus={false}
         content={
           <Menu style={{ maxWidth: 250 }}>
-            {goals.length ? (
-              <GoalMenuItems
-                memoGoals={goals}
-                onSelectGoalMission={onSelectGoalMission}
-              />
-            ) : null}
-            {missions.length ? (
-              <MissionMenuItems
-                memoMissions={missions}
-                onSelectGoalMission={onSelectGoalMission}
-              />
-            ) : null}
+            <GoalMenuItems
+              memoGoals={goals}
+              onSelectGoalMission={onSelectGoalMission}
+            />
+            <MissionMenuItems
+              memoMissions={missions}
+              onSelectGoalMission={onSelectGoalMission}
+            />
           </Menu>
         }
         position={Position.BOTTOM_LEFT}
