@@ -40,11 +40,9 @@ export const TodoList = ({
         title="事项"
         items={todos}
         render={t => (
-          <div key={t.id}>
-            <div className="todo">
-              <Todo todo={t} dispatchTodosAction={dispatchTodosAction} />
-            </div>
-            <Divider />
+          <div key={t.id} style={{ marginBottom: 10 }}>
+            <Todo todo={t} dispatchTodosAction={dispatchTodosAction} />
+            <Divider style={{ margin: 0 }} />
           </div>
         )}
         after={
@@ -55,11 +53,6 @@ export const TodoList = ({
         }
         container={<Card />}
       />
-      <style jsx>{`
-        .todo {
-          padding: 10px 0;
-        }
-      `}</style>
     </div>
   );
 };

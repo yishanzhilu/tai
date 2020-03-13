@@ -58,7 +58,6 @@ GoalDetail.getInitialProps = async ctx => {
     ]);
   } catch (error) {
     err = error;
-    console.log('GoalDetail.getInitialProps', error, err);
   }
   return { goal, todos, records, missions, error: err };
 };

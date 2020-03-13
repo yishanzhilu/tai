@@ -25,7 +25,9 @@ export const TaiList = <T extends { id: number }>({
   render,
   pre,
   after,
-  container = <ul className={Classes.LIST_UNSTYLED} />,
+  container = (
+    <ul className={Classes.LIST_UNSTYLED} style={{ marginBottom: 10 }} />
+  ),
   liMargin = 10,
   showEmptyPlaceholder = false,
 }: IListProps<T>) => {

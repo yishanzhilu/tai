@@ -111,14 +111,6 @@ const NewTodoEditing: React.FC<{
               setTodo(e.target.value);
               setErrorMsg('');
             }}
-            rightElement={
-              <GoalMissionMenu
-                emptyText="独立事项"
-                goalMission={goalMission}
-                onSelectGoalMission={onSelectGoalMission}
-                disabled={loading}
-              />
-            }
             onKeyDown={e => {
               if (e.which === Keys.ENTER) {
                 if (e.ctrlKey) handleEnter();
@@ -126,6 +118,14 @@ const NewTodoEditing: React.FC<{
                 onCancel();
               }
             }}
+          />
+        </FormGroup>
+        <FormGroup label="目标 / 任务">
+          <GoalMissionMenu
+            emptyText="无"
+            goalMission={goalMission}
+            onSelectGoalMission={onSelectGoalMission}
+            disabled={loading}
           />
         </FormGroup>
       </div>
@@ -155,7 +155,7 @@ export const NewTodo = ({
   dispatchTodosAction: React.Dispatch<ITodosActions>;
 }) => {
   return (
-    <div style={{ padding: '5px 0' }}>
+    <div>
       {isEditing ? (
         <NewTodoEditing dispatchTodosAction={dispatchTodosAction} />
       ) : (

@@ -88,7 +88,12 @@ export const CardOptions: React.FC<{
       isOpen: false,
     });
   }, []);
-  const { dispatch: dispatchWorkProfile } = useWorkProfileContext();
+  const {
+    dispatch: dispatchWorkProfile,
+    state: {
+      currentDetail: { missions },
+    },
+  } = useWorkProfileContext();
 
   const onDialogConfirm = useCallback(async () => {
     if (dialogConfig.newStatus === 'delete') {
@@ -116,7 +121,13 @@ export const CardOptions: React.FC<{
     // update sidebar
     if (dialogConfig.newStatus === 'doing') {
       if (type === 'goal') {
-        dispatchWorkProfile({ type: 'AddGoal', goal: data });
+        dispatchWorkProfile({
+          type: 'AddGoal',
+          goal: {
+            ...data,
+            missions: [...missions.filter(m => m.status === 'doing')],
+          },
+        });
       } else {
         dispatchWorkProfile({
           type: 'AddMission',

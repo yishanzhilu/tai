@@ -6,9 +6,10 @@
 
 import * as React from 'react';
 import Head from 'next/head';
+import jsCookie from 'js-cookie';
 import { AnchorButton } from '@yishanzhilubp/core';
 import { useRouter } from 'next/router';
-import { useUserContext } from '@/src/scopes/global/userContext';
+import { TOKEN_KEY } from '@/src/utils/constants';
 
 /* eslint-disable react/no-danger */
 
@@ -21,7 +22,9 @@ const styles: { [k: string]: React.CSSProperties } = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: '30vh',
+    marginTop: '20vh',
+    flexWrap: 'wrap',
+    flexDirection: 'row-reverse',
   },
 };
 
@@ -30,15 +33,27 @@ function TaiError({ code = 500, message = '出错了', url = '' }) {
   if (code === 404) {
     message = url ? `请求的 URL ${url} 不存在` : `请求的页面 ${asPath} 不存在`;
   }
-  const {
-    state: { isLogin },
-  } = useUserContext();
+
+  const [isLogin, setIsLogin] = React.useState(false);
+  React.useEffect(() => {
+    const token = jsCookie.get(TOKEN_KEY);
+    if (token) {
+      setIsLogin(true);
+      // don't use Router.push so it will use ssr
+      // and pageGuard will find /user info and /overview jobs
+    }
+  }, []);
   return (
     <div style={styles.error}>
       <Head>
         <title>{code || '出错了'} - 移山</title>
       </Head>
-      <div>
+      <img
+        style={{ width: 150, height: 150, margin: 50 }}
+        src="/static/layout/logo.png"
+        alt="page error"
+      />
+      <div style={{ margin: 50, textAlign: 'center' }}>
         {code ? <h1 style={{ fontSize: 40, margin: 0 }}>{code}</h1> : null}
         <p
           style={{
@@ -65,11 +80,6 @@ function TaiError({ code = 500, message = '出错了', url = '' }) {
           </Link>
         )} */}
       </div>
-      <img
-        style={{ width: 150, height: 150, marginLeft: 100 }}
-        src="/static/layout/logo.png"
-        alt="page error"
-      />
     </div>
   );
 }

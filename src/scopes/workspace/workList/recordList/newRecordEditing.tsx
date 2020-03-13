@@ -246,7 +246,7 @@ export const NewRecordEditing = () => {
             </>
           )}
 
-          <FormGroup label="选择父级目标、任务" disabled={loading}>
+          <FormGroup label="目标 / 任务" disabled={loading}>
             <GoalMissionMenu
               disabled={loading}
               goalMission={goalMission}

@@ -184,13 +184,13 @@ export const KanBan: React.FC = () => {
   };
 
   return (
-    <div style={{ overflowX: 'auto' }}>
+    <div style={{ overflowX: 'auto', overflowY: 'hidden' }}>
       <DragDropContext onDragEnd={onDragEnd}>
         <div
           style={{
             display: 'flex',
             justifyContent: 'space-between',
-            width: '840px',
+            width: '820px',
             height: 277,
           }}
         >

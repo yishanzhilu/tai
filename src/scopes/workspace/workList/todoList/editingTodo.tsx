@@ -110,7 +110,7 @@ export const EditingTodo = ({
   };
 
   return (
-    <div>
+    <div style={{ margin: '10px 0' }}>
       <div className="input">
         <H6>更新事项</H6>
         <FormGroup
@@ -135,14 +135,14 @@ export const EditingTodo = ({
             growVertically
             autoFocus
             onKeyDown={onKeyDown}
-            rightElement={
-              <GoalMissionMenu
-                emptyText="独立事项"
-                disabled={loading}
-                onSelectGoalMission={onSelectGoalMission}
-                goalMission={goalMission}
-              />
-            }
+          />
+        </FormGroup>
+        <FormGroup label="目标 / 任务">
+          <GoalMissionMenu
+            emptyText="无"
+            disabled={loading}
+            onSelectGoalMission={onSelectGoalMission}
+            goalMission={goalMission}
           />
         </FormGroup>
       </div>

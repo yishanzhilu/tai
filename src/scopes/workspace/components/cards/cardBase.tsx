@@ -38,7 +38,15 @@ export const CardBase: React.FC<ICardBaseProps> = ({
 }) => {
   return (
     <>
-      <H3 style={{ marginTop: 40, textAlign: 'center' }}>{title}</H3>
+      <H3
+        style={{
+          margin: '50px auto',
+          textAlign: 'center',
+          maxWidth: 300,
+        }}
+      >
+        {title}
+      </H3>
       <H6 className={Classes.TEXT_MUTED}>描述</H6>
       <P>{description || '无'}</P>
       <Divider style={{ margin: 20 }} />

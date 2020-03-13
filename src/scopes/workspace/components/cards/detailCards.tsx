@@ -5,19 +5,13 @@
  */
 import React, { useState, useEffect } from 'react';
 
-import Link, { LinkProps } from 'next/link';
+import Link from 'next/link';
 import Head from 'next/head';
-import {
-  Breadcrumbs,
-  IBreadcrumbProps,
-  Classes,
-  Icon,
-  Tag,
-} from '@yishanzhilubp/core';
-import classNames from 'classnames';
+import { Breadcrumbs, Tag } from '@yishanzhilubp/core';
 
 import { useWorkProfileContext } from '@/src/scopes/global/workProfileContext';
 import { IGoal, IMission, BasicStatus } from '@/src/model/schemas';
+import { Span } from '@/src/components/layouts/p';
 import { TaiCard } from '@/src/components/layouts';
 import { STATUS_CONFIG_MAP } from '@/src/utils/constants';
 
@@ -35,50 +29,6 @@ export interface IDetail {
   createdAt: string;
   updatedAt: string;
 }
-
-type ITaiBreadcrumbProps = IBreadcrumbProps & LinkProps;
-
-const Breadcrumb: React.FC<ITaiBreadcrumbProps> = breadcrumbProps => {
-  const classes = classNames(
-    Classes.BREADCRUMB,
-    {
-      [Classes.BREADCRUMB_CURRENT]: breadcrumbProps.current,
-      [Classes.DISABLED]: breadcrumbProps.disabled,
-    },
-    breadcrumbProps.className
-  );
-
-  const icon =
-    breadcrumbProps.icon != null ? (
-      <Icon icon={breadcrumbProps.icon} />
-    ) : (
-      undefined
-    );
-
-  if (breadcrumbProps.href == null && breadcrumbProps.onClick == null) {
-    return (
-      <span className={classes}>
-        {icon}
-        {breadcrumbProps.text}
-        {breadcrumbProps.children}
-      </span>
-    );
-  }
-  return (
-    <Link href={breadcrumbProps.href} as={breadcrumbProps.as}>
-      <a
-        className={classes}
-        onClick={breadcrumbProps.disabled ? null : breadcrumbProps.onClick}
-        tabIndex={breadcrumbProps.disabled ? null : 0}
-        target={breadcrumbProps.target}
-      >
-        {icon}
-        {breadcrumbProps.text}
-        {breadcrumbProps.children}
-      </a>
-    </Link>
-  );
-};
 
 const StatusTag: React.FC<{ status: BasicStatus }> = ({ status }) => {
   const statusConfig = STATUS_CONFIG_MAP[status || 'doing'];
@@ -104,37 +54,56 @@ const TaiBreadcrumb: React.FC = () => {
     },
     computed: { freezed, currentNavStatus },
   } = useWorkProfileContext();
-  let breadcrumbsItems: ITaiBreadcrumbProps[] = [];
+  let breadcrumbsItems = [];
   if (missionTitle) {
     if (goalTitle) {
       breadcrumbsItems = [
         {
+          tagName: 'span',
           icon: <span style={{ marginRight: 5 }}>🎯</span>,
-          href: `/workspace/goal/[id]`,
-          as: `/workspace/goal/${goalID}`,
-          text: goalTitle,
+          text: (
+            <Link href="/workspace/goal/[id]" as={`/workspace/goal/${goalID}`}>
+              <a>
+                <Span ellipsize maxWidth={150}>
+                  {goalTitle}
+                </Span>
+              </a>
+            </Link>
+          ),
         },
         {
+          tagName: 'span',
           icon: <span style={{ marginRight: 5 }}>📌</span>,
-          text: '任务详情',
-          href: null,
+          text: (
+            <Span ellipsize maxWidth={150}>
+              {missionTitle}
+            </Span>
+          ),
         },
       ];
     } else {
       breadcrumbsItems = [
         {
           icon: <span style={{ marginRight: 5 }}>📌</span>,
-          href: null,
-          text: '任务详情',
+          tagName: 'span',
+          text: (
+            <Span ellipsize maxWidth={150}>
+              {missionTitle}
+            </Span>
+          ),
         },
       ];
     }
-  } else {
+  } else if (goalTitle) {
     breadcrumbsItems = [
       {
         icon: <span style={{ marginRight: 5 }}>🎯</span>,
-        href: null,
-        text: '目标详情',
+        tagName: 'span',
+        text: (
+          <Span ellipsize maxWidth={150}>
+            {goalTitle}
+          </Span>
+        ),
       },
     ];
   }
@@ -142,25 +111,29 @@ const TaiBreadcrumb: React.FC = () => {
     if (currentNavStatus === 'done') {
       breadcrumbsItems.unshift({
         icon: <span style={{ marginRight: 5 }}>🏆</span>,
-        text: '成就',
-        href: `/workspace/trophy`,
+        tagName: 'span',
+        text: (
+          <Link href="/workspace/trophy">
+            <a>成就</a>
+          </Link>
+        ),
       });
     } else if (currentNavStatus === 'drop') {
       breadcrumbsItems.unshift({
         icon: <span style={{ marginRight: 5 }}>♻️</span>,
-        text: '回收站',
-        href: `/workspace/recycle`,
+        tagName: 'span',
+        text: (
+          <Link href="/workspace/recycle">
+            <a>回收站</a>
+          </Link>
+        ),
       });
     }
   }
 
   return (
     <div style={{ whiteSpace: 'nowrap' }}>
-      <Breadcrumbs
-        breadcrumbRenderer={Breadcrumb}
-        items={breadcrumbsItems}
-        collapseFrom="start"
-      />
+      <Breadcrumbs items={breadcrumbsItems} collapseFrom="start" />
     </div>
   );
 };

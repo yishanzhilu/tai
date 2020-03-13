@@ -15,7 +15,6 @@ import {
   Menu,
   MenuItem,
   Dialog,
-  Divider,
 } from '@yishanzhilubp/core';
 
 import { IRecord } from '@/src/model/schemas';
@@ -32,6 +31,24 @@ import { RecordsContext } from './recordListReduceContext';
 interface IProps {
   record: IRecord;
 }
+
+const mood2Emoji = (mood: string) => {
+  switch (mood) {
+    case 'excited':
+      return '🤩 激动';
+    case 'happy':
+      return '😀 开心';
+    case 'pride':
+      return '😉 得意';
+    case 'sad':
+      return '☹️ 伤心';
+    case 'angry':
+      return '😠 生气';
+    case 'peace':
+    default:
+      return '😐 平静';
+  }
+};
 
 export const Record = ({ record }: IProps): React.ReactElement => {
   const [dialogOpen, setDialogOpen] = React.useState(false);
@@ -66,17 +83,40 @@ export const Record = ({ record }: IProps): React.ReactElement => {
   }, []);
   return (
     <Card>
-      <Flex justifyContent="space-between">
-        <span className={classNames(Classes.TEXT_SMALL, Classes.TEXT_MUTED)}>
+      <Flex justifyContent="space-between" alignItems="flex-start">
+        <span
+          className={classNames(Classes.TEXT_SMALL, Classes.TEXT_MUTED)}
+          style={{ lineHeight: 2 }}
+        >
           <GoalMission
             goalMission={record}
             isTag
             isLink
             inline
             emptyText="独立历程"
-          />{' '}
-          @{getDateDiffFromNow(record.createdAt)}
-          {record.minutes > 0 && <span> ⏳ 时长 {duration}</span>}
+          />
+          <br />
+          <span className="info">
+            📅 {getDateDiffFromNow(record.createdAt)}
+          </span>
+          {record.minutes > 0 && (
+            <>
+              <br />
+              <span className="info"> ⏰ 时长 {duration}</span>
+            </>
+          )}
+          {record.mood && (
+            <>
+              <br />
+              <span className="info">{mood2Emoji(record.mood)}</span>
+            </>
+          )}
+          <style jsx>{`
+            .info {
+              word-break: keep-all;
+              white-space: nowrap;
+            }
+          `}</style>
         </span>
         <span>
           <Popover
@@ -127,8 +167,9 @@ export const Record = ({ record }: IProps): React.ReactElement => {
       <P>{record.content}</P>
       {record.review && (
         <>
-          <Divider style={{ margin: 20 }} />
-          <H6 className={Classes.TEXT_MUTED}>想法</H6>
+          <H6 className={Classes.TEXT_MUTED} style={{ marginTop: 10 }}>
+            想法
+          </H6>
           <P>{record.review}</P>
         </>
       )}

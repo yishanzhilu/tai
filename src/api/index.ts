@@ -24,7 +24,7 @@ const praseHTTPErrorStatusText = (status: number): string => {
     return '服务器错误，请稍后重试';
   }
   if (status >= 400) {
-    return '客户端请求异常，请发送正确的请求';
+    return '请求异常，请发送正确的请求';
   }
   throw Error('请求未出错，但被要求进行错误处理');
 };
@@ -39,6 +39,7 @@ export function HandleError(error: AxiosError, toast = true): ITaiPageError {
     TaiToast.show({ message, intent: 'warning' });
   }
   const taiError: ITaiPageError = new Error(message) as ITaiPageError;
+  taiError.text = message;
   taiError.code = error.response.status;
   taiError.url = error.config.url;
   return taiError;
@@ -50,6 +51,7 @@ export function newTaiError(
   url = ''
 ): ITaiPageError {
   const taiError: ITaiPageError = new Error(message) as ITaiPageError;
+  taiError.text = message;
   taiError.code = code;
   taiError.url = url;
   return taiError;

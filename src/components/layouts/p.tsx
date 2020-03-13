@@ -11,7 +11,7 @@ export const P: React.FC<{
   ellipsize?: boolean;
 }> = ({ children, ellipsize }) => {
   if (typeof children !== 'string') {
-    throw Error('<P /> children has to be string');
+    throw Error('<P /> children must be string');
   }
   const text = children.toString();
   return (
@@ -30,9 +30,10 @@ export const P: React.FC<{
 
 export const Span: React.FC<{
   ellipsize?: boolean;
-}> = ({ children }) => {
+  maxWidth?: number;
+}> = ({ children, maxWidth = 100, ellipsize = true }) => {
   if (typeof children !== 'string') {
-    throw Error(`<P /> children has to be string${children}`);
+    throw Error(`<Span /> children must be string, but is ${children}`);
   }
   const text = children.toString();
   return (
@@ -40,13 +41,13 @@ export const Span: React.FC<{
       style={{
         wordBreak: 'break-all',
         whiteSpace: 'nowrap',
-        maxWidth: 100,
+        maxWidth,
         display: 'inline-block',
         verticalAlign: 'bottom',
         lineHeight: 1.5,
       }}
     >
-      <Text ellipsize>{text}</Text>
+      <Text ellipsize={ellipsize}>{text}</Text>
     </span>
   );
 };

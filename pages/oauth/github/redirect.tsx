@@ -9,7 +9,7 @@ import { NextPage } from 'next';
 import { Spinner, Classes } from '@yishanzhilubp/core';
 import cookie from 'js-cookie';
 
-import { f, HandleError, newTaiError } from '@/src/api';
+import { newTaiError, sf } from '@/src/api';
 import { LandingLayout } from '@/src/components/layouts/landing';
 import { Flex } from '@/src/components/flex';
 import { IPageProps } from '@/src/model/utils';
@@ -31,7 +31,9 @@ const OauthGithubRedirect: NextPage<IProps> = ({ token, error }) => {
     }
   }, [token]);
   if (error) {
-    return <TaiError code={error.code} message={error.message} />;
+    console.error(1231, error);
+
+    return <TaiError code={error.code} message={error.message || error.text} />;
   }
   return (
     <LandingLayout>
@@ -62,16 +64,21 @@ OauthGithubRedirect.getInitialProps = async ctx => {
   const { code } = ctx.query;
   if (code) {
     try {
-      const { data } = await f.get<{
+      const { token } = await sf<{
         token: string;
-      }>('/user/oauth/github', {
-        params: { code },
-      });
-      return data;
-    } catch (err) {
-      const error = HandleError(err);
+      }>(
+        '/user/oauth/github',
+        {
+          params: { code },
+        },
+        ctx
+      );
       return {
-        error,
+        token,
+      };
+    } catch (err) {
+      return {
+        error: newTaiError(err.message, err.code, err.url),
       };
     }
   } else {

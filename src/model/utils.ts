@@ -16,6 +16,7 @@ export interface ITaiPageError extends Error {
   code: number;
   url?: string;
   message: string;
+  text?: string;
 }
 
 export interface IPageProps {

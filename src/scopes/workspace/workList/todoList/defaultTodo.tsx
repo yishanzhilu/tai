@@ -5,13 +5,14 @@
  */
 
 import React, { useCallback } from 'react';
-import { Keys, Icon, Spinner, Button, Popover } from '@yishanzhilubp/core';
+import { Keys, Icon, Spinner } from '@yishanzhilubp/core';
 import classNames from 'classnames';
 
 import { ITodo } from '@/src/model/schemas';
 import { f } from '@/src/api';
-import { Flex } from '@/src/components/flex';
+import { ITaiPageError } from '@/src/model/utils';
 import { GoalMission } from '@/src/components/goalMission';
+import { TaiToast, TaiToastError } from '@/src/utils/toaster';
 import { ITodosActions } from './todoReducer';
 import { useWorkListContext } from '../workList';
 
@@ -24,6 +25,7 @@ type TodoStatus = 'default' | 'hover' | 'loading' | 'done';
 
 export const DefaultTodo = ({ todo, dispatchTodosAction }: IProps) => {
   const [status, setStatus] = React.useState<TodoStatus>('default');
+  const [_, setWorkList] = useWorkListContext();
 
   const onClickFinish = useCallback(async () => {
     setStatus('loading');
@@ -35,6 +37,42 @@ export const DefaultTodo = ({ todo, dispatchTodosAction }: IProps) => {
         status: 'done',
       });
       setStatus('done');
+      dispatchTodosAction({
+        type: 'Unfreeze',
+      });
+      dispatchTodosAction({
+        type: 'FinishTodoSave',
+        id: todo.id,
+      });
+      TaiToast.show({
+        message: `完成了 ${todo.content}`,
+        intent: 'primary',
+        icon: 'clean',
+        actions: [
+          {
+            text: '记录',
+            onClick: () => {
+              setWorkList({ finishedTodo: todo });
+            },
+          },
+          {
+            text: '撤销',
+            onClick: async () => {
+              try {
+                await f.patch<ITodo>(`/todo/${todo.id}`, {
+                  status: 'doing',
+                });
+                dispatchTodosAction({
+                  type: 'FinishTodoUndo',
+                  todo,
+                });
+              } catch (error) {
+                TaiToastError((error as ITaiPageError).message);
+              }
+            },
+          },
+        ],
+      });
     } catch (error) {
       setStatus('default');
     }
@@ -49,21 +87,10 @@ export const DefaultTodo = ({ todo, dispatchTodosAction }: IProps) => {
     }
   }, []);
 
-  const [_, setWorkList] = useWorkListContext();
-  const handlePopoverClose = useCallback(() => {
-    dispatchTodosAction({
-      type: 'Unfreeze',
-    });
-    dispatchTodosAction({
-      type: 'FinishTodoSave',
-      id: todo.id,
-    });
-  }, [todo.id]);
-
-  const handlePopoverOK = useCallback(() => {
-    setWorkList({ finishedTodo: todo });
-    handlePopoverClose();
-  }, []);
+  // const handlePopoverOK = useCallback(() => {
+  //   setWorkList({ finishedTodo: todo });
+  //   handlePopoverClose();
+  // }, []);
 
   const renderIcon = () => {
     switch (status) {
@@ -83,47 +110,24 @@ export const DefaultTodo = ({ todo, dispatchTodosAction }: IProps) => {
   return (
     <div>
       <div className="todo-text">
-        <Popover
-          position="bottom-left"
-          usePortal={false}
-          isOpen={status === 'done'}
-          onClose={handlePopoverClose}
+        <span
+          tabIndex={0}
+          className="circle"
+          onMouseOver={() =>
+            setStatus(pre => (pre === 'default' ? 'hover' : pre))
+          }
+          onMouseLeave={() =>
+            setStatus(pre => (pre === 'hover' ? 'default' : pre))
+          }
+          onClick={onClickFinish}
+          onKeyDown={e => {
+            if (e.which === Keys.ENTER) {
+              onClickFinish();
+            }
+          }}
         >
-          <span
-            tabIndex={0}
-            className="circle"
-            onMouseOver={() =>
-              setStatus(pre => (pre === 'default' ? 'hover' : pre))
-            }
-            onMouseLeave={() =>
-              setStatus(pre => (pre === 'hover' ? 'default' : pre))
-            }
-            onClick={onClickFinish}
-            onKeyDown={e => {
-              if (e.which === Keys.ENTER) {
-                onClickFinish();
-              }
-            }}
-          >
-            {renderIcon()}
-          </span>
-          <div className="popover">
-            <p style={{ maxWidth: 500 }}>
-              恭喜你完成了{' '}
-              <span style={{ fontWeight: 600 }}>{todo.content}</span>
-              ，是否记录历程？
-            </p>
-            <Flex justifyContent="flex-end">
-              <Button small intent="primary" onClick={handlePopoverOK}>
-                好的
-              </Button>
-              <Button small minimal onClick={handlePopoverClose}>
-                不
-              </Button>
-            </Flex>
-          </div>
-        </Popover>
-
+          {renderIcon()}
+        </span>
         <span
           className={contentClassName}
           onClick={onClickContent}
@@ -136,7 +140,7 @@ export const DefaultTodo = ({ todo, dispatchTodosAction }: IProps) => {
         >
           {todo.content}
         </span>
-        <div>
+        <div className="goal-mission">
           <GoalMission emptyText="独立事项" goalMission={todo} isLink />
         </div>
       </div>
@@ -144,6 +148,8 @@ export const DefaultTodo = ({ todo, dispatchTodosAction }: IProps) => {
         {`
           .todo-text {
             display: flex;
+            margin-top: 10px;
+            flex-wrap: wrap;
           }
           .todo-text :global(.loading-circle) {
             display: inline-flex;
@@ -156,15 +162,20 @@ export const DefaultTodo = ({ todo, dispatchTodosAction }: IProps) => {
             cursor: text;
             word-break: break-all;
             white-space: pre-wrap;
+            min-width: 150px;
             margin-right: 10px;
+            margin-bottom: 10px;
           }
           .content.done {
             text-decoration: line-through;
           }
           .circle {
-            margin: 0 10px;
+            margin-right: 10px;
             color: grey;
             cursor: pointer;
+          }
+          .goal-mission {
+            margin-bottom: 10px;
           }
         `}
       </style>

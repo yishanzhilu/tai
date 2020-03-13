@@ -15,14 +15,17 @@ export const TaiToast = IS_BROWSER
     })
   : null;
 
-export const TaiToastError = (msg: string, error: Error) => {
+export const TaiToastError = (msg: string, error?: Error) => {
   TaiToast.clear();
   TaiToast.show({
+    icon: 'warning-sign',
     message: (
       <div style={{ textAlign: 'center' }}>
         {msg}
         <br />
-        <div className={Classes.TEXT_SMALL}>错误: {error.message}</div>
+        {error && (
+          <div className={Classes.TEXT_SMALL}>错误: {error.message}</div>
+        )}
       </div>
     ),
     intent: 'primary',
@@ -32,6 +35,7 @@ export const TaiToastError = (msg: string, error: Error) => {
 export const TaiToastSuccess = (msg: string) => {
   TaiToast.clear();
   TaiToast.show({
+    icon: 'tick',
     message: <div style={{ textAlign: 'center' }}>{msg}</div>,
     intent: 'success',
   });

@@ -6,7 +6,7 @@
   "dependencies": {
     "@next/bundle-analyzer": "^9.1.5",
     "@types/react-beautiful-dnd": "^12.1.1",
-    "@yishanzhilubp/core": "^4.0.0",
+    "@yishanzhilubp/core": "^4.0.5",
     "@yishanzhilubp/datetime": "^4.0.1",
     "@yishanzhilubp/select": "^4.0.0",
     "axios": "^0.19.0",

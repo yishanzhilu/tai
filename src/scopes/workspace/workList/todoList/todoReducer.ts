@@ -13,6 +13,7 @@ export type ITodosActions =
   | { type: 'EditTodoSave'; todo: ITodo; id: number }
   | { type: 'DeleteTodo'; id: number }
   | { type: 'FinishTodoSave'; id: number }
+  | { type: 'FinishTodoUndo'; todo: ITodo }
   | { type: 'Cancel' }
   | { type: 'NewTodo' }
   | { type: 'Freeze' }
@@ -101,6 +102,17 @@ export const todosReducer = (
     case 'FinishTodoSave':
       return {
         todos: todosState.todos.filter(t => t.id !== todosAction.id),
+        addNew: false,
+        isFreeze: false,
+      };
+    case 'FinishTodoUndo':
+      return {
+        todos: [
+          {
+            ...todosAction.todo,
+          },
+          ...todosState.todos,
+        ],
         addNew: false,
         isFreeze: false,
       };
