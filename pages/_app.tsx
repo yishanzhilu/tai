@@ -50,6 +50,7 @@ const TaiApp = ({ Component, pageProps }) => (
         href="https://cdn.jsdelivr.net/npm/normalizecss@3.0.0/normalize.css"
         rel="stylesheet"
       />
+
       <script src="http://sdk.talkingdata.com/app/h5/v1?appid=937C4ED6505B41A6B2DD5E860CFCE6C8&vn=1.1.0&vc=937C4ED6505B41A6B2DD5E860CFCE6C8" />
       <link rel="icon" type="image/x-icon" href="/static/favicon.ico" />
       {/* <link

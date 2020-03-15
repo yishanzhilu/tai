@@ -13,7 +13,6 @@ import {
   Popover,
   H6,
   Classes,
-  Position,
 } from '@yishanzhilubp/core';
 
 import { ITodo, IGoalMission } from '@/src/model/schemas';
@@ -180,7 +179,7 @@ export const EditingTodo = ({
               </Flex>
             </div>
           }
-          position={Position.BOTTOM_RIGHT}
+          position="bottom-right"
         >
           <Button disabled={loading} minimal icon="trash" />
         </Popover>

@@ -7,5 +7,5 @@
 /// <reference types="next" />
 /// <reference types="next/types/global" />
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+/* eslint-disable @typescript-eslint/no-explicit-any */
 declare const TDAPP: any;

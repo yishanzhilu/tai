@@ -55,7 +55,6 @@ const todoReducer = (
   }
 };
 
-// todo 本质上状态为 doing 的 work
 export const todosReducer = (
   todosState: ITodosState,
   todosAction: ITodosActions

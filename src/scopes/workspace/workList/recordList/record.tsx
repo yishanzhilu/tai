@@ -162,7 +162,7 @@ export const Record = ({ record }: IProps): React.ReactElement => {
         </span>
       </Flex>
       <H6 className={Classes.TEXT_MUTED} style={{ marginTop: 10 }}>
-        历程
+        记录
       </H6>
       <P>{record.content}</P>
       {record.review && (

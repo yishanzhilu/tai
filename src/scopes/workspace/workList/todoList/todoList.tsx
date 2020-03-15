@@ -4,14 +4,15 @@
  * All rights reserved
  */
 import React, { useEffect } from 'react';
-import { Divider, Card } from '@yishanzhilubp/core';
+import { Divider, Card, H5 } from '@yishanzhilubp/core';
 
-import { ITodo, IGoalMission } from '@/src/model/schemas';
-import { TaiList } from '@/src/components/layouts/taiList';
+import { IGoalMission } from '@/src/model/schemas';
+// import { TaiList } from '@/src/components/layouts/taiList';
 
 import { Todo, IUITodo } from './todo';
 import { NewTodo } from './newTodo';
 import { todosReducer } from './todoReducer';
+// import { FinishedTodos } from './finishedTodos';
 
 interface IProps {
   todos: IUITodo[];
@@ -35,24 +36,17 @@ export const TodoList = ({
   }, [initTodos]);
 
   return (
-    <div>
-      <TaiList<ITodo>
-        title="事项"
-        items={todos}
-        render={t => (
+    <div style={{ marginTop: 10 }}>
+      <H5>事项</H5>
+      <Card>
+        {todos.map(t => (
           <div key={t.id} style={{ marginBottom: 10 }}>
             <Todo todo={t} dispatchTodosAction={dispatchTodosAction} />
             <Divider style={{ margin: 0 }} />
           </div>
-        )}
-        after={
-          <NewTodo
-            isEditing={addNew}
-            dispatchTodosAction={dispatchTodosAction}
-          />
-        }
-        container={<Card />}
-      />
+        ))}
+        <NewTodo isEditing={addNew} dispatchTodosAction={dispatchTodosAction} />
+      </Card>
     </div>
   );
 };
