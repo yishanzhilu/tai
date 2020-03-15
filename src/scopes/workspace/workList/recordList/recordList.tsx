@@ -41,6 +41,7 @@ const MoreRecordText = ({ loadingMore, cursor, userCreatedAt }) => {
 
 export const RecordList = ({ records }: IProps): React.ReactElement => {
   const [state, dispatch] = React.useReducer(recordListReducer, {
+    editingID: 0,
     records,
     addNew: false,
     isFreeze: false,
@@ -68,7 +69,6 @@ export const RecordList = ({ records }: IProps): React.ReactElement => {
     state: {
       currentDetail: { goalID, missionID },
     },
-    computed: { freezed },
   } = useWorkProfileContext();
   const {
     state: {
@@ -77,7 +77,7 @@ export const RecordList = ({ records }: IProps): React.ReactElement => {
   } = useUserContext();
 
   const handleMoreClick = async () => {
-    if (!cursor) {
+    if (!cursor || state.isFreeze) {
       return;
     }
     setLoadingMore(true);
@@ -97,6 +97,7 @@ export const RecordList = ({ records }: IProps): React.ReactElement => {
         setCursor(null);
       }
       setLoadingMore(false);
+      dispatch({ type: 'Unfreeze' });
     } catch (error) {
       TaiToast.show({ message: error.message, intent: 'primary' });
       setLoadingMore(false);
@@ -106,11 +107,9 @@ export const RecordList = ({ records }: IProps): React.ReactElement => {
   return (
     <RecordsContext.Provider value={{ state, dispatch }}>
       <TaiListSimple title="记录">
-        {!freezed && (
-          <li>
-            <NewRecord />
-          </li>
-        )}
+        <li>
+          <NewRecord />
+        </li>
         <TransitionGroup
           className="record-list"
           appear={false}
@@ -119,7 +118,7 @@ export const RecordList = ({ records }: IProps): React.ReactElement => {
           {state.records.map(record => (
             <CSSTransition key={record.id} timeout={500} classNames="item" in>
               <li>
-                <Record record={record} />
+                <Record record={record} editingID={state.editingID} />
               </li>
             </CSSTransition>
           ))}

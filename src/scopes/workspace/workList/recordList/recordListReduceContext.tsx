@@ -15,6 +15,9 @@ type IRecordListAction =
   | { type: 'AddRecordCancel' }
   | { type: 'AddRecordDone'; record: IRecord }
   | { type: 'AppendRecordListDone'; records: IRecord[] }
+  | { type: 'EditRecord'; id: number }
+  | { type: 'EditRecordCancel' }
+  | { type: 'EditRecordDone'; record: IRecord }
   | { type: 'Reset'; records: IRecord[] }
   | { type: 'Freeze' }
   | { type: 'Unfreeze' };
@@ -22,69 +25,102 @@ type IRecordListAction =
 interface IRecordListState {
   records: IRecord[];
   addNew: boolean;
+  editingID: number;
   isFreeze: boolean;
 }
 
 export const RecordsContext = React.createContext<{
   state: IRecordListState;
-  dispatch:  React.Dispatch<IRecordListAction>;
+  dispatch: React.Dispatch<IRecordListAction>;
 }>({
-  state: { records: [], addNew: false, isFreeze: false },
+  state: { records: [], addNew: false, isFreeze: false, editingID: 0 },
   dispatch: noop,
 });
 
 export const recordListReducer = (
-  recordListState: IRecordListState,
-  recordListAction: IRecordListAction
+  state: IRecordListState,
+  action: IRecordListAction
 ): IRecordListState => {
-  if (recordListAction.type === 'Reset') {
+  if (action.type === 'Reset') {
     return {
-      records: recordListAction.records,
+      editingID: 0,
+      records: action.records,
       addNew: false,
       isFreeze: false,
     };
   }
 
-  if (recordListState.isFreeze && !/Done$/.test(recordListAction.type)) {
-    return recordListState;
+  if (state.isFreeze && !/Done$/.test(action.type)) {
+    return state;
   }
-  switch (recordListAction.type) {
+  switch (action.type) {
     case 'Freeze':
       return {
-        ...recordListState,
+        ...state,
         isFreeze: true,
       };
     case 'AddRecord':
       return {
-        ...recordListState,
+        ...state,
+        editingID: 0,
         addNew: true,
       };
     case 'AddRecordCancel':
       return {
-        ...recordListState,
+        ...state,
         addNew: false,
       };
     case 'AddRecordDone':
       return {
-        records: [recordListAction.record, ...recordListState.records],
+        editingID: 0,
+        records: [action.record, ...state.records],
+        addNew: false,
+        isFreeze: false,
+      };
+    case 'EditRecord':
+      return {
+        editingID: action.id,
+        records: state.records,
+        addNew: false,
+        isFreeze: false,
+      };
+    case 'EditRecordCancel':
+      return {
+        editingID: 0,
+        records: state.records,
+        addNew: false,
+        isFreeze: false,
+      };
+    case 'EditRecordDone':
+      return {
+        editingID: 0,
+        records: state.records.map(r =>
+          r.id === action.record.id ? action.record : r
+        ),
         addNew: false,
         isFreeze: false,
       };
     case 'DeleteRecordDone':
       return {
-        records: recordListState.records.filter(
-          r => r.id !== recordListAction.id
-        ),
+        editingID: 0,
+        records: state.records.filter(r => r.id !== action.id),
         addNew: false,
         isFreeze: false,
       };
+
     case 'AppendRecordListDone':
       return {
-        records: [...recordListState.records, ...recordListAction.records],
+        editingID: 0,
+        records: [...state.records, ...action.records],
         addNew: false,
+        isFreeze: false,
+      };
+    case 'Unfreeze':
+      return {
+        ...state,
         isFreeze: false,
       };
     default:
-      return recordListState;
+      return state;
   }
 };

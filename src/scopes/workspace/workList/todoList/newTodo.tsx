@@ -166,7 +166,7 @@ export const NewTodo = ({
                 type: 'NewTodo',
               });
             }}
-            icon={<span>✔️</span>}
+            icon="tick"
           >
             添加事项
           </Button>

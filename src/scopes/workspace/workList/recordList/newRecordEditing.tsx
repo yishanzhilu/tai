@@ -189,7 +189,7 @@ export const NewRecordEditing = () => {
               </Button>
               <FormGroup
                 label="此刻的想法"
-                labelInfo="（非必填）"
+                labelInfo="（可选）"
                 disabled={loading}
                 intent={
                   errors.review || reviewLength > 255 ? 'primary' : 'none'
@@ -220,6 +220,7 @@ export const NewRecordEditing = () => {
                   selectedValue={mood}
                   onChange={e => setMood(e.currentTarget.value)}
                 >
+                  <Radio label="无" value="" />
                   <Radio label="😀 开心" value="happy" />
                   <Radio label="🤩 激动" value="excited" />
                   <Radio label="😐 平静" value="peace" />

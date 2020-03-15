@@ -261,7 +261,7 @@ const WorkProfileContextReducer = (
         ...state,
         currentDetail: {
           ...state.currentDetail,
-          minutes: action.minutes,
+          minutes: state.currentDetail.minutes + action.minutes,
         },
       };
     case 'UpdateCurrentDetailStatus':
