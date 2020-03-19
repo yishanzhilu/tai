@@ -16,12 +16,16 @@ export type ITodosActions =
   | { type: 'FinishTodoUndo'; todo: ITodo }
   | { type: 'Cancel' }
   | { type: 'NewTodo' }
+  | { type: 'ToggleFinishedTodos' }
+  | { type: 'SetFinishedTodos'; todos: ITodo[] }
   | { type: 'Freeze' }
   | { type: 'Unfreeze' }
   | { type: 'NewTodoSubmit'; todo: ITodo };
 
 interface ITodosState {
   todos: IUITodo[];
+  finishedTodos: ITodo[];
+  showFinishedTodos: boolean;
   addNew: boolean;
   isFreeze: boolean;
 }
@@ -56,81 +60,102 @@ const todoReducer = (
 };
 
 export const todosReducer = (
-  todosState: ITodosState,
-  todosAction: ITodosActions
+  state: ITodosState,
+  action: ITodosActions
 ): ITodosState => {
-  if (todosAction.type === 'InitTodo') {
+  if (action.type === 'InitTodo') {
     return {
-      todos: todosAction.todos,
+      todos: action.todos.sort((a, b) => a.id - b.id),
+      finishedTodos: [],
+      showFinishedTodos: false,
       addNew: false,
       isFreeze: false,
     };
   }
   // can't add new todo, finish todo or edit todo when freezing
   if (
-    todosState.isFreeze &&
-    ['NewTodo', 'FinishTodo', 'EditTodo'].some(a => a === todosAction.type)
+    state.isFreeze &&
+    ['NewTodo', 'FinishTodo', 'EditTodo'].some(a => a === action.type)
   ) {
-    return todosState;
+    return state;
   }
-  switch (todosAction.type) {
+  switch (action.type) {
     case 'Freeze':
       return {
-        ...todosState,
+        ...state,
         isFreeze: true,
       };
 
     case 'Unfreeze':
       return {
-        ...todosState,
+        ...state,
         isFreeze: false,
       };
     case 'NewTodo':
       return {
-        todos: todosState.todos.map(t => todoReducer(t, todosAction)),
+        ...state,
+        todos: state.todos.map(t => todoReducer(t, action)),
         addNew: true,
         isFreeze: false,
       };
+    case 'EditTodo':
     case 'EditTodoSave':
       return {
-        todos: todosState.todos.map(t => todoReducer(t, todosAction)),
+        ...state,
+        todos: state.todos.map(t => todoReducer(t, action)),
         addNew: false,
         isFreeze: false,
       };
     case 'DeleteTodo':
     case 'FinishTodoSave':
       return {
-        todos: todosState.todos.filter(t => t.id !== todosAction.id),
+        ...state,
+        todos: state.todos.filter(t => t.id !== action.id),
         addNew: false,
         isFreeze: false,
       };
     case 'FinishTodoUndo':
       return {
+        ...state,
         todos: [
           {
-            ...todosAction.todo,
+            ...action.todo,
           },
-          ...todosState.todos,
-        ],
+          ...state.todos,
+        ].sort((a, b) => a.id - b.id),
         addNew: false,
         isFreeze: false,
       };
     case 'NewTodoSubmit':
       return {
+        ...state,
         todos: [
-          ...todosState.todos,
+          ...state.todos,
           {
-            ...todosAction.todo,
+            ...action.todo,
           },
         ],
         addNew: true,
         isFreeze: false,
       };
-    default:
+    case 'ToggleFinishedTodos':
       return {
-        todos: todosState.todos.map(t => todoReducer(t, todosAction)),
+        ...state,
+        showFinishedTodos: !state.showFinishedTodos,
+      };
+    case 'SetFinishedTodos':
+      return {
+        ...state,
+        finishedTodos: action.todos,
+      };
+    case 'Cancel':
+      return {
+        ...state,
+        todos: state.todos.map(t => todoReducer(t, action)),
         addNew: false,
         isFreeze: false,
       };
+    default:
+      return state;
   }
 };

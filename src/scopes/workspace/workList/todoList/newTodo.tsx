@@ -49,8 +49,8 @@ const NewTodoEditing: React.FC<{
       setErrorMsg('必填');
       return;
     }
-    if (todo.length > 255) {
-      setErrorMsg('不能大于255个字符');
+    if (todo.length > 1000) {
+      setErrorMsg('字数不能大于1000');
       return;
     }
     setLoading(true);
@@ -91,12 +91,12 @@ const NewTodoEditing: React.FC<{
           helperText={
             errorMsg || (
               <div>
-                <span style={{ marginRight: 10 }}>{todo.length} /255</span>
+                <span style={{ marginRight: 10 }}>{todo.length} /1000</span>
                 Ctrl + Enter 提交
               </div>
             )
           }
-          intent={errorMsg || todo.length > 255 ? 'primary' : 'none'}
+          intent={errorMsg || todo.length > 1000 ? 'primary' : 'none'}
         >
           <TextArea
             fill

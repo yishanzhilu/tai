@@ -84,7 +84,7 @@ export const NewGoalForm: React.FC = () => {
             autoFocus
             inputRef={register({
               required: '必填',
-              maxLength: { value: 255, message: '不能大于255个字符' },
+              maxLength: { value: 80, message: '字数不能多于80' },
             })}
             name="title"
           />
@@ -92,14 +92,14 @@ export const NewGoalForm: React.FC = () => {
         <FormGroup
           disabled={loading}
           intent={
-            errors.description || descriptionLength > 255 ? 'primary' : 'none'
+            errors.description || descriptionLength > 1000 ? 'primary' : 'none'
           }
           label="目标描述"
           labelInfo="（可选）"
           helperText={
             errors.description
               ? errors.description.message
-              : `${descriptionLength} / 255`
+              : `${descriptionLength} / 1000`
           }
         >
           <TextArea
@@ -110,7 +110,7 @@ export const NewGoalForm: React.FC = () => {
             rows={2}
             growVertically
             inputRef={register({
-              maxLength: { value: 255, message: '不能大于255个字符' },
+              maxLength: { value: 1000, message: '字数不能多于1000' },
             })}
             name="description"
           />
@@ -205,7 +205,7 @@ export const NewMissionForm: React.FC = () => {
             autoFocus
             inputRef={register({
               required: '必填',
-              maxLength: { value: 80, message: '字数不能大于80个' },
+              maxLength: { value: 80, message: '字数不能大于80' },
             })}
             name="title"
           />
@@ -213,14 +213,14 @@ export const NewMissionForm: React.FC = () => {
         <FormGroup
           disabled={loading}
           intent={
-            errors.description || descriptionLength > 255 ? 'primary' : 'none'
+            errors.description || descriptionLength > 1000 ? 'primary' : 'none'
           }
           label="任务描述"
           labelInfo="（可选）"
           helperText={
             errors.description
               ? errors.description.message
-              : `${descriptionLength} / 255`
+              : `${descriptionLength} / 1000`
           }
         >
           <TextArea
@@ -231,7 +231,7 @@ export const NewMissionForm: React.FC = () => {
             growVertically
             rows={2}
             inputRef={register({
-              maxLength: { value: 255, message: '字数不能大于255个' },
+              maxLength: { value: 1000, message: '字数不能大于1000' },
             })}
             name="description"
           />

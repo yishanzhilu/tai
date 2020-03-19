@@ -302,8 +302,8 @@ export const WorkSpaceSidebar: React.FC = () => {
           #sidebar {
             display: flex;
             flex-direction: column;
-            max-height: calc(100vh - 50px);
             height: 100%;
+            background: #fff;
           }
           nav {
             overflow: hidden auto;

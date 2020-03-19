@@ -47,8 +47,8 @@ export const EditingTodo = ({
       setErrorMsg('必填');
       return;
     }
-    if (content.length > 255) {
-      setErrorMsg('不能大于255个字符');
+    if (content.length > 1000) {
+      setErrorMsg('字数不能大于1000');
       return;
     }
     setLoading(true);
@@ -116,12 +116,12 @@ export const EditingTodo = ({
           helperText={
             errorMsg || (
               <div>
-                <span style={{ marginRight: 10 }}>{content.length} /255</span>
+                <span style={{ marginRight: 10 }}>{content.length} /1000</span>
                 Ctrl + Enter 提交
               </div>
             )
           }
-          intent={errorMsg || content.length > 255 ? 'primary' : 'none'}
+          intent={errorMsg || content.length > 1000 ? 'primary' : 'none'}
         >
           <TextArea
             fill

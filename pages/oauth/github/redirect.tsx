@@ -31,8 +31,6 @@ const OauthGithubRedirect: NextPage<IProps> = ({ token, error }) => {
     }
   }, [token]);
   if (error) {
-    console.error(1231, error);
-
     return <TaiError code={error.code} message={error.message || error.text} />;
   }
   return (

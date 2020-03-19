@@ -5,30 +5,35 @@
  */
 
 import * as React from 'react';
-import jsCookie from 'js-cookie';
 import { NextPage } from 'next';
-import NProgress from 'nprogress';
 
-import { Classes, H1, Button } from '@yishanzhilubp/core';
+import { Classes, H1, AnchorButton } from '@yishanzhilubp/core';
 
 import { LandingLayout } from '@/src/components/layouts/landing';
-import { GITHUB_OAUTH_URL, TOKEN_KEY } from '@/src/utils/constants';
+import { GITHUB_OAUTH_URL } from '@/src/utils/constants';
 import { IPageProps } from '@/src/model/utils';
-
-const onClick = () => {
-  NProgress.start();
-  window.location.href = GITHUB_OAUTH_URL;
-};
+import { useUserContext } from '@/src/scopes/global/userContext';
+import Link from 'next/link';
+import Router from 'next/router';
 
 export function Banner() {
+  const {
+    state: { isLogin },
+  } = useUserContext();
   return (
     <section>
       <div className="content">
         <h1>确立目标，达成理想</h1>
-        <p>关于长期的代办事项</p>
-        <Button intent="primary" onClick={onClick}>
-          内测 Github 账户登录
-        </Button>
+        <p>基于个人目标的事项管理和日志记录工具</p>
+        {isLogin ? (
+          <Link href="/workspace/dashboard" passHref>
+            <AnchorButton intent="primary">进入控制台</AnchorButton>
+          </Link>
+        ) : (
+          <AnchorButton intent="primary" href={GITHUB_OAUTH_URL}>
+            内测 Github 账户登录
+          </AnchorButton>
+        )}
       </div>
       <style jsx>{`
         section {
@@ -145,15 +150,16 @@ export function Section({
 }
 
 const Index: NextPage<IPageProps> = () => {
+  const {
+    state: { isLogin },
+  } = useUserContext();
   React.useEffect(() => {
-    const token = jsCookie.get(TOKEN_KEY);
-    if (token) {
+    if (isLogin) {
       // don't use Router.push so it will use ssr
       // and pageGuard will find /user info and /overview jobs
-      NProgress.start();
-      window.location.replace('/workspace/dashboard');
+      Router.push('/workspace/dashboard');
     }
-  }, []);
+  }, [isLogin]);
   return (
     <LandingLayout>
       <main>
@@ -164,20 +170,20 @@ const Index: NextPage<IPageProps> = () => {
             "所有的都将围绕长远价值展开。It's All About the Long Term.",
           ]}
           credit="贝索斯1997年致股东的信"
-          imgSrc="/images/landing/long-term.jpeg"
+          imgSrc="/images/long-term.jpeg"
         />
         <Section
           title="反思与总结"
           dir="right"
           description={['君子博学而日参省乎己，则知明而行无过矣。']}
           credit="《荀子·劝学》"
-          imgSrc="/images/landing/re-introspect.png"
+          imgSrc="/images/re-introspect.png"
         />
         <Section
           title="记录你的一万小时"
           description={['1万小时的锤炼是任何人从平凡变成超凡的必要条件。']}
           credit="格拉德威尔《异类》"
-          imgSrc="/images/landing/10000.jpg"
+          imgSrc="/images/10000.jpg"
         />
       </main>
       <style jsx>{`

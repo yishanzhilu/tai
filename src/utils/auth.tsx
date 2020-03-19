@@ -58,7 +58,11 @@ export const withPageGuard = (WrappedPage: NextPage<IPageProps>) => {
     const { error, user, work } = props;
     if (error) {
       return (
-        <TaiError code={error.code} message={error.message} url={error.url} />
+        <TaiError
+          code={error.code}
+          message={error.text}
+          url={error.url}
+        />
       );
     }
     const { state, dispatch } = useUserContext();
@@ -68,7 +72,8 @@ export const withPageGuard = (WrappedPage: NextPage<IPageProps>) => {
     }
     const { dispatch: dispatchWorkProfile } = useWorkProfileContext();
     React.useEffect(() => {
-      if (!state.isLogin && user) {
+      const token = cookie.get(TOKEN_KEY);
+      if (token && !state.isLogin && user) {
         dispatch({ type: 'Login', user });
         dispatchWorkProfile({
           type: 'Init',
@@ -94,15 +99,6 @@ export const withPageGuard = (WrappedPage: NextPage<IPageProps>) => {
   return Wrapper;
 };
 
-export const logout = (callback: () => void) => {
-  localStorage.removeItem('taiUserID');
-  localStorage.removeItem('taiRefreshToken');
-  cookie.remove('x-tai-everest-fresh-token', {
-    path: '/refresh-login',
-  });
-  cookie.remove('x-tai-everest-user-id', {
-    path: '/refresh-login',
-  });
-  cookie.remove('x-tai-everest-token');
-  callback();
+export const removeToken = () => {
+  cookie.remove(TOKEN_KEY);
 };

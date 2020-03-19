@@ -61,6 +61,7 @@ function TaiError({ code = 500, message = '出错了', url = '' }) {
             margin: '23px 0',
             maxWidth: 300,
             lineHeight: '22px',
+            wordBreak: 'break-all',
           }}
         >
           {message.toString()}

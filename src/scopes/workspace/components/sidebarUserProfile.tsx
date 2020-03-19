@@ -6,12 +6,18 @@
 
 import * as React from 'react';
 
-import { Classes, ProgressBar, Tooltip } from '@yishanzhilubp/core';
+import {
+  Classes,
+  ProgressBar,
+  Tooltip,
+  // AnchorButton,
+} from '@yishanzhilubp/core';
 import classNames from 'classnames';
 
 import { useUserContext } from '@/src/scopes/global/userContext';
 import { Flex } from '@/src/components/flex';
 import { formatMinutes } from '@/src/utils/funcs';
+// import Link from 'next/link';
 
 // function UserProfileStat({ title = '', hours = 0 }) {
 //   return (
@@ -61,18 +67,23 @@ export function UserProfile() {
           <img
             src={avatarUrl}
             className={Classes.ELEVATION_1}
-            style={{ borderRadius: 10 }}
-            width="20"
-            height="20"
+            style={{ borderRadius: 10, width: 24, height: 24 }}
+            width="24"
+            height="24"
             alt="avatar"
           />
         )}
         <div
           className={classNames(Classes.TEXT_OVERFLOW_ELLIPSIS)}
-          style={{ fontWeight: 600, maxWidth: 125 }}
+          style={{ fontWeight: 600, flexGrow: 1 }}
         >
           {name || '您好'}
         </div>
+        {/* <div className="mobile-search">
+          <Link href="/search" passHref>
+            <AnchorButton icon="search" minimal small />
+          </Link>
+        </div> */}
       </Flex>
       <div className="row">
         <Tooltip
@@ -136,6 +147,14 @@ export function UserProfile() {
         }
         .user-profile :global(.row) {
           margin: 5px 0 10px;
+        }
+        .mobile-search {
+          display: none;
+        }
+        @media (max-width: 1024px) {
+          .mobile-search {
+            display: block;
+          }
         }
       `}</style>
     </div>

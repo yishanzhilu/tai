@@ -38,6 +38,8 @@ const userContextReducer = (
   state: IUserContextState,
   action: IUserContextAction
 ): IUserContextState => {
+  console.log('userContextReducer', state, action);
+
   switch (action.type) {
     case 'LogOut':
       return defaultState;

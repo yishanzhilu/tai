@@ -120,11 +120,11 @@ export const RecordEditing: React.FC<{ record: IRecord }> = ({ record }) => {
           <H6>编辑记录</H6>
           <FormGroup
             disabled={loading}
-            intent={errors.content || contentLength > 255 ? 'primary' : 'none'}
+            intent={errors.content || contentLength > 1000 ? 'primary' : 'none'}
             helperText={
               errors.content
                 ? errors.content.message
-                : `${contentLength} / 255 `
+                : `${contentLength} / 1000 `
             }
           >
             <TextArea
@@ -135,7 +135,7 @@ export const RecordEditing: React.FC<{ record: IRecord }> = ({ record }) => {
               placeholder="需要记录点什么有事情吗？"
               inputRef={register({
                 required: '必填',
-                maxLength: { value: 255, message: '不能大于255个字符' },
+                maxLength: { value: 1000, message: '字数不能大于1000' },
               })}
               name="content"
             />
@@ -144,9 +144,9 @@ export const RecordEditing: React.FC<{ record: IRecord }> = ({ record }) => {
             label="当时的想法"
             labelInfo="（可选）"
             disabled={loading}
-            intent={errors.review || reviewLength > 255 ? 'primary' : 'none'}
+            intent={errors.review || reviewLength > 1000 ? 'primary' : 'none'}
             helperText={
-              errors.review ? errors.review.message : `${reviewLength} / 255`
+              errors.review ? errors.review.message : `${reviewLength} / 1000`
             }
           >
             <TextArea
@@ -154,7 +154,7 @@ export const RecordEditing: React.FC<{ record: IRecord }> = ({ record }) => {
               disabled={loading}
               name="review"
               inputRef={register({
-                maxLength: { value: 255, message: '不能大于255个字符' },
+                maxLength: { value: 1000, message: '字数不能大于1000' },
               })}
               growVertically
               placeholder="有何总结、反思、感悟？"

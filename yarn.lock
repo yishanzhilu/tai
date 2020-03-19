@@ -1078,19 +1078,6 @@
   resolved "https://registry.npm.taobao.org/@csstools/convert-colors/download/@csstools/convert-colors-1.4.0.tgz#ad495dc41b12e75d588c6db8b9834f08fa131eb7"
   integrity sha1-rUldxBsS511YjG24uYNPCPoTHrc=
 
-"@editorjs/editorjs@^2.16.1":
-  version "2.16.1"
-  resolved "https://registry.npm.taobao.org/@editorjs/editorjs/download/@editorjs/editorjs-2.16.1.tgz#41a2707fc126518dca513a09aa207aa8b6d9a65c"
-  integrity sha1-QaJwf8EmUY3KUToJqiB6qLbZplw=
-  dependencies:
-    codex-notifier "^1.1.2"
-    codex-tooltip "^1.0.0"
-
-"@editorjs/paragraph@^2.6.1":
-  version "2.6.1"
-  resolved "https://registry.npm.taobao.org/@editorjs/paragraph/download/@editorjs/paragraph-2.6.1.tgz#efd21da9912686024abd96eedd0c2258193f7d31"
-  integrity sha1-79IdqZEmhgJKvZbu3QwiWBk/fTE=
-
 "@jest/console@^24.7.1", "@jest/console@^24.9.0":
   version "24.9.0"
   resolved "https://registry.npm.taobao.org/@jest/console/download/@jest/console-24.9.0.tgz#79b1bc06fb74a8cfb01cbdedf945584b1b9707f0"
@@ -2792,16 +2779,6 @@ co@^4.6.0:
   version "4.6.0"
   resolved "https://registry.npm.taobao.org/co/download/co-4.6.0.tgz#6ea6bdf3d853ae54ccb8e47bfa0bf3f9031fb184"
   integrity sha1-bqa989hTrlTMuOR7+gvz+QMfsYQ=
-
-codex-notifier@^1.1.2:
-  version "1.1.2"
-  resolved "https://registry.npm.taobao.org/codex-notifier/download/codex-notifier-1.1.2.tgz#a733079185f4c927fa296f1d71eb8753fe080895"
-  integrity sha1-pzMHkYX0ySf6KW8dceuHU/4ICJU=
-
-codex-tooltip@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.npm.taobao.org/codex-tooltip/download/codex-tooltip-1.0.0.tgz#720353b27fadc40f2d054d171479b016ffcb63ea"
-  integrity sha1-cgNTsn+txA8tBU0XFHmwFv/LY+o=
 
 collection-visit@^1.0.0:
   version "1.0.0"

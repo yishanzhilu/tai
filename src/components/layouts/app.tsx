@@ -19,10 +19,11 @@ import {
   MenuItem,
   AnchorButton,
   MenuDivider,
+  // Icon,
 } from '@yishanzhilubp/core';
 
 import { GITHUB_OAUTH_URL } from '@/src/utils/constants';
-import { logout } from '@/src/utils/auth';
+import { removeToken } from '@/src/utils/auth';
 import { useUserContext } from '@/src/scopes/global/userContext';
 
 const ProfileMenu: React.FC = () => {
@@ -56,12 +57,11 @@ const ProfileMenu: React.FC = () => {
       <MenuItem
         icon="log-out"
         text="退出"
-        onClick={() => {
-          logout(async () => {
-            await router.replace('/');
-            window.scrollTo(0, 0);
-            dispatch({ type: 'LogOut' });
-          });
+        onClick={async () => {
+          removeToken();
+          dispatch({ type: 'LogOut' });
+          await router.replace('/');
+          window.scrollTo(0, 0);
         }}
       />
     </Menu>
@@ -81,6 +81,13 @@ export const AppLayout = ({ content, sidebar }: IProps) => {
     },
   } = useUserContext();
   const [showAside, setShowAside] = React.useState(false);
+  React.useEffect(() => {
+    if (showAside) {
+      document.body.classList.add(Classes.OVERLAY_OPEN);
+    } else {
+      document.body.classList.remove(Classes.OVERLAY_OPEN);
+    }
+  }, [showAside]);
   return (
     <div id="tai-app">
       <div className="tai-app-inner">
@@ -93,26 +100,35 @@ export const AppLayout = ({ content, sidebar }: IProps) => {
               <span className="handler">
                 <Button
                   minimal
-                  icon={showAside ? 'menu-closed' : 'menu-open'}
+                  icon="menu"
                   onClick={() => {
-                    setShowAside(s => !s);
+                    setShowAside(true);
                   }}
                 />
               </span>
-              <Link href={isLogin ? '/workspace/dashboard' : '/'}>
-                <a>
-                  <img
-                    src="/static/layout/logo.png"
-                    alt="logo"
-                    style={{ width: 30, height: 30 }}
-                  />
-                </a>
-              </Link>
+              <div style={{ display: 'flex' }}>
+                <Link href={isLogin ? '/workspace/dashboard' : '/'}>
+                  <a className="logo">
+                    <img
+                      src="/static/layout/logo.png"
+                      alt="logo"
+                      style={{ width: 30, height: 30 }}
+                    />
+                  </a>
+                </Link>
 
-              {/* <div className="bp3-input-group">
-          <Icon icon="search" />
-          <input className="bp3-input" placeholder="搜索移山" dir="auto" />
-        </div> */}
+                {/* <div
+                  className="bp3-input-group search"
+                  style={{ marginLeft: 30 }}
+                >
+                  <Icon icon="search" />
+                  <input
+                    className="bp3-input"
+                    placeholder="搜索移山"
+                    dir="auto"
+                  />
+                </div> */}
+              </div>
               {isLogin ? (
                 <>
                   <Popover
@@ -142,15 +158,7 @@ export const AppLayout = ({ content, sidebar }: IProps) => {
         <div className="main">
           <aside className={showAside ? 'on' : 'off'}>
             {sidebar}
-            <div className="handler">
-              <Button
-                intent="primary"
-                icon={showAside ? 'arrow-left' : 'arrow-right'}
-                onClick={() => {
-                  setShowAside(s => !s);
-                }}
-              />
-            </div>
+            <div className="backdrop" onClick={() => setShowAside(false)} />
           </aside>
           <article>
             <div className="article-inner">{content}</div>
@@ -191,8 +199,20 @@ export const AppLayout = ({ content, sidebar }: IProps) => {
           z-index: 9;
           width: 300px;
           background: #ffffff;
+          top: 50px;
           height: calc(100vh - 50px);
           transition: left 0.5s ease;
+        }
+        aside .backdrop {
+          display: none;
+          position: fixed;
+          z-index: -1;
+          top: 0;
+          left: 0;
+          width: 100vw;
+          height: 100vh;
+          background: #000;
+          opacity: 0.6;
         }
         @media (max-width: 1440px) {
           aside {
@@ -201,19 +221,30 @@ export const AppLayout = ({ content, sidebar }: IProps) => {
         }
         @media (max-width: 1024px) {
           aside {
-            left: -250px;
+            left: -81vw;
+            width: 80vw;
+            height: 100vh;
+            z-index: 11;
+            top: 0;
           }
         }
         aside.on {
           left: 0;
         }
+        aside.on .backdrop {
+          display: block;
+        }
         .handler {
           display: none;
+          -webkit-tap-highlight-color: transparent;
         }
         @media (max-width: 1024px) {
           .handler {
             width: 63px;
             display: inline-block;
+          }
+          .search {
+            display: none;
           }
         }
         article {

@@ -12,7 +12,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import classNames from 'classnames';
 
-import { Navbar } from './navbar';
+// import { Navbar } from './navbar';
 
 function SettingSidebar() {
   const { pathname } = useRouter();
@@ -78,7 +78,6 @@ export function SettingLayout({ children }): React.ReactElement {
       <Head>
         <title>设置 · 移山</title>
       </Head>
-      <Navbar />
       <main
         style={{
           maxWidth: 1056,
